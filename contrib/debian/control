@@ -1,4 +1,4 @@
-Source: paicoin
+Source: bwscoin
 Section: utils
 Priority: optional
 Maintainer: Matt Corallo <matt@mattcorallo.com>
@@ -26,45 +26,45 @@ Build-Depends: debhelper,
  python,
  libzmq3-dev
 Standards-Version: 3.9.2
-Homepage: https://www.projectpai.com/
-Vcs-Git: git://github.com/projectpai/paicoin.git
-Vcs-Browser: https://github.com/projectpai/paicoin
+Homepage: https://valdi.ai/
+Vcs-Git: git://github.com/valdi-labs//bwscoin.git
+Vcs-Browser: https://github.com/valdi-labs/bwscoin
 
-Package: paicoind
+Package: bwscoind
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
- PAI Coin is a free open source peer-to-peer electronic cash system that
+ BWS Coin is a free open source peer-to-peer electronic cash system that
  is completely decentralized, without the need for a central server or
  trusted parties.  Users hold the crypto keys to their own money and
  transact directly with each other, with the help of a P2P network to
  check for double-spending.
  .
- This package provides the daemon, paicoind, and the CLI tool
- paicoin-cli to interact with the daemon.
+ This package provides the daemon, bwscoind, and the CLI tool
+ bwscoin-cli to interact with the daemon.
 
-Package: paicoin-qt
+Package: bwscoin-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI
- PAI Coin is a free open source peer-to-peer electronic cash system that
+ BWS Coin is a free open source peer-to-peer electronic cash system that
  is completely decentralized, without the need for a central server or
  trusted parties.  Users hold the crypto keys to their own money and
  transact directly with each other, with the help of a P2P network to
  check for double-spending.
  .
- This package provides PAI Coin-Qt, a GUI for PAI Coin based on Qt.
+ This package provides BWS Coin-Qt, a GUI for BWS Coin based on Qt.
 
-Package: paicoin-tx
+Package: bwscoin-tx
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer digital currency - standalone transaction tool
- PAI Coin is a free open source peer-to-peer electronic cash system that
+ BWS Coin is a free open source peer-to-peer electronic cash system that
  is completely decentralized, without the need for a central server or
  trusted parties.  Users hold the crypto keys to their own money and
  transact directly with each other, with the help of a P2P network to
  check for double-spending.
  .
- This package provides paicoin-tx, a command-line transaction creation
- tool which can be used without a paicoin daemon.  Some means of
+ This package provides bwscoin-tx, a command-line transaction creation
+ tool which can be used without a bwscoin daemon.  Some means of
  exchanging minimal transaction data with peers is still required.

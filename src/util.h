@@ -10,11 +10,11 @@
  * Server/client environment: argument handling, config file parsing,
  * logging, thread wrappers, startup time
  */
-#ifndef PAICOIN_UTIL_H
-#define PAICOIN_UTIL_H
+#ifndef BWSCOIN_UTIL_H
+#define BWSCOIN_UTIL_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #include "compat.h"
@@ -57,12 +57,12 @@ extern bool fLogIPs;
 extern std::atomic<bool> fReopenDebugLog;
 extern CTranslationInterface translationInterface;
 
-extern const char * const PAICOIN_CONF_FILENAME;
-extern const char * const PAICOIN_PID_FILENAME;
+extern const char * const BWSCOIN_CONF_FILENAME;
+extern const char * const BWSCOIN_PID_FILENAME;
 
-#ifdef PAI_BABY
-extern const char * const PAICOIN_CHAINPARAMS_CONF_FILENAME;
-extern const char * const PAICOIN_GENESIS_CONF_FILENAME;
+#ifdef USE_CHAINPARAMS_CONF
+extern const char * const BWSCOIN_CHAINPARAMS_CONF_FILENAME;
+extern const char * const BWSCOIN_GENESIS_CONF_FILENAME;
 #endif
 
 extern std::atomic<uint32_t> logCategories;
@@ -282,7 +282,7 @@ public:
 
 extern ArgsManager gArgs;
 
-#ifdef PAI_BABY
+#ifdef USE_CHAINPARAMS_CONF
 extern ArgsManager gChainparams;
 extern ArgsManager gGenesisparams;
 #endif
@@ -318,7 +318,7 @@ void RenameThread(const char* name);
  */
 template <typename Callable> void TraceThread(const char* name,  Callable func)
 {
-    std::string s = strprintf("paicoin-%s", name);
+    std::string s = strprintf("bwscoin-%s", name);
     RenameThread(s.c_str());
     try
     {
@@ -352,4 +352,4 @@ constexpr typename std::underlying_type<E>::type ToUnderlying(E e) noexcept
     return static_cast<typename std::underlying_type<E>::type>(e);
 }
 
-#endif // PAICOIN_UTIL_H
+#endif // BWSCOIN_UTIL_H

@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_UINT256_H
-#define PAICOIN_UINT256_H
+#ifndef BWSCOIN_UINT256_H
+#define BWSCOIN_UINT256_H
 
 #include <assert.h>
 #include <cstring>
@@ -168,4 +168,4 @@ inline uint256 uint256S(const std::string& str)
     return rv;
 }
 
-#endif // PAICOIN_UINT256_H
+#endif // BWSCOIN_UINT256_H

@@ -6,7 +6,7 @@
 //
 
 
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 #include "utilstrencodings.h"
 #include "wallet/crypter.h"
 

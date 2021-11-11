@@ -18,10 +18,10 @@ Tested RPCs:
 import os
 import time
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework import util
 
-class InfoOPTest(PAIcoinTestFramework):
+class InfoOPTest(BWScoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
         self.enable_mocktime()

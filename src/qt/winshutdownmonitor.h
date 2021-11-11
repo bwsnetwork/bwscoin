@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_WINSHUTDOWNMONITOR_H
-#define PAICOIN_QT_WINSHUTDOWNMONITOR_H
+#ifndef BWSCOIN_QT_WINSHUTDOWNMONITOR_H
+#define BWSCOIN_QT_WINSHUTDOWNMONITOR_H
 
 #ifdef WIN32
 #include <QByteArray>
@@ -26,4 +26,4 @@ public:
 #endif
 #endif
 
-#endif // PAICOIN_QT_WINSHUTDOWNMONITOR_H
+#endif // BWSCOIN_QT_WINSHUTDOWNMONITOR_H

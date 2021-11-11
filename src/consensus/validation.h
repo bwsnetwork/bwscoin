@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_CONSENSUS_VALIDATION_H
-#define PAICOIN_CONSENSUS_VALIDATION_H
+#ifndef BWSCOIN_CONSENSUS_VALIDATION_H
+#define BWSCOIN_CONSENSUS_VALIDATION_H
 
 #include <string>
 #include "version.h"
@@ -103,4 +103,4 @@ static inline int64_t GetBlockWeight(const CBlock& block)
     return ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * (WITNESS_SCALE_FACTOR - 1) + ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION);
 }
 
-#endif // PAICOIN_CONSENSUS_VALIDATION_H
+#endif // BWSCOIN_CONSENSUS_VALIDATION_H

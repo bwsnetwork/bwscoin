@@ -7,10 +7,10 @@
     - search operations (ported from Decred) include: node getheaders rebroadcastmissed rebroadcastwinners
 """
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import *
 
-class NodeOperations(PAIcoinTestFramework):
+class NodeOperations(BWScoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
 

@@ -9,7 +9,7 @@
     - test the result of 'searchrawtransactions'
 """
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import *
 
 def checkResultAgainstDecodedRawTx(resultTx, decodedRawTx, prevDecodedTxs = None):
@@ -43,7 +43,7 @@ def getSendingAddress(decRawTxs, index):
     addr = [vout["scriptPubKey"]["addresses"] for vout in decRawTxs[index]["vout"] if vout["value"] == Decimal(index+1)]
     return addr[0]
 
-class SearchRawTransactionsTest(PAIcoinTestFramework):
+class SearchRawTransactionsTest(BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2

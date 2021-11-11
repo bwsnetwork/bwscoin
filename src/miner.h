@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_MINER_H
-#define PAICOIN_MINER_H
+#ifndef BWSCOIN_MINER_H
+#define BWSCOIN_MINER_H
 
 #include "primitives/block.h"
 #include "txmempool.h"
@@ -208,4 +208,4 @@ private:
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
 
-#endif // PAICOIN_MINER_H
+#endif // BWSCOIN_MINER_H

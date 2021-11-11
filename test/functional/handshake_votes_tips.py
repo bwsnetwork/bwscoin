@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
-# Copyright (c) 2021 The PAIcoin developers
+# Copyright (c) 2021 The Project PAI Foundation
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,10 +10,10 @@
 
 from collections import Counter
 from time import sleep
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import connect_nodes_bi, disconnect_nodes
 
-class HandshakeVoteTest (PAIcoinTestFramework):
+class HandshakeVoteTest (BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2
@@ -97,7 +97,7 @@ class HandshakeVoteTest (PAIcoinTestFramework):
         print("- mempool vote count on node " + str(node_num) + ": " + str(voteCount))
 
         
-class HandshakeChainTipsTest (PAIcoinTestFramework):
+class HandshakeChainTipsTest (BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 4

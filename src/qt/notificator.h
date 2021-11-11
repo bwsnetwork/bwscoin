@@ -2,11 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_NOTIFICATOR_H
-#define PAICOIN_QT_NOTIFICATOR_H
+#ifndef BWSCOIN_QT_NOTIFICATOR_H
+#define BWSCOIN_QT_NOTIFICATOR_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #include <QIcon>
@@ -77,4 +77,4 @@ private:
 #endif
 };
 
-#endif // PAICOIN_QT_NOTIFICATOR_H
+#endif // BWSCOIN_QT_NOTIFICATOR_H

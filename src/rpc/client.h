@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_RPCCLIENT_H
-#define PAICOIN_RPCCLIENT_H
+#ifndef BWSCOIN_RPCCLIENT_H
+#define BWSCOIN_RPCCLIENT_H
 
 #include <univalue.h>
 
@@ -25,4 +25,4 @@ UniValue RPCConvertNamedValues(const std::string& strMethod, const std::vector<s
  */
 UniValue ParseNonRFCJSONValue(const std::string& strVal);
 
-#endif // PAICOIN_RPCCLIENT_H
+#endif // BWSCOIN_RPCCLIENT_H

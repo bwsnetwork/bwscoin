@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_RPCCONSOLE_H
-#define PAICOIN_QT_RPCCONSOLE_H
+#ifndef BWSCOIN_QT_RPCCONSOLE_H
+#define BWSCOIN_QT_RPCCONSOLE_H
 
 #include "guiutil.h"
 #include "peertablemodel.h"
@@ -27,7 +27,7 @@ class QMenu;
 class QItemSelection;
 QT_END_NAMESPACE
 
-/** Local PAI Coin RPC console. */
+/** Local BWS Coin RPC console. */
 class RPCConsole: public QWidget
 {
     Q_OBJECT
@@ -157,4 +157,4 @@ private:
     void updateNetworkState();
 };
 
-#endif // PAICOIN_QT_RPCCONSOLE_H
+#endif // BWSCOIN_QT_RPCCONSOLE_H

@@ -4,8 +4,8 @@
  */
 
 
-#ifndef PAICOIN_WALLET_AUTOVREVOKER_AUTOVREVOKER_H
-#define PAICOIN_WALLET_AUTOVREVOKER_AUTOVREVOKER_H
+#ifndef BWSCOIN_WALLET_AUTOVREVOKER_AUTOVREVOKER_H
+#define BWSCOIN_WALLET_AUTOVREVOKER_AUTOVREVOKER_H
 
 #include "autorevokerconfig.h"
 #include "validationinterface.h"
@@ -41,4 +41,4 @@ private:
     std::atomic<bool> configured;
 };
 
-#endif // PAICOIN_WALLET_AUTOVREVOKER_AUTOVREVOKER_H
+#endif // BWSCOIN_WALLET_AUTOVREVOKER_AUTOVREVOKER_H

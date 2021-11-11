@@ -2,11 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_PAYMENTSERVER_H
-#define PAICOIN_QT_PAYMENTSERVER_H
+#ifndef BWSCOIN_QT_PAYMENTSERVER_H
+#define BWSCOIN_QT_PAYMENTSERVER_H
 
 // This class handles payment requests from clicking on
-// paicoin: URIs
+// bwscoin: URIs
 //
 // This is somewhat tricky, because we have to deal with
 // the situation where the user clicks on a link during
@@ -145,4 +145,4 @@ private:
     OptionsModel *optionsModel;
 };
 
-#endif // PAICOIN_QT_PAYMENTSERVER_H
+#endif // BWSCOIN_QT_PAYMENTSERVER_H

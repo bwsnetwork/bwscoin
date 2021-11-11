@@ -49,7 +49,7 @@
     "rpc-password": "{fd0b98f556eb42f17ba2ac30500be3f37a0d88a40nyzXz2s",
     "rpc-port": 9091,
     "rpc-url": "/transmission/",
-    "rpc-username": "oben",
+    "rpc-username": "valdi",
     "rpc-whitelist": "0.0.0.0",
     "rpc-whitelist-enabled": false,
     "scrape-paused-torrents-enabled": true,

@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_AMOUNT_H
-#define PAICOIN_AMOUNT_H
+#ifndef BWSCOIN_AMOUNT_H
+#define BWSCOIN_AMOUNT_H
 
 #include <stdint.h>
 
@@ -16,8 +16,8 @@ static const CAmount CENT = 1000000;
 
 /** No amount larger than this (in satoshi) is valid.
  *
- * Note that this constant is *not* the total money supply, which in PAI Coin
- * currently happens to be less than 2,100,000,000 PAI for various reasons, but
+ * Note that this constant is *not* the total money supply, which in BWS Coin
+ * currently happens to be less than 2,100,000,000 BWS for various reasons, but
  * rather a sanity check. As this sanity check is used by consensus-critical
  * validation code, the exact value of the MAX_MONEY constant is consensus
  * critical; in unusual circumstances like a(nother) overflow bug that allowed
@@ -26,4 +26,4 @@ static const CAmount CENT = 1000000;
 static const CAmount MAX_MONEY = 2100000000 * COIN;
 inline bool MoneyRange(const CAmount& nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 
-#endif //  PAICOIN_AMOUNT_H
+#endif //  BWSCOIN_AMOUNT_H

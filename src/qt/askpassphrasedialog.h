@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_ASKPASSPHRASEDIALOG_H
-#define PAICOIN_QT_ASKPASSPHRASEDIALOG_H
+#ifndef BWSCOIN_QT_ASKPASSPHRASEDIALOG_H
+#define BWSCOIN_QT_ASKPASSPHRASEDIALOG_H
 
 #include <QDialog>
 
@@ -49,4 +49,4 @@ protected:
     bool eventFilter(QObject *object, QEvent *event);
 };
 
-#endif // PAICOIN_QT_ASKPASSPHRASEDIALOG_H
+#endif // BWSCOIN_QT_ASKPASSPHRASEDIALOG_H

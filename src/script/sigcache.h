@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_SCRIPT_SIGCACHE_H
-#define PAICOIN_SCRIPT_SIGCACHE_H
+#ifndef BWSCOIN_SCRIPT_SIGCACHE_H
+#define BWSCOIN_SCRIPT_SIGCACHE_H
 
 #include "script/interpreter.h"
 
@@ -53,4 +53,4 @@ public:
 
 void InitSignatureCache();
 
-#endif // PAICOIN_SCRIPT_SIGCACHE_H
+#endif // BWSCOIN_SCRIPT_SIGCACHE_H

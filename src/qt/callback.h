@@ -1,5 +1,5 @@
-#ifndef PAICOIN_QT_CALLBACK_H
-#define PAICOIN_QT_CALLBACK_H
+#ifndef BWSCOIN_QT_CALLBACK_H
+#define BWSCOIN_QT_CALLBACK_H
 
 #include <QObject>
 
@@ -27,4 +27,4 @@ FunctionCallback<F>* makeCallback(F f)
     return new FunctionCallback<F>(std::move(f));
 }
 
-#endif // PAICOIN_QT_CALLBACK_H
+#endif // BWSCOIN_QT_CALLBACK_H

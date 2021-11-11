@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_WALLET_WALLET_H
-#define PAICOIN_WALLET_WALLET_H
+#ifndef BWSCOIN_WALLET_WALLET_H
+#define BWSCOIN_WALLET_WALLET_H
 
 #include "amount.h"
 #include "policy/feerate.h"
@@ -328,7 +328,7 @@ public:
     unsigned int nTimeSmart;
     /**
      * From me flag is set to 1 for transactions that were created by the wallet
-     * on this paicoin node, and set to 0 for transactions that were created
+     * on this bwscoin node, and set to 0 for transactions that were created
      * externally and came in through the network or sendrawtransaction RPC.
      */
     char fFromMe;
@@ -1307,7 +1307,7 @@ public:
        - ticketFee: amount needed for each ticket as a transaction fee
        - vspFee: VSP fee (optional, default =  0)
        - numTickets: number of tickets to purchase (optional, default = 1)
-       - feeRate: transaction fee rate (PAI/kB) to use (overrides current fees if larger than them) (optional, default = -1)
+       - feeRate: transaction fee rate (BWS/kB) to use (overrides current fees if larger than them) (optional, default = -1)
        In case of success, the wallet transaction's hash is returned.
        In case of error, the wallet transaction's hash is not valid. Check the error object for the reason. */
     std::pair<uint256, CWalletError>
@@ -1329,7 +1329,7 @@ public:
        - vspAddress: address to pay stake pool fees to
        - vspFeePercent: percent from the voter subsidy to pay to the stake pool
        - expiry: height at which the purchased tickets expire
-       - feeRate: transaction fee rate (PAI/kB) to use (overrides current fees if larger than them) (optional, default = -1)
+       - feeRate: transaction fee rate (BWS/kB) to use (overrides current fees if larger than them) (optional, default = -1)
        In case of success, the returned vector contains the transactions' hashes.
        In case of partial success, meaning only some tickets could not have been created, the returned values are the
        successful transactions' hashes, but the error code does not indicate success.
@@ -1479,4 +1479,4 @@ bool CWallet::DummySignTx(CMutableTransaction &txNew, const ContainerType &coins
     return true;
 }
 
-#endif // PAICOIN_WALLET_WALLET_H
+#endif // BWSCOIN_WALLET_WALLET_H

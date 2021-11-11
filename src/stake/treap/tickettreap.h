@@ -3,8 +3,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  */
 
-#ifndef PAICOIN_STAKE_TICKETTREAP_H
-#define PAICOIN_STAKE_TICKETTREAP_H
+#ifndef BWSCOIN_STAKE_TICKETTREAP_H
+#define BWSCOIN_STAKE_TICKETTREAP_H
 
 #include "treapnode.h"
 #include "prevector.h"
@@ -111,4 +111,4 @@ private:
     uint64_t        totalSize;
 };
 
-#endif // PAICOIN_STAKE_TICKETTREAP_H
+#endif // BWSCOIN_STAKE_TICKETTREAP_H

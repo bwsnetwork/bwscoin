@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_HTTPSERVER_H
-#define PAICOIN_HTTPSERVER_H
+#ifndef BWSCOIN_HTTPSERVER_H
+#define BWSCOIN_HTTPSERVER_H
 
 #include "http.h"
 
@@ -155,4 +155,4 @@ private:
 
 std::string urlDecode(const std::string &urlEncoded);
 
-#endif // PAICOIN_HTTPSERVER_H
+#endif // BWSCOIN_HTTPSERVER_H

@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>org.paicoin.paicoind</string>
+	<string>org.bwscoin.bwscoind</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/usr/local/bin/paicoind</string>
+		<string>/usr/local/bin/bwscoind</string>
 		<string>-daemon</string>
 	</array>
 	<key>RunAtLoad</key>

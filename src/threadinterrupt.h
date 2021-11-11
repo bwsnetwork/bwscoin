@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_THREADINTERRUPT_H
-#define PAICOIN_THREADINTERRUPT_H
+#ifndef BWSCOIN_THREADINTERRUPT_H
+#define BWSCOIN_THREADINTERRUPT_H
 
 #include <atomic>
 #include <chrono>
@@ -31,4 +31,4 @@ private:
     std::atomic<bool> flag;
 };
 
-#endif //PAICOIN_THREADINTERRUPT_H
+#endif //BWSCOIN_THREADINTERRUPT_H

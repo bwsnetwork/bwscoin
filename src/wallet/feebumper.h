@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_WALLET_FEEBUMPER_H
-#define PAICOIN_WALLET_FEEBUMPER_H
+#ifndef BWSCOIN_WALLET_FEEBUMPER_H
+#define BWSCOIN_WALLET_FEEBUMPER_H
 
 #include <primitives/transaction.h>
 
@@ -58,4 +58,4 @@ private:
     CAmount nNewFee;
 };
 
-#endif // PAICOIN_WALLET_FEEBUMPER_H
+#endif // BWSCOIN_WALLET_FEEBUMPER_H

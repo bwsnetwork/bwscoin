@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_PRIMITIVES_BLOCK_H
-#define PAICOIN_PRIMITIVES_BLOCK_H
+#ifndef BWSCOIN_PRIMITIVES_BLOCK_H
+#define BWSCOIN_PRIMITIVES_BLOCK_H
 
 #include "primitives/transaction.h"
 #include "serialize.h"
@@ -129,8 +129,6 @@ public:
     }
 
     uint32_t DeriveNonceFromML() const;
-
-    bool isPaicoinHashBlock() const;
 };
 
 
@@ -228,4 +226,4 @@ struct CBlockLocator
     }
 };
 
-#endif // PAICOIN_PRIMITIVES_BLOCK_H
+#endif // BWSCOIN_PRIMITIVES_BLOCK_H

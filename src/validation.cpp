@@ -63,7 +63,7 @@ using namespace boost::placeholders;
 #endif
 
 #if defined(NDEBUG)
-# error "PAI Coin cannot be compiled without assertions."
+# error "BWS Coin cannot be compiled without assertions."
 #endif
 
 #define MICRO 0.000001
@@ -113,7 +113,7 @@ static void CheckBlockIndex(const Consensus::Params& consensusParams);
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const std::string strMessageMagic = "PAI Coin Signed Message:\n";
+const std::string strMessageMagic = "BWS Coin Signed Message:\n";
 
 // Internal stuff
 namespace {
@@ -957,7 +957,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         // Remove conflicting transactions from the mempool
         for (const CTxMemPool::txiter it : allConflicting)
         {
-            LogPrint(BCLog::MEMPOOL, "replacing tx %s with %s for %s PAI additional fees, %d delta bytes\n",
+            LogPrint(BCLog::MEMPOOL, "replacing tx %s with %s for %s BWS additional fees, %d delta bytes\n",
                     it->GetTx().GetHash().ToString(),
                     hash.ToString(),
                     FormatMoney(nModifiedFees - nConflictingFees),
@@ -1195,9 +1195,9 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     if (halvings >= 64)
         return 0;
 
-    // PAICOIN Note: If the initial block subsidy has been changed,
+    // BWSCOIN Note: If the initial block subsidy has been changed,
     // update the subsidy with the correct value
-#ifdef PAI_BABY
+#ifdef USE_CHAINPARAMS_CONF
     CAmount nSubsidy = gChainparams.GetArg("INITIAL_BLOCK_REWARD", (CAmount) 1500) * COIN;
 #else
     CAmount nSubsidy = 1500 * COIN;
@@ -2004,7 +2004,7 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck() {
-    RenameThread("paicoin-scriptch");
+    RenameThread("bwscoin-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -2853,11 +2853,13 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
  * Return the tip of the chain with the most work in it, that isn't
  * known to be invalid (it's however far from certain to be valid).
  */
-static CBlockIndex* FindMostWorkChain() {
+static CBlockIndex* FindMostWorkChain(const CBlock* preferredBlock) {
     do {
         CBlockIndex *pindexNew = nullptr;
 
-        // Find the best candidate header.
+        // Find the best candidate header, preferring the specified block if
+        // available and with most chain work.
+
         {
             std::set<CBlockIndex*, CBlockIndexWorkComparator>::reverse_iterator it = setBlockIndexCandidates.rbegin();
             if (it == setBlockIndexCandidates.rend())
@@ -2865,6 +2867,18 @@ static CBlockIndex* FindMostWorkChain() {
             pindexNew = *it;
         }
 
+        if (preferredBlock)
+        {
+            auto mostWork = pindexNew->nChainWork;
+            auto preferredTipHash = preferredBlock->GetHash();
+
+            auto it = std::find_if(setBlockIndexCandidates.rbegin(), setBlockIndexCandidates.rend(), [&mostWork, &preferredTipHash] (const CBlockIndex* pIndex) {
+                return pIndex->nChainWork == mostWork && pIndex->GetBlockHash() == preferredTipHash;
+            });
+
+            if (it != setBlockIndexCandidates.rend())
+                pindexNew = *it;
+        }
         // Check whether all blocks on the path between the currently active chain and the candidate are valid.
         // Just going until the active chain is an optimization, as we know all blocks in it are valid already.
         CBlockIndex *pindexTest = pindexNew;
@@ -3052,7 +3066,7 @@ bool ActivateBestChain(CValidationState &state, const CChainParams& chainparams,
 
             CBlockIndex *pindexOldTip = chainActive.Tip();
             if (pindexMostWork == nullptr) {
-                pindexMostWork = FindMostWorkChain();
+                pindexMostWork = FindMostWorkChain(pblock.get());
             }
 
             // Whether we have anything to do at all.
@@ -3874,10 +3888,6 @@ bool checkAllowedRevocations(const CBlock& block, CValidationState& state, const
 static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
 {
     const int nHeight = pindexPrev == nullptr ? 0 : pindexPrev->nHeight + 1;
-
-    // make sure that the block follows the Paicoin Hash PoW requirements
-    if (nHeight >= consensusParams.nPaicoinHashMaximumActivationHeight && !block.isPaicoinHashBlock())
-        return state.DoS(50, false, REJECT_INVALID, "paicoin-hash-should-activate", false, "Paicoin Hash constraints are not met");
 
     // Start enforcing BIP113 (Median Time Past) using versionbits logic.
     int nLockTimeFlags = 0;

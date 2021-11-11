@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_BENCH_BENCH_H
-#define PAICOIN_BENCH_BENCH_H
+#ifndef BWSCOIN_BENCH_BENCH_H
+#define BWSCOIN_BENCH_BENCH_H
 
 #include <functional>
 #include <limits>
@@ -80,4 +80,4 @@ namespace benchmark {
 #define BENCHMARK(n) \
     benchmark::BenchRunner BOOST_PP_CAT(bench_, BOOST_PP_CAT(__LINE__, n))(BOOST_PP_STRINGIZE(n), n);
 
-#endif // PAICOIN_BENCH_BENCH_H
+#endif // BWSCOIN_BENCH_BENCH_H

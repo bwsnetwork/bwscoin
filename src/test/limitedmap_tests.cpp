@@ -4,7 +4,7 @@
 
 #include "limitedmap.h"
 
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 
 #include <boost/test/unit_test.hpp>
 

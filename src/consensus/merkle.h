@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_MERKLE
-#define PAICOIN_MERKLE
+#ifndef BWSCOIN_MERKLE
+#define BWSCOIN_MERKLE
 
 #include <stdint.h>
 #include <vector>

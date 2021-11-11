@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_CONSENSUS_CONSENSUS_H
-#define PAICOIN_CONSENSUS_CONSENSUS_H
+#ifndef BWSCOIN_CONSENSUS_CONSENSUS_H
+#define BWSCOIN_CONSENSUS_CONSENSUS_H
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -32,4 +32,4 @@ enum {
     LOCKTIME_MEDIAN_TIME_PAST = (1 << 1),
 };
 
-#endif // PAICOIN_CONSENSUS_CONSENSUS_H
+#endif // BWSCOIN_CONSENSUS_CONSENSUS_H

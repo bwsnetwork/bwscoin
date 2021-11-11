@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_ZMQ_ZMQNOTIFICATIONINTERFACE_H
-#define PAICOIN_ZMQ_ZMQNOTIFICATIONINTERFACE_H
+#ifndef BWSCOIN_ZMQ_ZMQNOTIFICATIONINTERFACE_H
+#define BWSCOIN_ZMQ_ZMQNOTIFICATIONINTERFACE_H
 
 #include "validationinterface.h"
 #include <string>
@@ -37,4 +37,4 @@ private:
     std::list<CZMQAbstractNotifier*> notifiers;
 };
 
-#endif // PAICOIN_ZMQ_ZMQNOTIFICATIONINTERFACE_H
+#endif // BWSCOIN_ZMQ_ZMQNOTIFICATIONINTERFACE_H

@@ -7,10 +7,10 @@
     - search operations (ported from Decred) include: existsaddress existsaddresses existsmempooltxs searchrawtransactions
 """
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import *
 
-class SearchOperations(PAIcoinTestFramework):
+class SearchOperations(BWScoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
 

@@ -3,12 +3,12 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  */
 
-#ifndef PAICOIN_STAKE_STAKETX_H
-#define PAICOIN_STAKE_STAKETX_H
+#ifndef BWSCOIN_STAKE_STAKETX_H
+#define BWSCOIN_STAKE_STAKETX_H
 
 #include <string>
 #include <algorithm>
-#include "script/pai_data_classifier.h"
+#include "script/bws_data_classifier.h"
 #include "script/standard.h"
 #include "pubkey.h"
 #include "stakenode.h"
@@ -80,7 +80,7 @@ struct TicketContribData {
     CAmount contributedAmount;
 
     // fee limits indicate how much of the vote reward or revocation refund is allowed to be spent as fees.
-    // The PAIcoin implementation of fee limits is slightly different than Decred's.
+    // The BWScoin implementation of fee limits is slightly different than Decred's.
     // The value that is stored in voteFeeLimit and revocationFeeLimit represents the amount that is the maximum value for the fee,
     // rather than a log2 representation of it like in Decred.
     // Therefore, these values can be used directly in comparisons without the need for supplementary base conversions.
@@ -246,4 +246,4 @@ public:
 };
 
 SpentTicketsInBlock FindSpentTicketsInBlock(const CBlock& block);
-#endif //PAICOIN_STAKE_STAKETX_H
+#endif //BWSCOIN_STAKE_STAKETX_H

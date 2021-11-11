@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_RPC_BLOCKCHAIN_H
-#define PAICOIN_RPC_BLOCKCHAIN_H
+#ifndef BWSCOIN_RPC_BLOCKCHAIN_H
+#define BWSCOIN_RPC_BLOCKCHAIN_H
 
 #include "amount.h"
 #include "stake/staketx.h"

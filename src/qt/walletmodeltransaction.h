@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_WALLETMODELTRANSACTION_H
-#define PAICOIN_QT_WALLETMODELTRANSACTION_H
+#ifndef BWSCOIN_QT_WALLETMODELTRANSACTION_H
+#define BWSCOIN_QT_WALLETMODELTRANSACTION_H
 
 #include "walletmodel.h"
 
@@ -44,4 +44,4 @@ private:
     CAmount fee;
 };
 
-#endif // PAICOIN_QT_WALLETMODELTRANSACTION_H
+#endif // BWSCOIN_QT_WALLETMODELTRANSACTION_H

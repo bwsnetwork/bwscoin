@@ -11,7 +11,7 @@
 #include "consensus/tx_verify.h"
 #include "net.h"
 
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 
 #include <boost/signals2/signal.hpp>
 #include <boost/test/unit_test.hpp>
@@ -21,7 +21,7 @@ BOOST_FIXTURE_TEST_SUITE(main_tests, TestingSetup)
 static void TestBlockSubsidyHalvings(const Consensus::Params& consensusParams)
 {
     int maxHalvings = 64;
-    // PAICOIN Note: If the initial block subsidy has been changed,
+    // BWSCOIN Note: If the initial block subsidy has been changed,
     // update the subsidy with the correct value
     CAmount nInitialSubsidy = consensusParams.nTotalBlockSubsidy * COIN;
 
@@ -63,12 +63,12 @@ BOOST_AUTO_TEST_CASE(block_subsidy_test)
     CAmount minerSubsidy = GetMinerSubsidy(nStakeValidationHeight-1, chainParams->GetConsensus());
     BOOST_CHECK(minerSubsidy == 1500 * COIN);
     minerSubsidy = GetMinerSubsidy(nStakeValidationHeight, chainParams->GetConsensus());
-    BOOST_CHECK(minerSubsidy == 1050 * COIN);
+    BOOST_CHECK(minerSubsidy == 600 * COIN);
 
     CAmount voterSubsidy = GetVoterSubsidy(nStakeValidationHeight-1, chainParams->GetConsensus());
     BOOST_CHECK(voterSubsidy == 0);
     voterSubsidy = GetVoterSubsidy(nStakeValidationHeight, chainParams->GetConsensus());
-    BOOST_CHECK(voterSubsidy == 90 * COIN);
+    BOOST_CHECK(voterSubsidy == 180 * COIN);
 }
 
 BOOST_AUTO_TEST_CASE(subsidy_limit_test)
@@ -77,13 +77,13 @@ BOOST_AUTO_TEST_CASE(subsidy_limit_test)
     CAmount nSum = 0;
     for (int nHeight = 0; nHeight < 14000000; nHeight += 1000) {
         CAmount nSubsidy = GetTotalBlockSubsidy(nHeight, chainParams->GetConsensus());
-        // PAICOIN Note: If the initial block subsidy has been changed,
+        // BWSCOIN Note: If the initial block subsidy has been changed,
         // update the subsidy with the correct value
         BOOST_CHECK(nSubsidy <= chainParams->GetConsensus().nTotalBlockSubsidy * COIN);
         nSum += nSubsidy * 1000;
         BOOST_CHECK(MoneyRange(nSum));
     }
-    // PAICOIN Note: If the initial block subsidy has been changed,
+    // BWSCOIN Note: If the initial block subsidy has been changed,
     // update this sum with the correct value
     BOOST_CHECK_EQUAL(nSum, 62999999996850000ULL);
 }

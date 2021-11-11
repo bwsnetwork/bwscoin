@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_UTILMEMORY_H
-#define PAICOIN_UTILMEMORY_H
+#ifndef BWSCOIN_UTILMEMORY_H
+#define BWSCOIN_UTILMEMORY_H
 
 #include <memory>
 #include <utility>
@@ -19,4 +19,4 @@ std::unique_ptr<T> MakeUnique(Args&&... args)
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
-#endif // PAICOIN_UTILMEMORY_H
+#endif // BWSCOIN_UTILMEMORY_H

@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_ADDRMAN_H
-#define PAICOIN_ADDRMAN_H
+#ifndef BWSCOIN_ADDRMAN_H
+#define BWSCOIN_ADDRMAN_H
 
 #include "netaddress.h"
 #include "protocol.h"
@@ -603,4 +603,4 @@ public:
 
 };
 
-#endif // PAICOIN_ADDRMAN_H
+#endif // BWSCOIN_ADDRMAN_H

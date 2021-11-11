@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_ZMQ_ZMQABSTRACTNOTIFIER_H
-#define PAICOIN_ZMQ_ZMQABSTRACTNOTIFIER_H
+#ifndef BWSCOIN_ZMQ_ZMQABSTRACTNOTIFIER_H
+#define BWSCOIN_ZMQ_ZMQABSTRACTNOTIFIER_H
 
 #include "zmqconfig.h"
 
@@ -41,4 +41,4 @@ protected:
     std::string address;
 };
 
-#endif // PAICOIN_ZMQ_ZMQABSTRACTNOTIFIER_H
+#endif // BWSCOIN_ZMQ_ZMQABSTRACTNOTIFIER_H

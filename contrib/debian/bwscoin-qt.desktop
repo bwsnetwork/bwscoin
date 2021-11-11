@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=BWS Coin Core
+Comment=Connect to the BWS Coin P2P Network
+Comment[de]=Verbinde mit dem BWS Coin peer-to-peer Netzwerk
+Comment[fr]=BWS Coin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=BWS Coin, eşten eşe kriptografik sanal para birimi
+Exec=bwscoin-qt %u
+Terminal=false
+Type=Application
+Icon=bwscoin128
+MimeType=x-scheme-handler/bwscoin;
+Categories=Office;Finance;

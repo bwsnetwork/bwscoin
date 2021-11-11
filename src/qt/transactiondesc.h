@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_TRANSACTIONDESC_H
-#define PAICOIN_QT_TRANSACTIONDESC_H
+#ifndef BWSCOIN_QT_TRANSACTIONDESC_H
+#define BWSCOIN_QT_TRANSACTIONDESC_H
 
 #include <QObject>
 #include <QString>
@@ -28,4 +28,4 @@ private:
     static QString FormatTxStatus(const CWalletTx& wtx);
 };
 
-#endif // PAICOIN_QT_TRANSACTIONDESC_H
+#endif // BWSCOIN_QT_TRANSACTIONDESC_H

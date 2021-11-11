@@ -12,17 +12,17 @@ using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
 
-using pai::pouw::task_info::TaskListRequest;
-using pai::pouw::task_info::TaskListResponse;
+using bws::pouw::task_info::TaskListRequest;
+using bws::pouw::task_info::TaskListResponse;
 
-using pai::pouw::task_info::TaskDetailsRequest;
-using pai::pouw::task_info::TaskDetailsResponse;
+using bws::pouw::task_info::TaskDetailsRequest;
+using bws::pouw::task_info::TaskDetailsResponse;
 
-using pai::pouw::task_info::TaskIDRequest;
-using pai::pouw::task_info::TaskIDResponse;
+using bws::pouw::task_info::TaskIDRequest;
+using bws::pouw::task_info::TaskIDResponse;
 
-using pai::pouw::task_info::TaskInfo;
-using pai::pouw::task_info::HTTPReturnCode;
+using bws::pouw::task_info::TaskInfo;
+using bws::pouw::task_info::HTTPReturnCode;
 
 
 enum class TaskListType { WaitingTasks, StartedTasks, CompletedTasks };

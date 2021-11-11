@@ -4,10 +4,10 @@
  */
 
 
-#ifndef PAICOIN_WALLET_STAKE_TEST_FIXTURE_H
-#define PAICOIN_WALLET_STAKE_TEST_FIXTURE_H
+#ifndef BWSCOIN_WALLET_STAKE_TEST_FIXTURE_H
+#define BWSCOIN_WALLET_STAKE_TEST_FIXTURE_H
 
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 #include "wallet/wallet.h"
 
 // Testing fixture that allows easy generation of a blockchain
@@ -141,4 +141,4 @@ public:
     } foreignData;
 };
 
-#endif // PAICOIN_WALLET_STAKE_TEST_FIXTURE_H
+#endif // BWSCOIN_WALLET_STAKE_TEST_FIXTURE_H

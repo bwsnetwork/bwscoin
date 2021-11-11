@@ -4,7 +4,7 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test Hierarchical Deterministic wallet function."""
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import (
     assert_equal,
     connect_nodes_bi,
@@ -12,7 +12,7 @@ from test_framework.util import (
 import shutil
 import os
 
-class WalletHDTest(PAIcoinTestFramework):
+class WalletHDTest(BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2

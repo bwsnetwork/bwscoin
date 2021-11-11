@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_WALLET_CRYPTER_H
-#define PAICOIN_WALLET_CRYPTER_H
+#ifndef BWSCOIN_WALLET_CRYPTER_H
+#define BWSCOIN_WALLET_CRYPTER_H
 
 #include "keystore.h"
 #include "serialize.h"
@@ -197,4 +197,4 @@ public:
     boost::signals2::signal<void (CCryptoKeyStore* wallet)> NotifyStatusChanged;
 };
 
-#endif // PAICOIN_WALLET_CRYPTER_H
+#endif // BWSCOIN_WALLET_CRYPTER_H

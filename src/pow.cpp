@@ -96,6 +96,12 @@ static arith_uint256 ComputeTarget(const CBlockIndex *pindexFirst,
     work /= nActualTimespan;
 
     /**
+     * Make sure that the work is correctly bounded
+     */
+    if (work == arith_uint256())
+        return UintToArith256(params.hybridConsensusPowLimit);
+
+    /**
      * We need to compute T = (2^256 / W) - 1 but 2^256 doesn't fit in 256 bits.
      * By expressing 1 as W / W, we get (2^256 - W) / W, and we can compute
      * 2^256 - W as the complement of W.
@@ -137,23 +143,6 @@ static const CBlockIndex *GetSuitableBlock(const CBlockIndex *pindex) {
     return blocks[1];
 }
 
-/**
- * Find the first block using Paicoin Hash by reverse searching the chain.
- * This function should only be called once Paicoin Hash switching has been reached,
- * since it assumes that at least the successor of pindexPrev block uses Paicoin Hash.
- */
-static inline int GetFirstPaicoinHashHeight(const CBlockIndex *pindexPrev) {
-    assert(pindexPrev);
-
-    int height = pindexPrev->nHeight + 1;
-    while (height > 0 && pindexPrev != nullptr && pindexPrev->GetBlockHeader().isPaicoinHashBlock()) {
-        --height;
-        pindexPrev = pindexPrev->pprev;
-    }
-
-    return height;
-}
-
 unsigned int GetNextWorkRequired(const CBlockIndex *pindexPrev, const CBlockHeader *pblock, const Consensus::Params &params) {
     // GetNextWorkRequired should never be called on the genesis block
     assert(pindexPrev != nullptr);
@@ -176,31 +165,32 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexFirst, const CBl
     if (params.fPowNoRetargeting)
         return pindexLast->nBits;
 
-    // TODO: Before PoUW deployment, revert this calculation to the original one of nActualTimeSpan = pindexLast->time - pindexFirst->time
-    // If it's not reverted, PAI won't work because the whole PAI blockchain prior to deployment of this change will be seen as invalid
-    int64_t nActualTimespan = 0;
-    const CBlockIndex* pCur = pindexLast;
-    const CBlockIndex* pPrev = pCur->pprev;
-    while (pPrev != pindexFirst && pPrev != nullptr)
-    {
-        int64_t blockTimespan = pCur->GetBlockTime() - pPrev->GetBlockTime();
-        if (blockTimespan > params.nPowTargetSpacing * 4)
-            blockTimespan = params.nPowTargetSpacing;
-        nActualTimespan += blockTimespan;
-        pPrev = pPrev->pprev;
-        pCur = pCur->pprev;
-    }
-    assert(pPrev);
-    if (pPrev == nullptr)
-        return pindexLast->nBits;
+//    // TODO: Before PoUW deployment, revert this calculation to the original one of nActualTimeSpan = pindexLast->time - pindexFirst->time
+//    // If it's not reverted, BWS won't work because the whole BWS blockchain prior to deployment of this change will be seen as invalid
+//    int64_t nActualTimespan = 0;
+//    const CBlockIndex* pCur = pindexLast;
+//    const CBlockIndex* pPrev = pCur->pprev;
+//    while (pPrev != pindexFirst && pPrev != nullptr)
+//    {
+//        int64_t blockTimespan = pCur->GetBlockTime() - pPrev->GetBlockTime();
+//        if (blockTimespan > params.nPowTargetSpacing * 4)
+//            blockTimespan = params.nPowTargetSpacing;
+//        nActualTimespan += blockTimespan;
+//        pPrev = pPrev->pprev;
+//        pCur = pCur->pprev;
+//    }
+//    assert(pPrev);
+//    if (pPrev == nullptr)
+//        return pindexLast->nBits;
 
-    int64_t nExpectedTimespan = pindexLast->GetBlockTime() - pindexFirst->GetBlockTime();
-    if (nActualTimespan != nExpectedTimespan) {
-        int64_t discarded = (nExpectedTimespan - nActualTimespan) / 60;
-        LogPrintf("Difficulty retargetting: some block time(s) were too big, possibly due to a pause in mining; we exclude %lld minutes from difficulty calculation.\n", discarded);
-    }
+//    int64_t nExpectedTimespan = pindexLast->GetBlockTime() - pindexFirst->GetBlockTime();
+//    if (nActualTimespan != nExpectedTimespan) {
+//        int64_t discarded = (nExpectedTimespan - nActualTimespan) / 60;
+//        LogPrintf("Difficulty retargetting: some block time(s) were too big, possibly due to a pause in mining; we exclude %lld minutes from difficulty calculation.\n", discarded);
+//    }
 
     // Limit adjustment step
+    int64_t nActualTimespan = pindexLast->GetBlockTime() - pindexFirst->GetBlockTime();
     if (nActualTimespan < params.nPowTargetTimespan/4)
         nActualTimespan = params.nPowTargetTimespan/4;
     if (nActualTimespan > params.nPowTargetTimespan*4)
@@ -211,23 +201,18 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexFirst, const CBl
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
 
+    // make sure that the operations do not overflow:
+    // - compute the maximum value bnNew can have when multiplied with nActualTimespan
+    // - if this is exceeded, make the division first, then the multiplication
+    // - if after the division the value is still too large, just use the consensus limit
     arith_uint256 bnMaxCanMultiply = ~arith_uint256() / nActualTimespan;
-    if (bnNew > bnMaxCanMultiply)
-    {
-        // perform division firstly to avoid an overflow
+    if (bnNew > bnMaxCanMultiply) {
         bnNew /= params.nPowTargetTimespan;
         if (bnNew > bnMaxCanMultiply)
-        {
-            // still cannot multiply - use pow limit
             bnNew = bnPowLimit;
-        }
         else
-        {
             bnNew *= nActualTimespan;
-        }
-    }
-    else
-    {
+    } else {
         bnNew *= nActualTimespan;
         bnNew /= params.nPowTargetTimespan;
     }
@@ -278,7 +263,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
     std::string blockHeaderHex = HexStr(ssBlock.begin(), ssBlock.end());
     auto result = client.Verify(std::string(block.powMsgHistoryId), std::string(block.powMsgId), block.nNonce, blockHeaderHex);
     int resultCode = int(result.first);
-    return resultCode == pai::pouw::verification::Response::OK;
+    return resultCode == bws::pouw::verification::Response::OK;
 }
 
 /**
@@ -302,13 +287,6 @@ uint32_t GetNextCashWorkRequired(const CBlockIndex *pindexPrev,
         return params.nHybridConsensusInitialDifficulty;
     }
 
-    // if the block is just after the Paicoin Hash fork,
-    // enforce the initial difficulty for this situation
-    int nPaicoinHashHeight = GetFirstPaicoinHashHeight(pindexPrev);
-    if (pblock->isPaicoinHashBlock() && pindexPrev->nHeight < nPaicoinHashHeight + params.nPaicoinHashInitialDifficultyBlockCount) {
-        return params.nPaicoinHashInitialDifficulty;
-    }
-
     // Special difficulty rule for testnet:
     // If the new block's timestamp is more than 2* 10 minutes then allow
     // mining of a min-difficulty block.
@@ -328,11 +306,7 @@ uint32_t GetNextCashWorkRequired(const CBlockIndex *pindexPrev,
 
     // Get the first suitable block of the difficulty interval.
     // Do not consider blocks before hybrid consensus takes effect.
-    int nHeightFirst = 0;
-    if (pblock->isPaicoinHashBlock())
-        nHeightFirst = (nHeight - 144) < (nPaicoinHashHeight + 1) ? (nPaicoinHashHeight + 1) : (nHeight - 144);
-    else
-        nHeightFirst = (nHeight - 144) < (params.nHybridConsensusHeight + 1) ? (params.nHybridConsensusHeight + 1) : (nHeight - 144);
+    int nHeightFirst = (nHeight - 144) < (params.nHybridConsensusHeight + 1) ? (params.nHybridConsensusHeight + 1) : (nHeight - 144);
 
     const CBlockIndex *pindexFirst = GetSuitableBlock(pindexPrev->GetAncestor(nHeightFirst));
     assert(pindexFirst);

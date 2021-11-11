@@ -1,6 +1,6 @@
 <!--- Remove sections that do not apply -->
 
-This issue tracker is only for technical issues related to paicoin-core.
+This issue tracker is only for technical issues related to bwscoin-core.
 
 General bitcoin questions are best directed to the [Bitcoin StackExchange](https://bitcoin.stackexchange.com).
 
@@ -23,7 +23,7 @@ Tell us what happens instead
 ### Screenshots.
 If the issue is related to the GUI, screenshots can be added to this issue via drag & drop.
 
-### What version of paicoin-core are you using?
+### What version of bwscoin-core are you using?
 List the version number/commit ID, and if it is an official binary, self compiled or a distribution package such as PPA.
 
 ### Machine specs:

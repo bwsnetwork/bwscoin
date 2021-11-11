@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_TXMEMPOOL_H
-#define PAICOIN_TXMEMPOOL_H
+#ifndef BWSCOIN_TXMEMPOOL_H
+#define BWSCOIN_TXMEMPOOL_H
 
 #include <memory>
 #include <set>
@@ -893,4 +893,4 @@ struct DisconnectedBlockTransactions {
     }
 };
 
-#endif // PAICOIN_TXMEMPOOL_H
+#endif // BWSCOIN_TXMEMPOOL_H

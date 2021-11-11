@@ -18,7 +18,7 @@
 #include "util.h"
 #include "validation.h"
 
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 
 #include <stdint.h>
 

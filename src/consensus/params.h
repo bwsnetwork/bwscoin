@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_CONSENSUS_PARAMS_H
-#define PAICOIN_CONSENSUS_PARAMS_H
+#ifndef BWSCOIN_CONSENSUS_PARAMS_H
+#define BWSCOIN_CONSENSUS_PARAMS_H
 
 #include "uint256.h"
 #include <map>
@@ -97,22 +97,12 @@ struct Params {
     // Number of blocks to apply the initial Hybrid Consensus difficulty to
     int nHybridConsensusInitialDifficultyBlockCount;
 
-    /** Paicoin Hash proof of work parameters */
-    // Block timestamp from which the PoW hashing algorithm MUST be Paicoin Hash
-    int64_t nPaicoinHashTimestamp;
-    // Any block after this height MUST use Paicoin Hash as the PoW hashing algorithm, i.e. must be after the nPaicoinHashTimestamp.
-    int nPaicoinHashMaximumActivationHeight;
-    // Difficulty of the first blocks after the Paicoin Hash fork
-    uint32_t nPaicoinHashInitialDifficulty;
-    // Number of blocks to apply the initial Paicoin Hash difficulty to
-    int nPaicoinHashInitialDifficultyBlockCount;
-
     /** Proof of stake parameters */
 
     // MinimumStakeDiff if the minimum amount of Atoms required to purchase a
     // take ticket.
     int64_t nMinimumStakeDiff;
-    // Ticket pool sizes for PAICoin PoS. This denotes the number of possible
+    // Ticket pool sizes for BWScoin PoS. This denotes the number of possible
     // buckets/number of different ticket numbers. It is also the number of
     // possible winner numbers there are.
     uint16_t nTicketPoolSize;
@@ -194,4 +184,4 @@ struct Params {
 };
 } // namespace Consensus
 
-#endif // PAICOIN_CONSENSUS_PARAMS_H
+#endif // BWSCOIN_CONSENSUS_PARAMS_H

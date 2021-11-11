@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_GUIUTIL_H
-#define PAICOIN_QT_GUIUTIL_H
+#ifndef BWSCOIN_QT_GUIUTIL_H
+#define BWSCOIN_QT_GUIUTIL_H
 
 #include "amount.h"
 #include "fs.h"
@@ -29,7 +29,7 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the PAI Coin Qt UI.
+/** Utility functions used by the BWS Coin Qt UI.
  */
 namespace GUIUtil
 {
@@ -44,10 +44,10 @@ namespace GUIUtil
     void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent);
     void setupAmountWidget(QLineEdit *widget, QWidget *parent);
 
-    // Parse "paicoin:" URI into recipient object, return true on successful parsing
-    bool parsePAIcoinURI(const QUrl &uri, SendCoinsRecipient *out);
-    bool parsePAIcoinURI(QString uri, SendCoinsRecipient *out);
-    QString formatPAIcoinURI(const SendCoinsRecipient &info);
+    // Parse "bwscoin:" URI into recipient object, return true on successful parsing
+    bool parseBWScoinURI(const QUrl &uri, SendCoinsRecipient *out);
+    bool parseBWScoinURI(QString uri, SendCoinsRecipient *out);
+    QString formatBWScoinURI(const SendCoinsRecipient &info);
 
     // Returns true if given address+amount meets "dust" definition
     bool isDust(const QString& address, const CAmount& amount);
@@ -114,7 +114,7 @@ namespace GUIUtil
     void openDebugLogfile();
 
     // Open the config file
-    bool openPAIcoinConf();
+    bool openBWScoinConf();
 
     // Replace invalid default fonts with known good ones
     void SubstituteFonts(const QString& language);
@@ -246,4 +246,4 @@ namespace GUIUtil
 
 } // namespace GUIUtil
 
-#endif // PAICOIN_QT_GUIUTIL_H
+#endif // BWSCOIN_QT_GUIUTIL_H

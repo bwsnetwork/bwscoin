@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_CSVMODELWRITER_H
-#define PAICOIN_QT_CSVMODELWRITER_H
+#ifndef BWSCOIN_QT_CSVMODELWRITER_H
+#define BWSCOIN_QT_CSVMODELWRITER_H
 
 #include <QList>
 #include <QObject>
@@ -43,4 +43,4 @@ private:
     QList<Column> columns;
 };
 
-#endif // PAICOIN_QT_CSVMODELWRITER_H
+#endif // BWSCOIN_QT_CSVMODELWRITER_H

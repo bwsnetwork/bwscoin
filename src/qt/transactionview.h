@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_TRANSACTIONVIEW_H
-#define PAICOIN_QT_TRANSACTIONVIEW_H
+#ifndef BWSCOIN_QT_TRANSACTIONVIEW_H
+#define BWSCOIN_QT_TRANSACTIONVIEW_H
 
 #include "guiutil.h"
 
@@ -119,4 +119,4 @@ public Q_SLOTS:
 
 };
 
-#endif // PAICOIN_QT_TRANSACTIONVIEW_H
+#endif // BWSCOIN_QT_TRANSACTIONVIEW_H

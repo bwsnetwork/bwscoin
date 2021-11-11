@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_EDITADDRESSDIALOG_H
-#define PAICOIN_QT_EDITADDRESSDIALOG_H
+#ifndef BWSCOIN_QT_EDITADDRESSDIALOG_H
+#define BWSCOIN_QT_EDITADDRESSDIALOG_H
 
 #include <QDialog>
 
@@ -54,4 +54,4 @@ private:
     QString address;
 };
 
-#endif // PAICOIN_QT_EDITADDRESSDIALOG_H
+#endif // BWSCOIN_QT_EDITADDRESSDIALOG_H

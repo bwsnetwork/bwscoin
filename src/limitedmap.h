@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_LIMITEDMAP_H
-#define PAICOIN_LIMITEDMAP_H
+#ifndef BWSCOIN_LIMITEDMAP_H
+#define BWSCOIN_LIMITEDMAP_H
 
 #include <assert.h>
 #include <map>
@@ -97,4 +97,4 @@ public:
     }
 };
 
-#endif // PAICOIN_LIMITEDMAP_H
+#endif // BWSCOIN_LIMITEDMAP_H

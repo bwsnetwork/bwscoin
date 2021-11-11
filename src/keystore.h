@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_KEYSTORE_H
-#define PAICOIN_KEYSTORE_H
+#ifndef BWSCOIN_KEYSTORE_H
+#define BWSCOIN_KEYSTORE_H
 
 #include "key.h"
 #include "pubkey.h"
@@ -111,4 +111,4 @@ public:
 typedef std::vector<unsigned char, secure_allocator<unsigned char> > CKeyingMaterial;
 typedef std::map<CKeyID, std::pair<CPubKey, std::vector<unsigned char> > > CryptedKeyMap;
 
-#endif // PAICOIN_KEYSTORE_H
+#endif // BWSCOIN_KEYSTORE_H

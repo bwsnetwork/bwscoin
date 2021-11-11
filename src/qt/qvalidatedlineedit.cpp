@@ -4,7 +4,7 @@
 
 #include "qvalidatedlineedit.h"
 
-#include "paicoinaddressvalidator.h"
+#include "bwscoinaddressvalidator.h"
 #include "guiconstants.h"
 
 QValidatedLineEdit::QValidatedLineEdit(QWidget *parent) :

@@ -4,8 +4,8 @@
  */
 
 
-#ifndef PAICOIN_WALLET_AUTOVOTER_AUTOVOTERCFG_H
-#define PAICOIN_WALLET_AUTOVOTER_AUTOVOTERCFG_H
+#ifndef BWSCOIN_WALLET_AUTOVOTER_AUTOVOTERCFG_H
+#define BWSCOIN_WALLET_AUTOVOTER_AUTOVOTERCFG_H
 
 #include "support/allocators/secure.h"
 #include "stake/votebits.h"
@@ -36,4 +36,4 @@ public:
     void ParseCommandline();
 };
 
-#endif // PAICOIN_WALLET_AUTOVOTER_AUTOVOTERCFG_H
+#endif // BWSCOIN_WALLET_AUTOVOTER_AUTOVOTERCFG_H

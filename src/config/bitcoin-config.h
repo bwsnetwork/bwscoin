@@ -15,7 +15,7 @@
 #define CLIENT_VERSION_IS_RELEASE true
 
 /* Major version */
-#define CLIENT_VERSION_MAJOR 3
+#define CLIENT_VERSION_MAJOR 0
 
 /* Minor version */
 #define CLIENT_VERSION_MINOR 0
@@ -27,13 +27,13 @@
 #define COPYRIGHT_HOLDERS "The %s developers"
 
 /* Copyright holder(s) */
-#define COPYRIGHT_HOLDERS_FINAL "The Project PAI Foundation"
+#define COPYRIGHT_HOLDERS_FINAL "The Valdi Labs Foundation"
 
 /* Replacement for %s in copyright holders string */
-#define COPYRIGHT_HOLDERS_SUBSTITUTION "Project PAI Foundation"
+#define COPYRIGHT_HOLDERS_SUBSTITUTION "Valdi Labs  Foundation"
 
 /* Copyright year */
-#define COPYRIGHT_YEAR 2020
+#define COPYRIGHT_YEAR 2021
 
 /* Define to 1 to enable wallet functions */
 #define ENABLE_WALLET 1

@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_CORE_IO_H
-#define PAICOIN_CORE_IO_H
+#ifndef BWSCOIN_CORE_IO_H
+#define BWSCOIN_CORE_IO_H
 
 #include "amount.h"
 
@@ -42,4 +42,4 @@ void StakingToUniv(const CTransaction& tx, UniValue& entry, bool fIncludeContrib
 void StakeInfoToUniv(const CTransaction& tx, UniValue& entry
 , const std::map<uint256,std::shared_ptr<const CTransaction>>* const prevHashToTxMap = nullptr);
 
-#endif // PAICOIN_CORE_IO_H
+#endif // BWSCOIN_CORE_IO_H

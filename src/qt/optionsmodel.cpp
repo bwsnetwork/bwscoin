@@ -7,12 +7,12 @@
 
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #include "optionsmodel.h"
 
-#include "paicoinunits.h"
+#include "bwscoinunits.h"
 #include "guiutil.h"
 
 #include "amount.h"
@@ -74,7 +74,7 @@ void OptionsModel::Init(bool resetSettings)
 
     // Display
     if (!settings.contains("nDisplayUnit"))
-        settings.setValue("nDisplayUnit", PAIcoinUnits::PAI);
+        settings.setValue("nDisplayUnit", BWScoinUnits::BWS);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
 
     if (!settings.contains("strThirdPartyTxUrls"))

@@ -1,6 +1,6 @@
 all:
-	$(MAKE) -C .. paicoin_test
+	$(MAKE) -C .. bwscoin_test
 clean:
-	$(MAKE) -C .. paicoin_test_clean
+	$(MAKE) -C .. bwscoin_test_clean
 check:
-	$(MAKE) -C .. paicoin_test_check
+	$(MAKE) -C .. bwscoin_test_check

@@ -4,8 +4,8 @@
  */
 
 
-#ifndef PAICOIN_STAKE_STAKEPOOLFEE_H
-#define PAICOIN_STAKE_STAKEPOOLFEE_H
+#ifndef BWSCOIN_STAKE_STAKEPOOLFEE_H
+#define BWSCOIN_STAKE_STAKEPOOLFEE_H
 
 #include "amount.h"
 
@@ -21,4 +21,4 @@ bool IsValidPoolFeePercent(double feePercent);
    - poolFeePercent: the percentage of fees to send to the pool (between 0 and 100) */
 CAmount StakePoolTicketFee(CAmount stakeDiff, CAmount relayFee, int64_t height, double poolFeePercent);
 
-#endif //PAICOIN_STAKE_STAKEPOOLFEE_H
+#endif //BWSCOIN_STAKE_STAKEPOOLFEE_H

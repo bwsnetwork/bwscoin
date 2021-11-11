@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_BANTABLEMODEL_H
-#define PAICOIN_QT_BANTABLEMODEL_H
+#ifndef BWSCOIN_QT_BANTABLEMODEL_H
+#define BWSCOIN_QT_BANTABLEMODEL_H
 
 #include "net.h"
 
@@ -70,4 +70,4 @@ private:
     std::unique_ptr<BanTablePriv> priv;
 };
 
-#endif // PAICOIN_QT_BANTABLEMODEL_H
+#endif // BWSCOIN_QT_BANTABLEMODEL_H

@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_RPC_MINING_H
-#define PAICOIN_RPC_MINING_H
+#ifndef BWSCOIN_RPC_MINING_H
+#define BWSCOIN_RPC_MINING_H
 
 #include "script/script.h"
 

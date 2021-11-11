@@ -13,7 +13,7 @@
 #include "uint256.h"
 #include "util.h"
 #include "utilstrencodings.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 
 #include <string>
 #include <vector>
@@ -21,7 +21,7 @@
 #include <boost/test/unit_test.hpp>
 
 /**
- * PAICOIN Note: if unit test updating is required
+ * BWSCOIN Note: if unit test updating is required
  * Updating methodology:
  * Helpers:
  * - http://incoherency.co.uk/base58/
@@ -35,16 +35,16 @@
  * - addr1 -> un-Base58 -> remove first byte -> remove the last 6 bytes (4 for the double SHA256 checksum and 2 for the private compressed indicator 01) -> get the public key for the private one (the remaining hex so far) -> prefix with 03 or 02 according to the lobe of the elliptic curve -> SHA256 -> RIPEMD160 -> prefix with network's byte (base58Prefixes[PUBKEY_ADDRESS]) -> append the first 4 bytes of the double SHA256 of the string -> Base58 -> addr1
  */
 
-static const std::string strSecret1 = "9HH6vX5i1L1mbAyMvsAfSG1z8JWc5oQevjKZbZ8xxk3sEtJG3SV";
-static const std::string strSecret2 = "9JWeeLG29YV24sRsG1yzzNMrzwq4S82s5RQj3c8eJU4NgGzLRGB";
-static const std::string strSecret1C = "dYr59DmmzSvPoq1mNkReeVHM9EHfrBqQQ9nvsWrA131ejsMPvbKq";
-static const std::string strSecret2C = "deHs9n1J4hxfi5akqHLaxDH5gm189t3E2WjiaW4je6RtfvaHkdhs";
-static const std::string addr1 = "PwBcySALqBWYqf75g4YRUE7U1ymGvbuThA";
-static const std::string addr2 = "Pn1kDJmP7i2cnu7jYeMBjVt7HWen2AvWFc";
-static const std::string addr1C = "Puj5zta1iV8PTU6kg26uSbsN6mr3xSfmrt";
-static const std::string addr2C = "PjMWANfUmJUanYyNhuYZRNDjvcsyMAfXy6";
+static const std::string strSecret1 = "6mVGh8RK6RHnUePTwPciuD3uSkKkKzCyuo1VJKYjQbYnEELG8Jy";
+static const std::string strSecret2 = "6nipQwbdEdm2xLqyGYS4TKPnKPeCgJqC4V6ekNYQkKZHfdLcqDX";
+static const std::string strSecret1C = "STMnG7kJrvD5j229u4pfwSBpUeDkEoVtC259uSs4B9VGd3QqEAGZ";
+static const std::string strSecret2C = "SYoaGfypwBFMdGb9MbjcFABZ2AwCYVhhpP1wcS5dpCuWZ6frkDLs";
+static const std::string addr1 = "BThvT4vQpb9PVDnPv4DYSLg5WLn2wUAYDX";
+static const std::string addr2 = "BJY3gwXT77fTSTo3ne2JhcSimsfY12ThGp";
+static const std::string addr1C = "BSFPUXL5htmE72n4v1n2QiRyb8royBjiJu";
+static const std::string addr2C = "BFsoe1RYki7RS7egwuDgPUnMQytjKzDYze";
 
-static const std::string strAddressBad = "PpQvUgk18PX2jzsR7bK2CA8J1SHobbFVMF";
+static const std::string strAddressBad = "BLwDxKW57o9sPZYjMaz9AGguVoJZcnry67";
 
 
 BOOST_FIXTURE_TEST_SUITE(key_tests, BasicTestingSetup)

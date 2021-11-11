@@ -5,7 +5,7 @@
 #include "overviewpage.h"
 #include "ui_overviewpage.h"
 
-#include "paicoinunits.h"
+#include "bwscoinunits.h"
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
@@ -26,7 +26,7 @@ class TxViewDelegate : public QAbstractItemDelegate
     Q_OBJECT
 public:
     explicit TxViewDelegate(const PlatformStyle *_platformStyle, QObject *parent=nullptr):
-        QAbstractItemDelegate(parent), unit(PAIcoinUnits::PAI),
+        QAbstractItemDelegate(parent), unit(BWScoinUnits::BWS),
         platformStyle(_platformStyle)
     {
 
@@ -84,7 +84,7 @@ public:
             foreground = option.palette.color(QPalette::Text);
         }
         painter->setPen(foreground);
-        QString amountText = PAIcoinUnits::formatWithUnit(unit, amount, true, PAIcoinUnits::separatorAlways);
+        QString amountText = BWScoinUnits::formatWithUnit(unit, amount, true, BWScoinUnits::separatorAlways);
         if(!confirmed)
         {
             amountText = QString("[") + amountText + QString("]");
@@ -168,14 +168,14 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     currentWatchOnlyBalance = watchOnlyBalance;
     currentWatchUnconfBalance = watchUnconfBalance;
     currentWatchImmatureBalance = watchImmatureBalance;
-    ui->labelBalance->setText(PAIcoinUnits::formatWithUnit(unit, balance, false, PAIcoinUnits::separatorAlways));
-    ui->labelUnconfirmed->setText(PAIcoinUnits::formatWithUnit(unit, unconfirmedBalance, false, PAIcoinUnits::separatorAlways));
-    ui->labelImmature->setText(PAIcoinUnits::formatWithUnit(unit, immatureBalance, false, PAIcoinUnits::separatorAlways));
-    ui->labelTotal->setText(PAIcoinUnits::formatWithUnit(unit, balance + unconfirmedBalance + immatureBalance, false, PAIcoinUnits::separatorAlways));
-    ui->labelWatchAvailable->setText(PAIcoinUnits::formatWithUnit(unit, watchOnlyBalance, false, PAIcoinUnits::separatorAlways));
-    ui->labelWatchPending->setText(PAIcoinUnits::formatWithUnit(unit, watchUnconfBalance, false, PAIcoinUnits::separatorAlways));
-    ui->labelWatchImmature->setText(PAIcoinUnits::formatWithUnit(unit, watchImmatureBalance, false, PAIcoinUnits::separatorAlways));
-    ui->labelWatchTotal->setText(PAIcoinUnits::formatWithUnit(unit, watchOnlyBalance + watchUnconfBalance + watchImmatureBalance, false, PAIcoinUnits::separatorAlways));
+    ui->labelBalance->setText(BWScoinUnits::formatWithUnit(unit, balance, false, BWScoinUnits::separatorAlways));
+    ui->labelUnconfirmed->setText(BWScoinUnits::formatWithUnit(unit, unconfirmedBalance, false, BWScoinUnits::separatorAlways));
+    ui->labelImmature->setText(BWScoinUnits::formatWithUnit(unit, immatureBalance, false, BWScoinUnits::separatorAlways));
+    ui->labelTotal->setText(BWScoinUnits::formatWithUnit(unit, balance + unconfirmedBalance + immatureBalance, false, BWScoinUnits::separatorAlways));
+    ui->labelWatchAvailable->setText(BWScoinUnits::formatWithUnit(unit, watchOnlyBalance, false, BWScoinUnits::separatorAlways));
+    ui->labelWatchPending->setText(BWScoinUnits::formatWithUnit(unit, watchUnconfBalance, false, BWScoinUnits::separatorAlways));
+    ui->labelWatchImmature->setText(BWScoinUnits::formatWithUnit(unit, watchImmatureBalance, false, BWScoinUnits::separatorAlways));
+    ui->labelWatchTotal->setText(BWScoinUnits::formatWithUnit(unit, watchOnlyBalance + watchUnconfBalance + watchImmatureBalance, false, BWScoinUnits::separatorAlways));
 
     // only show immature (newly mined) balance if it's non-zero, so as not to complicate things
     // for the non-mining users
@@ -241,7 +241,7 @@ void OverviewPage::setWalletModel(WalletModel *model)
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
     }
 
-    // update the display unit, to not use the default ("PAI")
+    // update the display unit, to not use the default ("BWS")
     updateDisplayUnit();
 }
 

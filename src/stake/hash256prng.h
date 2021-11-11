@@ -3,8 +3,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  */
 
-#ifndef PAICOIN_STAKE_HASH256PRNG_H
-#define PAICOIN_STAKE_HASH256PRNG_H
+#ifndef BWSCOIN_STAKE_HASH256PRNG_H
+#define BWSCOIN_STAKE_HASH256PRNG_H
 
 #include "prevector.h"
 #include "uint256.h"
@@ -48,4 +48,4 @@ private:
     uint256  lastHash_; // Cached last hash used
 };
 
-#endif // PAICOIN_STAKE_HASH256PRNG_H
+#endif // BWSCOIN_STAKE_HASH256PRNG_H

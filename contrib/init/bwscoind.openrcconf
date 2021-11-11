@@ -1,0 +1,33 @@
+# /etc/conf.d/bwscoind: config file for /etc/init.d/bwscoind
+
+# Config file location
+#BWSCOIND_CONFIGFILE="/etc/bwscoin/bwscoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $BWSCOIND_USER)
+#BWSCOIND_PIDDIR="/var/run/bwscoind"
+
+# What filename to give the pidfile
+#BWSCOIND_PIDFILE="${BWSCOIND_PIDDIR}/bwscoind.pid"
+
+# Where to write bwscoind data (be mindful that the blockchain is large)
+#BWSCOIND_DATADIR="/var/lib/bwscoind"
+
+# User and group to own bwscoind process
+#BWSCOIND_USER="bwscoin"
+#BWSCOIND_GROUP="bwscoin"
+
+# Path to bwscoind executable
+#BWSCOIND_BIN="/usr/bin/bwscoind"
+
+# Nice value to run bwscoind under
+#BWSCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#BWSCOIND_OPTS=""
+
+# The timeout in seconds OpenRC will wait for bwscoind to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+BWSCOIND_SIGTERM_TIMEOUT=60

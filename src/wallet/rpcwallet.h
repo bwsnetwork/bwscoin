@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_WALLET_RPCWALLET_H
-#define PAICOIN_WALLET_RPCWALLET_H
+#ifndef BWSCOIN_WALLET_RPCWALLET_H
+#define BWSCOIN_WALLET_RPCWALLET_H
 
 #include <string>
 #include "support/allocators/secure.h"
@@ -34,4 +34,4 @@ SecureString ValidatedPasswordFromOptionalValue(CWallet* pwallet, const UniValue
 
 UniValue rescanblockchain(const JSONRPCRequest& request);
 
-#endif //PAICOIN_WALLET_RPCWALLET_H
+#endif //BWSCOIN_WALLET_RPCWALLET_H

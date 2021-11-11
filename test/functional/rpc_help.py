@@ -4,12 +4,12 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test RPC help output."""
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import assert_equal, assert_raises_rpc_error
 
 import os
 
-class HelpRpcTest(PAIcoinTestFramework):
+class HelpRpcTest(BWScoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
 

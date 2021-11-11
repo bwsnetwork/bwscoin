@@ -3,8 +3,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  */
 
-#ifndef PAICOIN_STAKE_TREAPNODE_H
-#define PAICOIN_STAKE_TREAPNODE_H
+#ifndef BWSCOIN_STAKE_TREAPNODE_H
+#define BWSCOIN_STAKE_TREAPNODE_H
 
 #include <tuple>
 #include <memory>
@@ -75,4 +75,4 @@ private:
     std::vector<TreapNodePtr> overflow;
 };
 
-#endif // PAICOIN_STAKE_TREAPNODE_H
+#endif // BWSCOIN_STAKE_TREAPNODE_H

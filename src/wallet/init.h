@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_WALLET_INIT_H
-#define PAICOIN_WALLET_INIT_H
+#ifndef BWSCOIN_WALLET_INIT_H
+#define BWSCOIN_WALLET_INIT_H
 
 #include <string>
 
@@ -43,4 +43,4 @@ void StopWallets();
 //! Close all wallets.
 void CloseWallets();
 
-#endif // PAICOIN_WALLET_INIT_H
+#endif // BWSCOIN_WALLET_INIT_H

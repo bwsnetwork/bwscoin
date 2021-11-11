@@ -1,7 +1,7 @@
 Translation Strings Policy
 ===========================
 
-This document provides guidelines for internationalization of the PAI Coin Core software.
+This document provides guidelines for internationalization of the BWS Coin Core software.
 
 How to translate?
 ------------------
@@ -85,10 +85,10 @@ In Qt code use tr's third argument for optional plurality. For example:
 This adds `<numerusform>`s to the respective `.ts` file, which can be translated separately depending on the language. In English, this is simply:
 
     <message numerus="yes">
-        <source>%n active connection(s) to PAI Coin network</source>
+        <source>%n active connection(s) to BWS Coin network</source>
         <translation>
-            <numerusform>%n active connection to PAI Coin network</numerusform>
-            <numerusform>%n active connections to PAI Coin network</numerusform>
+            <numerusform>%n active connection to BWS Coin network</numerusform>
+            <numerusform>%n active connections to BWS Coin network</numerusform>
         </translation>
     </message>
 
@@ -106,4 +106,4 @@ The second example reduces the number of pluralized words that translators have 
 
 During a string freeze (often before a major release), no translation strings are to be added, modified or removed.
 
-This can be checked by executing `make translate` in the `src` directory, then verifying that `paicoin_en.ts` remains unchanged.
+This can be checked by executing `make translate` in the `src` directory, then verifying that `bwscoin_en.ts` remains unchanged.

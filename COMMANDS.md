@@ -1,16 +1,16 @@
-### paicoin-cli and paicoind command line options and help
+### bwscoin-cli and bwscoind command line options and help
 
 ##### You may need to use sudo to execute these help commands as shown
-##### (eg, 'sudo paicoin-cli --help')
+##### (eg, 'sudo bwscoin-cli --help')
 
-# paicoin-cli --help
+# bwscoin-cli --help
 ```
-PAI Coin Core RPC client 
+BWS Coin Core RPC client 
 
 Usage:
-  paicoin-cli [options] <command> [params]  Send command to PAI Coin Core
-  paicoin-cli [options] help                List commands
-  paicoin-cli [options] help <command>      Get help for a command
+  bwscoin-cli [options] <command> [params]  Send command to BWS Coin Core
+  bwscoin-cli [options] help                List commands
+  bwscoin-cli [options] help <command>      Get help for a command
 
 Options:
 
@@ -18,7 +18,7 @@ Options:
        This help message
 
   -conf=<file>
-       Specify configuration file (default: paicoin.conf)
+       Specify configuration file (default: bwscoin.conf)
 
   -datadir=<dir>
        Specify data directory
@@ -46,13 +46,13 @@ Options:
   -rpcpassword=<pw>
        Password for JSON-RPC connections
 
-SSL options: (see the PAI Coin Wiki for SSL setup instructions)
+SSL options: (see the BWS Coin Wiki for SSL setup instructions)
 
   -rpcssl
        Use OpenSSL (https) for JSON-RPC connections
 ```
 
-# paicoin-cli help
+# bwscoin-cli help
 ```
 == Blockchain ==
 getbestblockhash
@@ -109,28 +109,28 @@ signrawtransaction "hexstring" ( [{"txid":"id","vout":n,"scriptPubKey":"hex","re
 createmultisig nrequired ["key",...]
 estimatefee nblocks
 estimatepriority nblocks
-validateaddress "paicoinaddress"
-verifymessage "paicoinaddress" "signature" "message"
+validateaddress "bwscoinaddress"
+verifymessage "bwscoinaddress" "signature" "message"
 
 == Wallet ==
 addmultisigaddress nrequired ["key",...] ( "account" )
 backupwallet "destination"
-dumpprivkey "paicoinaddress"
+dumpprivkey "bwscoinaddress"
 dumpwallet "filename"
 encryptwallet "passphrase"
-getaccount "paicoinaddress"
+getaccount "bwscoinaddress"
 getaccountaddress "account"
 getaddressesbyaccount "account"
 getbalance ( "account" minconf includeWatchonly )
 getnewaddress ( "account" )
 getrawchangeaddress
 getreceivedbyaccount "account" ( minconf )
-getreceivedbyaddress "paicoinaddress" ( minconf )
+getreceivedbyaddress "bwscoinaddress" ( minconf )
 gettransaction "txid" ( includeWatchonly )
 getunconfirmedbalance
 getwalletinfo
 importaddress "address" ( "label" rescan )
-importprivkey "paicoinprivkey" ( "label" rescan )
+importprivkey "bwscoinprivkey" ( "label" rescan )
 importwallet "filename"
 keypoolrefill ( newsize )
 listaccounts ( minconf includeWatchonly)
@@ -143,20 +143,20 @@ listtransactions ( "account" count from includeWatchonly)
 listunspent ( minconf maxconf  ["address",...] )
 lockunspent unlock [{"txid":"txid","vout":n},...]
 move "fromaccount" "toaccount" amount ( minconf "comment" )
-sendfrom "fromaccount" "topaicoinaddress" amount ( minconf "comment" "comment-to" )
+sendfrom "fromaccount" "tobwscoinaddress" amount ( minconf "comment" "comment-to" )
 sendmany "fromaccount" {"address":amount,...} ( minconf "comment" ["address",...] )
-sendtoaddress "paicoinaddress" amount ( "comment" "comment-to" subtractfeefromamount )
-setaccount "paicoinaddress" "account"
+sendtoaddress "bwscoinaddress" amount ( "comment" "comment-to" subtractfeefromamount )
+setaccount "bwscoinaddress" "account"
 settxfee amount
-signmessage "paicoinaddress" "message"
+signmessage "bwscoinaddress" "message"
 ```
 
-# paicoind --help -help-debug
+# bwscoind --help -help-debug
 ```
-PAI Coin Core Daemon version v0.11.0
+BWS Coin Core Daemon version v0.11.0
 
 Usage:
-  paicoind [options]                     Start PAI Coin Core Daemon
+  bwscoind [options]                     Start BWS Coin Core Daemon
 
 Options:
 
@@ -181,7 +181,7 @@ Options:
        How thorough the block verification of -checkblocks is (0-4, default: 3)
 
   -conf=<file>
-       Specify configuration file (default: paicoin.conf)
+       Specify configuration file (default: bwscoin.conf)
 
   -daemon
        Run in the background as a daemon and accept commands
@@ -203,7 +203,7 @@ Options:
        leave that many cores free, default: 0)
 
   -pid=<file>
-       Specify pid file (default: paicoind.pid)
+       Specify pid file (default: bwscoind.pid)
 
   -prune=<n>
        Reduce storage requirements by pruning (deleting) old blocks. This mode
@@ -329,11 +329,11 @@ Wallet options:
        Set key pool size to <n> (default: 100)
 
   -mintxfee=<amt>
-       Fees (in PAI/Kb) smaller than this are considered zero fee for
+       Fees (in BWS/Kb) smaller than this are considered zero fee for
        transaction creation (default: 0.00001)
 
   -paytxfee=<amt>
-       Fee (in PAI/kB) to add to transactions you send (default: 0.00)
+       Fee (in BWS/kB) to add to transactions you send (default: 0.00)
 
   -rescan
        Rescan the block chain for missing wallet transactions on startup
@@ -495,7 +495,7 @@ Debugging/Testing options:
        Limit size of signature cache to <n> entries (default: 50000)
 
   -minrelaytxfee=<amt>
-       Fees (in PAI/Kb) smaller than this are considered zero fee for relaying
+       Fees (in BWS/Kb) smaller than this are considered zero fee for relaying
        (default: 0.00001)
 
   -printtoconsole
@@ -574,7 +574,7 @@ RPC server options:
   -rpckeepalive
        RPC support for HTTP persistent connections (default: 1)
 
-RPC SSL options: (see the PAI Coin Wiki for SSL setup instructions)
+RPC SSL options: (see the BWS Coin Wiki for SSL setup instructions)
 
   -rpcssl
        Use OpenSSL (https) for JSON-RPC connections

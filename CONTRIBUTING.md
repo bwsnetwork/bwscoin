@@ -1,7 +1,7 @@
-Contributing to PAI Coin Core
+Contributing to BWS Coin Core
 =============================
 
-The PAI Coin Core project operates an open contributor model where anyone is
+The BWS Coin Core project operates an open contributor model where anyone is
 welcome to contribute towards development in the form of peer review, testing
 and patches. This document explains the practical process and guidelines for
 contributing.
@@ -57,12 +57,12 @@ the pull request affects. Valid areas as:
 
   - *Consensus* for changes to consensus critical code
   - *Docs* for changes to the documentation
-  - *Qt* for changes to paicoin-qt
+  - *Qt* for changes to bwscoin-qt
   - *Mining* for changes to the mining code
   - *Net* or *P2P* for changes to the peer-to-peer network code
   - *RPC/REST/ZMQ* for changes to the RPC, REST or ZMQ APIs
   - *Scripts and tools* for changes to the scripts and tools
-  - *Tests* for changes to the paicoin unit tests or QA tests
+  - *Tests* for changes to the bwscoin unit tests or QA tests
   - *Trivial* should **only** be used for PRs that do not change generated
     executable code. Notably, refactors (change of function arguments and code
     reorganization) and changes in behavior should **not** be marked as trivial.
@@ -87,8 +87,7 @@ in the body of the pull request to indicate tasks are pending.
 
 The body of the pull request should contain enough description about what the
 patch does together with any justification/reasoning. You should include
-references to any discussions (for example other tickets or PAI Forum 
-discussions).
+references to any discussions (for example other tickets or other discussions).
 
 At this stage one should expect comments and review from other contributors. You
 can add more commits to your pull request by committing them locally and pushing
@@ -157,11 +156,11 @@ where possible keep them short, uncomplex and easy to verify.
 "Decision Making" Process
 -------------------------
 
-The following applies to code changes to the PAI Coin Core project (and related
-projects such as libsecp256k1), and is not to be confused with overall PAI Coin
+The following applies to code changes to the BWS Coin Core project (and related
+projects such as libsecp256k1), and is not to be confused with overall BWS Coin
 Network Protocol consensus changes.
 
-Whether a pull request is merged into PAI Coin Core rests with the project merge
+Whether a pull request is merged into BWS Coin Core rests with the project merge
 maintainers and ultimately the project lead.
 
 Maintainers will take into consideration if a patch is in line with the general
@@ -179,9 +178,9 @@ In general, all pull requests must:
   - Where bugs are fixed, where possible, there should be unit tests
     demonstrating the bug and also proving the fix. This helps prevent regression.
 
-Patches that change PAI Coin consensus rules are considerably more involved than
+Patches that change BWS Coin consensus rules are considerably more involved than
 normal because they affect the entire ecosystem and so must be preceded by
-extensive PAI Forum discussions and have a numbered PDP. While each case will
+extensive discussions and have a numbered PDP. While each case will
 be different, one should be prepared to expend more time and effort than for
 other kinds of patches because of increased peer review and consensus building
 requirements.
@@ -194,7 +193,7 @@ request. Typically reviewers will review the code for obvious errors, as well as
 test out the patch set and opine on the technical merits of the patch. Project
 maintainers take into account the peer review when determining if there is
 consensus to merge a pull request (remember that discussions may have been
-spread out over GitHub, PAI Forum and so forth). The following language 
+spread out over GitHub and so forth). The following language 
 is used within pull-request comments:
 
   - ACK means "I have tested the code and I agree it should be merged";
@@ -220,8 +219,8 @@ higher in terms of discussion and peer review requirements, keeping in mind that
 mistakes could be very costly to the wider community. This includes refactoring
 of consensus critical code.
 
-Where a patch set proposes to change the PAI Coin consensus, it must have been
-discussed extensively on PAI Forum, be accompanied by a widely discussed PDP 
+Where a patch set proposes to change the BWS Coin consensus, it must have been
+discussed extensively, be accompanied by a widely discussed PDP 
 and have a generally widely perceived technical consensus of being
 a worthwhile change based on the judgement of the maintainers.
 
@@ -243,7 +242,7 @@ about:
     that personally, though! Instead, take another critical look at what you are suggesting
     and see if it: changes too much, is too broad, doesn't adhere to the
     [developer notes](doc/developer-notes.md), is dangerous or insecure, is messily written, etc.
-    Identify and address any of the issues you find. Then ask e.g. on PAI Forum if someone could give
+    Identify and address any of the issues you find. Then ask if someone could give
     their opinion on the concept itself.
   - It may be because your code is too complex for all but a few people. And those people
     may not have realized your pull request even exists. A great way to find people who
@@ -251,7 +250,7 @@ about:
     [Git Blame feature](https://help.github.com/articles/tracing-changes-in-a-file/). Simply
     find the person touching the code you are touching before you and see if you can find
     them and give them a nudge. Don't be incessant about the nudging though.
-  - Finally, if all else fails, ask on PAI Forum or elsewhere for someone to give your pull request
+  - Finally, if all else fails, ask elsewhere for someone to give your pull request
     a look. If you think you've been waiting an unreasonably long amount of time (month+) for
     no particular reason (few lines changed, etc), this is totally fine. Try to return the favor
     when someone else is asking for feedback on their code, and universe balances out.
@@ -260,7 +259,7 @@ about:
 Release Policy
 --------------
 
-The project leader is the release manager for each PAI Coin Core release.
+The project leader is the release manager for each BWS Coin Core release.
 
 Copyright
 ---------

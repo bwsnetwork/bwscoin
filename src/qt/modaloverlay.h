@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_MODALOVERLAY_H
-#define PAICOIN_QT_MODALOVERLAY_H
+#ifndef BWSCOIN_QT_MODALOVERLAY_H
+#define BWSCOIN_QT_MODALOVERLAY_H
 
 #include <QDateTime>
 #include <QWidget>
@@ -47,4 +47,4 @@ private:
     bool userClosed;
 };
 
-#endif // PAICOIN_QT_MODALOVERLAY_H
+#endif // BWSCOIN_QT_MODALOVERLAY_H

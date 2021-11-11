@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_STREAMS_H
-#define PAICOIN_STREAMS_H
+#ifndef BWSCOIN_STREAMS_H
+#define BWSCOIN_STREAMS_H
 
 #include "support/allocators/zeroafterfree.h"
 #include "serialize.h"
@@ -709,4 +709,4 @@ public:
     }
 };
 
-#endif // PAICOIN_STREAMS_H
+#endif // BWSCOIN_STREAMS_H

@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_KEYIO_H
-#define PAICOIN_KEYIO_H
+#ifndef BWSCOIN_KEYIO_H
+#define BWSCOIN_KEYIO_H
 
 #include <chainparams.h>
 #include <key.h>
@@ -29,4 +29,4 @@ CTxDestination DecodeDestination(const std::string& str);
 bool IsValidDestinationString(const std::string& str);
 bool IsValidDestinationString(const std::string& str, const CChainParams& params);
 
-#endif // PAICOIN_KEYIO_H
+#endif // BWSCOIN_KEYIO_H

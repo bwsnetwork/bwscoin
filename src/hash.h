@@ -6,15 +6,14 @@
  */
 
 
-#ifndef PAICOIN_HASH_H
-#define PAICOIN_HASH_H
+#ifndef BWSCOIN_HASH_H
+#define BWSCOIN_HASH_H
 
 #include "crypto/ripemd160.h"
 #include "crypto/sha256.h"
 extern "C" {
 #include "crypto/tiny_sha3.h"
 }
-#include "crypto/paicoinhash/paicoinhash_cxx.h"
 #include "prevector.h"
 #include "serialize.h"
 #include "uint256.h"
@@ -51,7 +50,7 @@ public:
     }
 };
 
-/** A hasher class for PAIcoin's 256-bit hash (double SHA-256). */
+/** A hasher class for BWScoin's 256-bit hash (double SHA-256). */
 class CSha256D {
 private:
     CSHA256 sha;
@@ -75,7 +74,7 @@ public:
     }
 };
 
-/** A hasher class for PAI Coin's 160-bit hash (SHA-256 + RIPEMD-160). */
+/** A hasher class for BWS Coin's 160-bit hash (SHA-256 + RIPEMD-160). */
 class CHash160 {
 private:
     CSHA256 sha;
@@ -183,7 +182,6 @@ public:
 
 typedef THashWriter<CSha256D> CHashWriter;
 typedef THashWriter<CShake256> CBlockHashWriter;
-//typedef THashWriter<CPaicoinHash> CPaicoinHashWriter;
 
 /** Reads data from an underlying stream, while hashing the read data. */
 template<typename Source>
@@ -268,4 +266,4 @@ public:
 uint64_t SipHashUint256(uint64_t k0, uint64_t k1, const uint256& val);
 uint64_t SipHashUint256Extra(uint64_t k0, uint64_t k1, const uint256& val, uint32_t extra);
 
-#endif // PAICOIN_HASH_H
+#endif // BWSCOIN_HASH_H

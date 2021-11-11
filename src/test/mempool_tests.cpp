@@ -14,7 +14,7 @@
 #include "util.h"
 #include "stake/extendedvotebits.h"
 
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 
 #include <boost/test/unit_test.hpp>
 #include <boost/range/iterator_range.hpp>
@@ -126,7 +126,8 @@ void CheckSort(CTxMemPool &pool, std::vector<std::string> &sortedOrder)
 }
 
 //TODO move these in a common place, now a verbatim copy from transaction_tests.cpp
-CMutableTransaction CreateDummyBuyTicket(const CAmount& contribution, const CAmount& change = ::dustRelayFee.GetFee(GetEstimatedSizeOfBuyTicketTx(false, true)) + 10)
+// contribution = stake + change + fee
+CMutableTransaction CreateDummyBuyTicket(const CAmount& contribution, const CAmount& stake, const CAmount& change = ::dustRelayFee.GetFee(GetEstimatedSizeOfBuyTicketTx(false, true)) + 10)
 {
     CMutableTransaction mtx;
 
@@ -143,7 +144,7 @@ CMutableTransaction CreateDummyBuyTicket(const CAmount& contribution, const CAmo
     stakeKey.MakeNewKey(false);
     auto stakeAddr = stakeKey.GetPubKey().GetID();
     CScript stakeScript = GetScriptForDestination(stakeAddr);
-    CAmount dummyStakeAmount = contribution - change;
+    CAmount dummyStakeAmount = stake;
     mtx.vout.push_back(CTxOut(dummyStakeAmount, stakeScript));
 
     // create an OP_RETURN push containing a dummy address to send rewards to, and the amount contributed to stake
@@ -229,10 +230,10 @@ BOOST_AUTO_TEST_CASE(MempoolIndexingWithStakeTest)
     tx1.vout[0].nValue = 10 * COIN;
     pool.addUnchecked(tx1.GetHash(), entry.Fee(10000LL).FromTx(tx1));
 
-    CMutableTransaction txBuyTicket1 = CreateDummyBuyTicket(10LL);    // small contrib, big fee
+    CMutableTransaction txBuyTicket1 = CreateDummyBuyTicket(10LL, 10LL);    // small contrib, big fee
     pool.addUnchecked(txBuyTicket1.GetHash(), entry.Fee(10000LL).FromTx(txBuyTicket1));
 
-    CMutableTransaction txBuyTicket2 = CreateDummyBuyTicket(10000LL); // big contrib, small fee
+    CMutableTransaction txBuyTicket2 = CreateDummyBuyTicket(10000LL, 10000LL); // big contrib, small fee
     pool.addUnchecked(txBuyTicket2.GetHash(), entry.Fee(10LL).FromTx(txBuyTicket2));
 
     const auto& blockHashToVoteOn1 = uint256S(std::string("0xabcdef"));
@@ -780,9 +781,15 @@ BOOST_AUTO_TEST_CASE(MempoolPersistenceTest)
         }
     };
 
-    const CAmount contribution = 3*COIN;
-    const CAmount change1 = ::dustRelayFee.GetFee(GetEstimatedSizeOfBuyTicketTx(false, false)) + 10;
-    const CAmount change2 = ::dustRelayFee.GetFee(GetEstimatedSizeOfBuyTicketTx(false, true)) + 10;
+    const CAmount stake = 2*COIN;
+
+    const CAmount change1 = 0;
+    const CAmount fee1 = ::minRelayTxFee.GetFee(GetEstimatedSizeOfBuyTicketTx(false, false)) + 10;
+    const CAmount contribution1 = stake + change1 + fee1;
+
+    const CAmount change2 = 0;
+    const CAmount fee2 = ::minRelayTxFee.GetFee(GetEstimatedSizeOfBuyTicketTx(false, true)) + 10;
+    const CAmount contribution2 = stake + change2 + fee2;
 
     CKey key1;
     key1.MakeNewKey(true);
@@ -797,8 +804,8 @@ BOOST_AUTO_TEST_CASE(MempoolPersistenceTest)
     COutPoint out1(uint256S("1"), 0);
     COutPoint out2(uint256S("2"), 0);
 
-    Coin coin1(CTxOut(contribution + change1, scriptPubKey1), 0, false, TX_Regular);
-    Coin coin2(CTxOut(contribution + change2, scriptPubKey2), 0, false, TX_Regular);
+    Coin coin1(CTxOut(contribution1, scriptPubKey1), 0, false, TX_Regular);
+    Coin coin2(CTxOut(contribution2, scriptPubKey2), 0, false, TX_Regular);
 
     LOCK(cs_main);
 
@@ -808,19 +815,19 @@ BOOST_AUTO_TEST_CASE(MempoolPersistenceTest)
     pcoinsTip->AddCoin(out2, std::move(coin2), true);
     BOOST_CHECK(pcoinsTip->HaveCoin(out2));
 
-    CMutableTransaction tx1 = CreateDummyBuyTicket(contribution, change1);
+    CMutableTransaction tx1 = CreateDummyBuyTicket(contribution1, stake, change1);
     tx1.vin.clear();
     tx1.vin.push_back(CTxIn(out1));
     tx1.nVersion = 1;
     tx1.nExpiry = 123;
-    signTicket(tx1, key1, contribution, change1, scriptPubKey1);
+    signTicket(tx1, key1, contribution1, change1, scriptPubKey1);
     CTransactionRef txr1 = MakeTransactionRef(tx1);
 
-    CMutableTransaction tx2 = CreateDummyBuyTicket(contribution, change2);
+    CMutableTransaction tx2 = CreateDummyBuyTicket(contribution2, stake, change2);
     tx2.vin.clear();
     tx2.vin.push_back(CTxIn(out2));
     tx2.nExpiry = 456;
-    signTicket(tx2, key2, contribution, change2, scriptPubKey2);
+    signTicket(tx2, key2, contribution2, change2, scriptPubKey2);
     CTransactionRef txr2 = MakeTransactionRef(tx2);
 
     CValidationState state;
@@ -865,8 +872,10 @@ BOOST_AUTO_TEST_CASE(MempoolMalleabilityTest)
         }
     };
 
-    const CAmount contribution = 3*COIN;
-    const CAmount change = ::dustRelayFee.GetFee(GetEstimatedSizeOfBuyTicketTx(false, true)) + 10;
+    const CAmount stake = 2*COIN;
+    const CAmount change = 0;
+    const CAmount fee = ::minRelayTxFee.GetFee(GetEstimatedSizeOfBuyTicketTx(false, true)) + 10;
+    const CAmount contribution = stake + change + fee;
 
     CKey key;
     key.MakeNewKey(true);
@@ -875,14 +884,14 @@ BOOST_AUTO_TEST_CASE(MempoolMalleabilityTest)
 
     COutPoint out(uint256S("1"), 0);
 
-    Coin coin1(CTxOut(contribution + change, scriptPubKey), 0, false, TX_Regular);
+    Coin coin1(CTxOut(contribution, scriptPubKey), 0, false, TX_Regular);
 
     LOCK(cs_main);
 
     pcoinsTip->AddCoin(out, std::move(coin1), true);
     BOOST_CHECK(pcoinsTip->HaveCoin(out));
 
-    CMutableTransaction tx1 = CreateDummyBuyTicket(contribution, change);
+    CMutableTransaction tx1 = CreateDummyBuyTicket(contribution, stake, change);
     tx1.vin.clear();
     tx1.vin.push_back(CTxIn(out));
     tx1.nVersion = 3;

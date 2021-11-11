@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_FS_H
-#define PAICOIN_FS_H
+#ifndef BWSCOIN_FS_H
+#define BWSCOIN_FS_H
 
 #include <stdio.h>
 #include <string>
@@ -21,4 +21,4 @@ namespace fsbridge {
     FILE *freopen(const fs::path& p, const char *mode, FILE *stream);
 };
 
-#endif // PAICOIN_FS_H
+#endif // BWSCOIN_FS_H

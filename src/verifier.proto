@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package pai.pouw.verification;
+package bws.pouw.verification;
 
 
 // definition of verifier service

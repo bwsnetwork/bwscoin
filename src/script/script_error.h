@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_SCRIPT_SCRIPT_ERROR_H
-#define PAICOIN_SCRIPT_SCRIPT_ERROR_H
+#ifndef BWSCOIN_SCRIPT_SCRIPT_ERROR_H
+#define BWSCOIN_SCRIPT_SCRIPT_ERROR_H
 
 typedef enum ScriptError_t
 {
@@ -71,4 +71,4 @@ typedef enum ScriptError_t
 
 const char* ScriptErrorString(const ScriptError error);
 
-#endif // PAICOIN_SCRIPT_SCRIPT_ERROR_H
+#endif // BWSCOIN_SCRIPT_SCRIPT_ERROR_H

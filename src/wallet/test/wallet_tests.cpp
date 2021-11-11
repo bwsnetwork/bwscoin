@@ -15,7 +15,7 @@
 
 #include "consensus/validation.h"
 #include "rpc/server.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 #include "validation.h"
 #include "wallet/coincontrol.h"
 #include "wallet/test/wallet_test_fixture.h"
@@ -193,11 +193,11 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
         add_coin( 3*COIN);
         add_coin( 4*COIN); // now we have 5+6+7+8+18+20+30+100+200+300+400 = 1094 cents
         BOOST_CHECK( testWallet.SelectCoinsMinConf(95 * CENT, 1, 1, 0, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1 * COIN);  // we should get 1 PAI in 1 coin
+        BOOST_CHECK_EQUAL(nValueRet, 1 * COIN);  // we should get 1 BWS in 1 coin
         BOOST_CHECK_EQUAL(setCoinsRet.size(), 1U);
 
         BOOST_CHECK( testWallet.SelectCoinsMinConf(195 * CENT, 1, 1, 0, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 2 * COIN);  // we should get 2 PAI in 1 coin
+        BOOST_CHECK_EQUAL(nValueRet, 2 * COIN);  // we should get 2 BWS in 1 coin
         BOOST_CHECK_EQUAL(setCoinsRet.size(), 1U);
 
         // empty the wallet and start again, now with fractions of a cent, to test small change avoidance
@@ -391,7 +391,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         CWallet wallet;
         AddKey(wallet, coinbaseKey);
         BOOST_CHECK(nullBlock == wallet.ScanForWalletTransactions(oldTip, nullptr));
-        // PAICOIN Note: If the initial block subsidy has been changed,
+        // BWSCOIN Note: If the initial block subsidy has been changed,
         // update this sum with the correct value
         BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 3000 * COIN);
     }
@@ -406,7 +406,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         CWallet wallet;
         AddKey(wallet, coinbaseKey);
         BOOST_CHECK(oldTip == wallet.ScanForWalletTransactions(oldTip, nullptr));
-        // PAICOIN Note: If the initial block subsidy has been changed,
+        // BWSCOIN Note: If the initial block subsidy has been changed,
         // update the subsidy with the correct value
         BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 1500 * COIN);
     }
@@ -443,7 +443,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
                       "timestamp %d. There was an error reading a block from time %d, which is after or within %d "
                       "seconds of key creation, and could contain transactions pertaining to the key. As a result, "
                       "transactions and coins using this key may not appear in the wallet. This error could be caused "
-                      "by pruning or data corruption (see paicoind log for details) and could be dealt with by "
+                      "by pruning or data corruption (see bwscoind log for details) and could be dealt with by "
                       "downloading and rescanning the relevant blocks (see -reindex and -rescan "
                       "options).\"}},{\"success\":true}]",
                               0, oldTip->GetBlockTimeMax(), TIMESTAMP_WINDOW));
@@ -533,7 +533,7 @@ BOOST_FIXTURE_TEST_CASE(coin_mark_dirty_immature_credit, TestChain100Setup)
     // credit amount is calculated.
     wtx.MarkDirty();
     wallet.AddKeyPubKey(coinbaseKey, coinbaseKey.GetPubKey());
-    // PAICOIN Note: If the initial block subsidy has been changed,
+    // BWSCOIN Note: If the initial block subsidy has been changed,
     // update the subsidy with the correct value
     BOOST_CHECK_EQUAL(wtx.GetImmatureCredit(), 1500 * COIN);
 }
@@ -659,7 +659,7 @@ BOOST_FIXTURE_TEST_CASE(ListCoins, ListCoinsTestingSetup)
     BOOST_CHECK_EQUAL(list.begin()->second.size(), 1);
 
     // Check initial balance from one mature coinbase transaction.
-    // PAICOIN Note: If the initial block subsidy has been changed,
+    // BWSCOIN Note: If the initial block subsidy has been changed,
     // update the subsidy with the correct value
     BOOST_CHECK_EQUAL(1500 * COIN, wallet->GetAvailableBalance());
 

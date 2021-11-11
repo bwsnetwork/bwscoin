@@ -104,8 +104,6 @@ bool static IsCompressedPubKey(const valtype &vchPubKey) {
  * Where R and S are not negative (their first byte has its highest bit not set), and not
  * excessively padded (do not start with a 0 byte, unless an otherwise negative number follows,
  * in which case a single 0 byte is necessary and even required).
- * 
- * See https://paicointalk.org/index.php?topic=8392.msg127623#msg127623
  *
  * This function is consensus-critical since BIP66.
  */
@@ -1135,6 +1133,9 @@ public:
              SerializeOutput(s, nOutput);
         // Serialize nLockTime
         ::Serialize(s, txTo.nLockTime);
+        // Serialize nExpiry, if available
+        if (txTo.nVersion >= 3)
+            ::Serialize(s, txTo.nExpiry);
     }
 };
 
@@ -1219,6 +1220,9 @@ uint256 SignatureHash(const CScript& scriptCode, const CTransaction& txTo, unsig
         ss << hashOutputs;
         // Locktime
         ss << txTo.nLockTime;
+        // Expiry, if available
+        if (txTo.nVersion >= 3)
+            ss << txTo.nExpiry;
         // Sighash type
         ss << nHashType;
 

@@ -2,11 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_CRYPTO_COMMON_H
-#define PAICOIN_CRYPTO_COMMON_H
+#ifndef BWSCOIN_CRYPTO_COMMON_H
+#define BWSCOIN_CRYPTO_COMMON_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #include <stdint.h>
@@ -100,4 +100,4 @@ uint64_t static inline CountBits(uint64_t x)
     return ret;
 }
 
-#endif // PAICOIN_CRYPTO_COMMON_H
+#endif // BWSCOIN_CRYPTO_COMMON_H

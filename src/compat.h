@@ -3,11 +3,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_COMPAT_H
-#define PAICOIN_COMPAT_H
+#ifndef BWSCOIN_COMPAT_H
+#define BWSCOIN_COMPAT_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #ifdef WIN32
@@ -84,4 +84,4 @@ bool static inline IsSelectableSocket(const SOCKET& s) {
 #endif
 }
 
-#endif // PAICOIN_COMPAT_H
+#endif // BWSCOIN_COMPAT_H

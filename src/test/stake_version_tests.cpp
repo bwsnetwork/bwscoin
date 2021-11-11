@@ -11,7 +11,7 @@
 #include "chainparams.h"
 #include "random.h"
 #include "util.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 #include "validation.h"
 #include "stake/stakeversion.h"
 

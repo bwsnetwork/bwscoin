@@ -8,7 +8,7 @@
 
 #include "chain.h"
 #include "versionbits.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 #include "chainparams.h"
 #include "validation.h"
 #include "consensus/params.h"

@@ -4,8 +4,8 @@
  */
 
 
-#ifndef PAICOIN_WALLET_AUTOVOTER_AUTOVOTER_H
-#define PAICOIN_WALLET_AUTOVOTER_AUTOVOTER_H
+#ifndef BWSCOIN_WALLET_AUTOVOTER_AUTOVOTER_H
+#define BWSCOIN_WALLET_AUTOVOTER_AUTOVOTER_H
 
 #include "autovoterconfig.h"
 #include "validationinterface.h"
@@ -43,4 +43,4 @@ private:
     void DoVote(const CBlockIndex *pindexNew);
 };
 
-#endif // PAICOIN_WALLET_AUTOVOTER_AUTOVOTER_H
+#endif // BWSCOIN_WALLET_AUTOVOTER_AUTOVOTER_H

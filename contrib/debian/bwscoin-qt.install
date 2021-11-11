@@ -1,0 +1,6 @@
+usr/local/bin/bwscoin-qt usr/bin
+share/pixmaps/bwscoin32.xpm usr/share/pixmaps
+share/pixmaps/bwscoin16.xpm usr/share/pixmaps
+share/pixmaps/bwscoin128.png usr/share/pixmaps
+debian/bwscoin-qt.desktop usr/share/applications
+debian/bwscoin-qt.protocol usr/share/kde4/services/

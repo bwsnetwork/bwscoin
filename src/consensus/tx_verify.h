@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_CONSENSUS_TX_VERIFY_H
-#define PAICOIN_CONSENSUS_TX_VERIFY_H
+#ifndef BWSCOIN_CONSENSUS_TX_VERIFY_H
+#define BWSCOIN_CONSENSUS_TX_VERIFY_H
 
 #include "amount.h"
 
@@ -87,4 +87,4 @@ bool EvaluateSequenceLocks(const CBlockIndex& block, std::pair<int, int64_t> loc
  */
 bool SequenceLocks(const CTransaction &tx, int flags, std::vector<int>* prevHeights, const CBlockIndex& block);
 
-#endif // PAICOIN_CONSENSUS_TX_VERIFY_H
+#endif // BWSCOIN_CONSENSUS_TX_VERIFY_H

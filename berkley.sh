@@ -1,8 +1,8 @@
 #!/bin/sh
-PAICOIN_ROOT=$(pwd)
+BWSCOIN_ROOT=$(pwd)
 
-# Pick some path to install BDB to, here we create a directory within the paicoin directory
-BDB_PREFIX="${PAICOIN_ROOT}/db4"
+# Pick some path to install BDB to, here we create a directory within the bwscoin directory
+BDB_PREFIX="${BWSCOIN_ROOT}/db4"
 mkdir -p $BDB_PREFIX
 
 # Fetch the src and verify that it is not tampered with
@@ -171,8 +171,8 @@ cd build_unix/
 ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
 make install
 
-# Configure PAIcoin Core to use our own-built instance of BDB
-cd $PAICOIN_ROOT
+# Configure BWScoin Core to use our own-built instance of BDB
+cd $BWSCOIN_ROOT
 ./autogen.sh
 ./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/" \
  --disable-tests \

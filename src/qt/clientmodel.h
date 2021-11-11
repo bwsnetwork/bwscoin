@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_CLIENTMODEL_H
-#define PAICOIN_QT_CLIENTMODEL_H
+#ifndef BWSCOIN_QT_CLIENTMODEL_H
+#define BWSCOIN_QT_CLIENTMODEL_H
 
 #include <QObject>
 #include <QDateTime>
@@ -34,7 +34,7 @@ enum NumConnections {
     CONNECTIONS_ALL  = (CONNECTIONS_IN | CONNECTIONS_OUT),
 };
 
-/** Model for PAI Coin network client. */
+/** Model for BWS Coin network client. */
 class ClientModel : public QObject
 {
     Q_OBJECT
@@ -116,4 +116,4 @@ public Q_SLOTS:
     void updateBanlist();
 };
 
-#endif // PAICOIN_QT_CLIENTMODEL_H
+#endif // BWSCOIN_QT_CLIENTMODEL_H

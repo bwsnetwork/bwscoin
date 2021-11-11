@@ -1,39 +1,32 @@
-PAI Coin Core
+BWS Coin Core
 =============
 
 Setup
 ---------------------
-PAI Coin Core is the original PAI Coin client and it builds the backbone of the network. It downloads and, by default, stores the entire history of PAI Coin transactions (which is currently more than 100 GBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
+BWS Coin Core is the original BWS Coin client and it builds the backbone of the network. It downloads and, by default, stores the entire history of BWS Coin transactions (which is currently more than 100 GBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
 
 Running
 ---------------------
-The following are some helpful notes on how to run PAI Coin on your native platform.
+The following are some helpful notes on how to run BWS Coin on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/paicoin-qt` (GUI) or
-- `bin/paicoind` (headless)
+- `bin/bwscoin-qt` (GUI) or
+- `bin/bwscoind` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run paicoin-qt.exe.
+Unpack the files into a directory, and then run bwscoin-qt.exe.
 
 ### OS X
 
-Drag PAI Coin-Core to your applications folder, and then run PAI Coin-Core.
-
-### Need Help?
-
-* See the documentation at the [PAI Coin Wiki](https://en.paicoin.it/wiki/Main_Page)
-for help and more information.
-* Ask for help on [#paicoin](http://webchat.freenode.net?channels=paicoin) on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net?channels=paicoin).
-* Ask for help on the [PAIcoinTalk](https://paicointalk.org/) forums, in the [Technical Support board](https://paicointalk.org/index.php?board=4.0).
+Drag BWS Coin-Core to your applications folder, and then run BWS Coin-Core.
 
 Building
 ---------------------
-The following are developer notes on how to build PAI Coin on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build BWS Coin on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [Dependencies](dependencies.md)
 - [OS X Build Notes](build-osx.md)
@@ -44,12 +37,12 @@ The following are developer notes on how to build PAI Coin on your native platfo
 
 Development
 ---------------------
-The PAI Coin repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The BWS Coin repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Release Notes](release-notes.md)
 - [Release Process](release-process.md)
-- [Source Code Documentation (External Link)](https://dev.visucore.com/paicoin/doxygen/)
+- [Source Code Documentation (External Link)](https://dev.visucore.com/bwscoin/doxygen/)
 - [Translation Process](translation_process.md)
 - [Translation Strings Policy](translation_strings_policy.md)
 - [Travis CI](travis-ci.md)
@@ -58,11 +51,6 @@ The PAI Coin repo's [root README](/README.md) contains relevant information on t
 - [BIPS](bips.md)
 - [Dnsseed Policy](dnsseed-policy.md)
 - [Benchmarking](benchmarking.md)
-
-### Resources
-* Discuss on the [PAIcoinTalk](https://paicointalk.org/) forums, in the [Development & Technical Discussion board](https://paicointalk.org/index.php?board=6.0).
-* Discuss project-specific development on #paicoin-core-dev on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=paicoin-core-dev).
-* Discuss general PAI Coin development on #paicoin-dev on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=paicoin-dev).
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)

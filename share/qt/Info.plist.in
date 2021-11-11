@@ -11,7 +11,7 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>paicoin.icns</string>
+  <string>bwscoin.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>PAIcoin-Qt</string>
+  <string>BWScoin-Qt</string>
   
   <key>CFBundleName</key>
-  <string>PAIcoin-Qt</string>
+  <string>BWScoin-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.paicoinfoundation.PAIcoin-Qt</string>
+  <string>org.bwscoinfoundation.BWScoin-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -46,10 +46,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.paicoin.PAIcoinPayment</string>
+      <string>org.bwscoin.BWScoinPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>paicoin</string>
+        <string>bwscoin</string>
       </array>
     </dict>
   </array>
@@ -58,9 +58,9 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>org.paicoin.paymentrequest</string>
+      <string>org.bwscoin.paymentrequest</string>
       <key>UTTypeDescription</key>
-      <string>PAIcoin payment request</string>
+      <string>BWScoin payment request</string>
       <key>UTTypeConformsTo</key>
       <array>
         <string>public.data</string>
@@ -68,10 +68,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/x-paicoin-payment-request</string>
+        <string>application/x-bwscoin-payment-request</string>
         <key>public.filename-extension</key>
         <array>
-          <string>paicoinpaymentrequest</string>
+          <string>bwscoinpaymentrequest</string>
         </array>
       </dict>
     </dict>
@@ -84,7 +84,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.paicoin.paymentrequest</string>
+        <string>org.bwscoin.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>

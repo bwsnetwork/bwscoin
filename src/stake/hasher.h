@@ -3,8 +3,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  */
 
-#ifndef PAICOIN_STAKE_HASHER_H
-#define PAICOIN_STAKE_HASHER_H
+#ifndef BWSCOIN_STAKE_HASHER_H
+#define BWSCOIN_STAKE_HASHER_H
 
 extern "C" {
 #include "crypto/tiny_sha3.h"
@@ -42,4 +42,4 @@ private:
     sha3_ctx_t sha3_ctx_;
 };
 
-#endif // PAICOIN_STAKE_HASHER_H
+#endif // BWSCOIN_STAKE_HASHER_H

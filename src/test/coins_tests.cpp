@@ -11,7 +11,7 @@
 #include "uint256.h"
 #include "undo.h"
 #include "utilstrencodings.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 #include "validation.h"
 #include "consensus/validation.h"
 

@@ -5,11 +5,11 @@
  */
 
 
-#ifndef PAICOIN_NETBASE_H
-#define PAICOIN_NETBASE_H
+#ifndef BWSCOIN_NETBASE_H
+#define BWSCOIN_NETBASE_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #include "compat.h"
@@ -70,4 +70,4 @@ bool SetSocketNoDelay(const SOCKET& hSocket);
 struct timeval MillisToTimeval(int64_t nTimeout);
 void InterruptSocks5(bool interrupt);
 
-#endif // PAICOIN_NETBASE_H
+#endif // BWSCOIN_NETBASE_H

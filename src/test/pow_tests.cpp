@@ -12,7 +12,7 @@
 #include "pow.h"
 #include "random.h"
 #include "util.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 
 #include <boost/test/unit_test.hpp>
 
@@ -29,11 +29,11 @@ BOOST_AUTO_TEST_CASE(get_next_work)
     pindexLast.nBits = 0x1d00ffff;
 
     CBlockIndex pindexFirst;
-    pindexFirst.nHeight = 322155;
+    pindexFirst.nHeight = 30240;
     pindexFirst.nTime = nLastRetargetTime;
     pindexFirst.nBits = 0x1d00ffff;
 
-    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexFirst, &pindexLast, chainParams->GetConsensus()), 0x1c09fe61);
+    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexFirst, &pindexLast, chainParams->GetConsensus()), 0x1d00d86a);
 }
 
 /**
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_pow_limit)
     pindexFirst.nTime = nLastRetargetTime;
     pindexFirst.nBits = 0x1d00ffff;
 
-    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, &pindexFirst, chainParams->GetConsensus()), 0x1c09fe61);
+    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, &pindexFirst, chainParams->GetConsensus()), 0x1c3fffc0);
 }
 
 /* Test the constraint on the lower bound for actual time taken */
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_lower_limit_actual)
     pindexFirst.nTime = nLastRetargetTime;
     pindexFirst.nBits = 0x1d00ffff;
 
-    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, &pindexFirst, chainParams->GetConsensus()), 0x1c0168fd);
+    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, &pindexFirst, chainParams->GetConsensus()), 0x1c3fffc0);
 }
 
 /* Test the constraint on the upper bound for actual time taken */
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_upper_limit_actual)
     pindexFirst.nTime = nLastRetargetTime;
     pindexFirst.nBits = 0x1d00ffff;
 
-    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, &pindexFirst, chainParams->GetConsensus()), 0x1c09fe61);
+    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, &pindexFirst, chainParams->GetConsensus()), 0x1c3fffc0);
 }
 
 BOOST_AUTO_TEST_CASE(GetBlockProofEquivalentTime_test)
@@ -141,7 +141,7 @@ BOOST_AUTO_TEST_CASE(cash_difficulty_test)
     std::vector<CBlockIndex> blocks(3000);
 
     const Consensus::Params &params = chainParams->GetConsensus();
-    const arith_uint256 powLimit = UintToArith256(params.powLimit);
+    const arith_uint256 powLimit = UintToArith256(params.hybridConsensusPowLimit);
     uint32_t powLimitBits = powLimit.GetCompact();
     arith_uint256 currentPow = powLimit >> 4;
     uint32_t initialBits = currentPow.GetCompact();
@@ -217,7 +217,7 @@ BOOST_AUTO_TEST_CASE(cash_difficulty_test)
     }
 
     // Check the actual value.
-    BOOST_CHECK_EQUAL(nBits, 0x1c009ef3);// changed from 0x1c0fe7b1 due to different powLimit setting
+    BOOST_CHECK_EQUAL(nBits, 0x1d3e16f2);// changed from 0x1c0fe7b1 due to different powLimit setting
 
     // If we dramatically shorten block production, difficulty increases faster.
     for (size_t j = 0; j < 20; i++, j++) {
@@ -238,7 +238,7 @@ BOOST_AUTO_TEST_CASE(cash_difficulty_test)
     }
 
     // Check the actual value.
-    BOOST_CHECK_EQUAL(nBits, 0x1c0088d9);// changed from 0x1c0db19f due to different powLimit setting
+    BOOST_CHECK_EQUAL(nBits, 0x1d357522);// changed from 0x1c0db19f due to different powLimit setting
 
     // We start to emit blocks significantly slower. The first block has no
     // impact.
@@ -246,7 +246,7 @@ BOOST_AUTO_TEST_CASE(cash_difficulty_test)
     nBits = GetNextCashWorkRequired(&blocks[i++], &blkHeaderDummy, params);
 
     // Check the actual value.
-    BOOST_CHECK_EQUAL(nBits, 0x1c00879f); // changed from 0x1c0d9222 due to different powLimit setting
+    BOOST_CHECK_EQUAL(nBits, 0x1d34fa36); // changed from 0x1c0d9222 due to different powLimit setting
 
     // If we dramatically slow down block production, difficulty decreases.
     for (size_t j = 0; j < 93; i++, j++) {
@@ -268,18 +268,19 @@ BOOST_AUTO_TEST_CASE(cash_difficulty_test)
     }
 
     // Check the actual value.
-    BOOST_CHECK_EQUAL(nBits, 0x1c01d677); // changed from 0x1c2f13b9 due to different powLimit setting
+    BOOST_CHECK_EQUAL(nBits, 0x1e00b7c6); // changed from 0x1c2f13b9 due to different powLimit setting
 
     // Due to the window of time being bounded, next block's difficulty actually
     // gets harder.
     blocks[i] = GetBlockIndex(&blocks[i - 1], 6000, nBits);
     nBits = GetNextCashWorkRequired(&blocks[i++], &blkHeaderDummy, params);
-    BOOST_CHECK_EQUAL(nBits, 0x1c01d4d4); // changed from 0x1c2ee9bf due to different powLimit setting
+    BOOST_CHECK_EQUAL(nBits, 0x1e00b723); // changed from 0x1c2ee9bf due to different powLimit setting
 
     // And goes down again. It takes a while due to the window being bounded and
     // the skewed block causes 2 blocks to get out of the window.
     for (size_t j = 0; j < 192; i++, j++) {
         blocks[i] = GetBlockIndex(&blocks[i - 1], 6000, nBits);
+
         const uint32_t nextBits =
             GetNextCashWorkRequired(&blocks[i], &blkHeaderDummy, params);
 
@@ -297,7 +298,7 @@ BOOST_AUTO_TEST_CASE(cash_difficulty_test)
     }
 
     // Check the actual value.
-    BOOST_CHECK_EQUAL(nBits, 0x1c09fe61); // changed from 0x1d00ffff due to different powLimit setting
+    BOOST_CHECK_EQUAL(nBits, 0x1e03e75d); // changed from 0x1d00ffff due to different powLimit setting
 
     // Once the difficulty reached the minimum allowed level, it doesn't get any
     // easier.

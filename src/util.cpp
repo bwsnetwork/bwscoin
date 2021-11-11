@@ -8,7 +8,7 @@
 
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #include "util.h"
@@ -91,14 +91,14 @@
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
 
-const char * const PAICOIN_CONF_FILENAME = "paicoin.conf";
-const char * const PAICOIN_PID_FILENAME = "paicoind.pid";
+const char * const BWSCOIN_CONF_FILENAME = "bwscoin.conf";
+const char * const BWSCOIN_PID_FILENAME = "bwscoind.pid";
 
 ArgsManager gArgs;
 
-#ifdef PAI_BABY
-const char * const PAICOIN_CHAINPARAMS_CONF_FILENAME = "chainparams.conf";
-const char * const PAICOIN_GENESIS_CONF_FILENAME = "genesis.conf";
+#ifdef USE_CHAINPARAMS_CONF
+const char * const BWSCOIN_CHAINPARAMS_CONF_FILENAME = "chainparams.conf";
+const char * const BWSCOIN_GENESIS_CONF_FILENAME = "genesis.conf";
 
 ArgsManager gChainparams(false);
 ArgsManager gGenesisparams(false);
@@ -516,7 +516,7 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(nullptr, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "paicoin";
+    const char* pszModule = "bwscoin";
 #endif
     if (pex)
         return strprintf(
@@ -535,13 +535,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 
 fs::path GetDefaultDataDir()
 {
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\PAIcoin
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\PAIcoin
-    // Mac: ~/Library/Application Support/PAIcoin
-    // Unix: ~/.paicoin
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\BWScoin
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\BWScoin
+    // Mac: ~/Library/Application Support/BWScoin
+    // Unix: ~/.bwscoin
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "PAIcoin";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "BWScoin";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -551,10 +551,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/PAIcoin";
+    return pathRet / "Library/Application Support/BWScoin";
 #else
     // Unix
-    return pathRet / ".paicoin";
+    return pathRet / ".bwscoin";
 #endif
 #endif
 }
@@ -616,7 +616,7 @@ void ArgsManager::ReadConfigFile(const std::string& confPath)
     {
         if (main)
         {
-            return; // No paicoin.conf file is OK
+            return; // No bwscoin.conf file is OK
         }
 
         throw std::runtime_error(strerror(errno));
@@ -629,7 +629,7 @@ void ArgsManager::ReadConfigFile(const std::string& confPath)
 
         for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it)
         {
-            // Don't overwrite existing settings so command line settings override paicoin.conf
+            // Don't overwrite existing settings so command line settings override bwscoin.conf
             std::string strKey = (main ? std::string("-") : std::string("")) + it->string_key;
             std::string strValue = it->value[0];
             InterpretNegativeSetting(strKey, strValue);
@@ -649,7 +649,7 @@ void ArgsManager::ReadConfigFile(const std::string& confPath)
 #ifndef WIN32
 fs::path GetPidFile()
 {
-    fs::path pathPidFile(gArgs.GetArg("-pid", PAICOIN_PID_FILENAME));
+    fs::path pathPidFile(gArgs.GetArg("-pid", BWSCOIN_PID_FILENAME));
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }
@@ -911,7 +911,7 @@ std::string CopyrightHolders(const std::string& strPrefix)
     std::string strCopyrightHolders = strPrefix + strprintf(_(COPYRIGHT_HOLDERS), _(COPYRIGHT_HOLDERS_SUBSTITUTION));
 
     // Check for untranslated substitution to make sure Bitcoin Core copyright is not removed by accident
-    if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("PAI Coin Core") == std::string::npos) {
+    if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("BWS Coin Core") == std::string::npos) {
         strCopyrightHolders += "\n" + strPrefix + "The Bitcoin Core developers";
     }
     return strCopyrightHolders;

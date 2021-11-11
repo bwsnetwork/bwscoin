@@ -10,11 +10,11 @@
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
-using pai::pouw::verification::Request;
-using pai::pouw::verification::Response;
-using pai::pouw::verification::Verifier;
-using pai::pouw::verification::Response_ReturnCode;
-using pai::pouw::verification::Response_ReturnCode_GENERAL_ERROR;
+using bws::pouw::verification::Request;
+using bws::pouw::verification::Response;
+using bws::pouw::verification::Verifier;
+using bws::pouw::verification::Response_ReturnCode;
+using bws::pouw::verification::Response_ReturnCode_GENERAL_ERROR;
 
 class VerificationClient {
  public:
