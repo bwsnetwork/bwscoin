@@ -319,16 +319,6 @@ AC_ARG_WITH([daemon],
   [build_bwscoind=$withval],
   [build_bwscoind=yes])
 
-AC_ARG_WITH([protoc],
-    [AS_HELP_STRING([--with-protoc=/path/of/protoc],
-        [Location of the protocol buffers compiler protoc. Defaults to looking on path.])],
-    [PROTOC="$withval"],
-    [ AS_IF([test "x${PROTOC}" == "x"],
-        [AC_PATH_PROG([PROTOC], [protoc], [no])])
-    ]
-)
-AS_IF([test "${PROTOC}" == "no"], [AC_MSG_ERROR([ProtoBuf compiler "protoc" not found.])])
-
 use_pkgconfig=yes
 case $host in
   *mingw*)
@@ -740,11 +730,6 @@ if test x$use_upnp != xno; then
     [have_miniupnpc=no]
   )
 fi
-
-AC_CHECK_HEADER([grpcpp/impl/codegen/status.h],,AC_MSG_ERROR(libgrpc headers missing))
-AC_CHECK_LIB([grpc++],      [main],GRPC_LIBS=-lgrpc++, AC_MSG_ERROR(libgrpc missing))
-AC_CHECK_LIB([protoc],      [main],PROTOC_LIBS=-lprotoc, AC_MSG_ERROR(libprotoc missing))
-AC_CHECK_LIB([protobuf],    [main],PROTOBUF_LIBS=-lprotobuf, AC_MSG_ERROR(libprotobuf missing))
 
 BWSCOIN_QT_INIT
 
@@ -1256,8 +1241,6 @@ AC_SUBST(EVENT_PTHREADS_LIBS)
 AC_SUBST(ZMQ_LIBS)
 AC_SUBST(PROTOBUF_LIBS)
 AC_SUBST(QR_LIBS)
-AC_SUBST(GRPC_LIBS)
-AC_SUBST(PROTOC_LIBS)
 AC_CONFIG_FILES([Makefile src/Makefile doc/man/Makefile share/setup.nsi share/qt/Info.plist test/config.ini])
 AC_CONFIG_FILES([doc/Doxyfile])
 AC_CONFIG_LINKS([test/functional/test_runner.py:test/functional/test_runner.py])

@@ -32,7 +32,7 @@
 #include "util.h"
 #include "utilstrencodings.h"
 #include "hash.h"
-#include "task_info_client.h"
+#include "ml/taskinfo_client.h"
 #include "warnings.h"
 
 #include <numeric>
@@ -181,9 +181,7 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.push_back(Pair("powMsgHistoryId", blockindex->powMsgHistoryId));
     result.push_back(Pair("powMsgId", blockindex->powMsgId));
 
-    std::string taskInfoServerAddress = gArgs.GetArg("-verificationserver", "localhost:50051");
-    TaskListClient client(grpc::CreateChannel(taskInfoServerAddress, grpc::InsecureChannelCredentials()));
-    result.push_back(Pair("taskId", client.GetTaskId(blockindex->powMsgId)));
+    result.push_back(Pair("taskId", TaskInfoClient::GetTaskId(blockindex->powMsgId)));
 
     if (blockindex->pprev)
         result.push_back(Pair("previousblockhash", blockindex->pprev->GetBlockHash().GetHex()));
@@ -251,9 +249,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.push_back(Pair("powMsgHistoryId", std::string(block.powMsgHistoryId)));
     result.push_back(Pair("powMsgId", std::string(block.powMsgId)));
 
-    std::string taskInfoServerAddress = gArgs.GetArg("-verificationserver", "localhost:50051");
-    TaskListClient client(grpc::CreateChannel(taskInfoServerAddress, grpc::InsecureChannelCredentials()));
-    result.push_back(Pair("taskId", client.GetTaskId(blockindex->powMsgId)));
+    result.push_back(Pair("taskId", TaskInfoClient::GetTaskId(blockindex->powMsgId)));
 
     if (blockindex->pprev)
         result.push_back(Pair("previousblockhash", blockindex->pprev->GetBlockHash().GetHex()));

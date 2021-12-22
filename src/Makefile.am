@@ -96,6 +96,7 @@ BWSCOIN_CORE_H = \
   core_memusage.h \
   cuckoocache.h \
   fs.h \
+  httpclient.h \
   httprpc.h \
   httpserver.h \
   indirectmap.h \
@@ -108,6 +109,8 @@ BWSCOIN_CORE_H = \
   memusage.h \
   merkleblock.h \
   miner.h \
+  ml/verification_client.h \
+  ml/taskinfo_client.h \
   net.h \
   net_processing.h \
   netaddress.h \
@@ -157,12 +160,6 @@ BWSCOIN_CORE_H = \
   utiltime.h \
   validation.h \
   validationinterface.h \
-  verifier.pb.h \
-  verifier.grpc.pb.h \
-  verification_client.h \
-  task_info.pb.h \
-  task_info.grpc.pb.h \
-  task_info_client.h \
   versionbits.h \
   wallet/coincontrol.h \
   wallet/crypter.h \
@@ -190,22 +187,21 @@ libbwscoin_util_a-clientversion.$(OBJEXT): obj/build.h
 libbwscoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
 libbwscoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbwscoin_server_a_SOURCES = \
-  task_info.pb.cc \
-  task_info.grpc.pb.cc \
-  verifier.pb.cc \
-  verifier.grpc.pb.cc \
   addrdb.cpp \
   addrman.cpp \
   bloom.cpp \
   blockencodings.cpp \
   checkpoints.cpp \
   consensus/tx_verify.cpp \
+  httpclient.cpp \
   httprpc.cpp \
   httpserver.cpp \
   init.cpp \
   dbwrapper.cpp \
   merkleblock.cpp \
   miner.cpp \
+  ml/verification_client.cpp \
+  ml/taskinfo_client.cpp \
   net.cpp \
   net_processing.cpp \
   noui.cpp \
@@ -441,7 +437,7 @@ bwscoind_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-bwscoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(GRPC_LIBS) $(PROTOC_LIBS) $(PROTOBUF_LIBS)
+bwscoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
 # bwscoin-cli binary #
 bwscoin_cli_SOURCES = bwscoin-cli.cpp
@@ -562,10 +558,6 @@ if HARDEN
 	@echo "Checking binary security..."
 	$(AM_V_at) READELF=$(READELF) OBJDUMP=$(OBJDUMP) $(top_srcdir)/contrib/devtools/security-check.py < $(bin_PROGRAMS)
 endif
-
-%.grpc.pb.cc %.grpc.pb.h: %.proto
-	@test -f $(PROTOC)
-	$(AM_V_GEN) $(PROTOC) --grpc_out=$(@D) --proto_path=$(<D) --plugin=protoc-gen-grpc=$(dir $(PROTOC))grpc_cpp_plugin $<
 
 %.pb.cc %.pb.h: %.proto
 	@test -f $(PROTOC)
