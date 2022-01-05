@@ -24,6 +24,8 @@ public:
 
     static UniValue GetCompletedTasks(uint64_t page, uint64_t per_page);
 
+    static UniValue GetFailedTasks(uint64_t page, uint64_t per_page);
+
     static UniValue GetTaskDetails(const std::string& task_id);
 
     static std::string GetTaskId(const std::string& msg_id);

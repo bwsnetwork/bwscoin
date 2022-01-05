@@ -23,6 +23,11 @@ UniValue TaskInfoClient::GetCompletedTasks(uint64_t page, uint64_t per_page)
     return TaskInfoClient::GetTasks("/taskinfo/completedtasks/", page, per_page);
 }
 
+UniValue TaskInfoClient::GetFailedTasks(uint64_t page, uint64_t per_page)
+{
+    return TaskInfoClient::GetTasks("/taskinfo/failedtasks/", page, per_page);
+}
+
 UniValue TaskInfoClient::GetTaskDetails(const std::string& task_id)
 {
     std::string verificationServerAddress = gArgs.GetArg("-verificationserver", "localhost:50011");

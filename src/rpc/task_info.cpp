@@ -48,6 +48,9 @@ UniValue getTasksList(const std::string list_type, const JSONRPCRequest& request
     if (list_type == "completed")
         return TaskInfoClient::GetCompletedTasks(page, per_page);
 
+    if (list_type == "failed")
+        return TaskInfoClient::GetFailedTasks(page, per_page);
+
     return TaskInfoClient::GetWaitingTasks(page, per_page);
 }
 
@@ -64,6 +67,11 @@ UniValue getStartedTasks(const JSONRPCRequest& request)
 UniValue getCompletedTasks(const JSONRPCRequest& request)
 {
     return getTasksList("completed", request);
+}
+
+UniValue getFailedTasks(const JSONRPCRequest& request)
+{
+    return getTasksList("failed", request);
 }
 
 UniValue getTaskDetails(const JSONRPCRequest& request)
@@ -100,10 +108,11 @@ UniValue getTaskDetails(const JSONRPCRequest& request)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
-    { "task_info",             "getwaitingtasks",       &getWaitingTasks,       {"page","per_page"} },
-    { "task_info",             "getstartedtasks",       &getStartedTasks,       {"page","per_page"} },
-    { "task_info",             "getcompletedtasks",     &getCompletedTasks,     {"page","per_page"} },
-    { "task_info",             "gettaskdetails",        &getTaskDetails,        {"task_id"} },
+    { "task_info",          "getwaitingtasks",        &getWaitingTasks,        {"page","per_page"} },
+    { "task_info",          "getstartedtasks",        &getStartedTasks,        {"page","per_page"} },
+    { "task_info",          "getcompletedtasks",      &getCompletedTasks,      {"page","per_page"} },
+    { "task_info",          "getfailedtasks",         &getFailedTasks,         {"page","per_page"} },
+    { "task_info",          "gettaskdetails",         &getTaskDetails,         {"task_id"} },
 };
 
 void RegisterTaskInfoRPCCommands(CRPCTable &t)
