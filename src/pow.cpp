@@ -228,12 +228,17 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
     bnTarget.SetCompact(block.nBits, &fNegative, &fOverflow);
 
     // Check range
-    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > ((block.nVersion & HARDFORK_VERSION_BIT) ? UintToArith256(params.hybridConsensusPowLimit) : UintToArith256(params.powLimit)))
+    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > ((block.nVersion & HARDFORK_VERSION_BIT) ? UintToArith256(params.hybridConsensusPowLimit) : UintToArith256(params.powLimit))) {
+        LogPrintf("ERROR: Failed while checking the block version range");
         return false;
+    }
 
     // Check proof of work matches claimed amount
     if (UintToArith256(block.GetHash()) > bnTarget)
+    {
+        LogPrintf("ERROR: Failed while comparing target to actual of block hash");
         return false;
+    }
 
     // if we are asked only to check block hash against difficulty, we are done
     if (!checkMLproof)
@@ -248,11 +253,17 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         return true;
 
     // if ML proof verification is switched off with a flag, we skip it
-    if (gArgs.GetBoolArg("-skipmlcheck", false))
+    if (gArgs.GetBoolArg("-skipmlcheck", false)) {
+        LogPrintf("WARN: Skipping ML check and accepting block.");
         return true;
+    }
 
     // check ML proof
-    return VerificationClient::Verify(block);
+    if (!VerificationClient::Verify(block)) {
+        LogPrintf("ERROR: Failed while verifying block using ML verification server");
+        return false;
+    }
+    return true;
 }
 
 /**
