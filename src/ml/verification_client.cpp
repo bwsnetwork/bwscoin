@@ -27,7 +27,7 @@ bool VerificationClient::Verify(const CBlockHeader& block)
     body.pushKV("block_header", blockHeaderHex);
 
     HttpClient client(verificationServerAddress);
-    auto response = client.post("/verify/", body);
+    auto response = client.post("/verify", body);
 
     return response.status == HttpResponse::Ok;
 }
