@@ -31,12 +31,11 @@ UniValue TaskInfoClient::GetFailedTasks(uint64_t page, uint64_t per_page)
 UniValue TaskInfoClient::GetTaskDetails(const std::string& task_id)
 {
     std::string verificationServerAddress = gArgs.GetArg("-verificationserver", "localhost:50011");
-
-    UniValue body(UniValue::VOBJ);
-    body.pushKV("task_id", task_id);
+    std::string endpoint = "/tasks/";
+    endpoint += task_id;
 
     HttpClient client(verificationServerAddress);
-    auto response = client.post("/taskinfo/taskdetails/", body);
+    auto response = client.post(endpoint, UniValue());
 
     return response.body;
 }
