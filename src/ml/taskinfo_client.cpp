@@ -66,13 +66,13 @@ UniValue TaskInfoClient::GetTasks(std::string state, uint64_t page, uint64_t per
     std::string verificationServerAddress = gArgs.GetArg("-verificationserver", "localhost:50011");
     std::string endpoint = "/tasks";
 
-    UniValue body(UniValue::VOBJ);
-    body.pushKV("state", state);
-    body.pushKV("page", page);
-    body.pushKV("per_page", per_page);
+    UniValue query_params(UniValue::VOBJ);
+    query_params.pushKV("state", state);
+    query_params.pushKV("page", page);
+    query_params.pushKV("per_page", per_page);
 
     HttpClient client(verificationServerAddress);
-    auto response = client.get(endpoint, body);
+    auto response = client.get(endpoint, query_params);
 
     if (response.status == 1) {
         return response.body;
