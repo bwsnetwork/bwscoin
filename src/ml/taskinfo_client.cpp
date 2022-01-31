@@ -35,7 +35,7 @@ UniValue TaskInfoClient::GetTaskDetails(const std::string& task_id)
     endpoint += task_id;
 
     HttpClient client(verificationServerAddress);
-    auto response = client.post(endpoint, UniValue());
+    auto response = client.get(endpoint, UniValue());
 
     return response.body;
 }
