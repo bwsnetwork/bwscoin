@@ -67,7 +67,7 @@ UniValue TaskInfoClient::GetTasks(std::string state, uint64_t page, uint64_t per
     std::string endpoint = "/tasks";
 
     UniValue query_params(UniValue::VOBJ);
-    query_params.pushKV("state", state);
+    query_params.pushKV("task_state", state);
     query_params.pushKV("page", page);
     query_params.pushKV("per_page", per_page);
 
