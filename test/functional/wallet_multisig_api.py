@@ -12,10 +12,10 @@ Scenarios using operations:
     getmasterpubkey
 """
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import *
 
-class WalletMultiSigOperations(PAIcoinTestFramework):
+class WalletMultiSigOperations(BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 3

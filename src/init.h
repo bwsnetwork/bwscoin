@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_INIT_H
-#define PAICOIN_INIT_H
+#ifndef BWSCOIN_INIT_H
+#define BWSCOIN_INIT_H
 
 #include <string>
 
@@ -26,7 +26,7 @@ void InitLogging();
 //!Parameter interaction: change current parameters depending on various rules
 void InitParameterInteraction();
 
-/** Initialize paicoin core: Basic context setup.
+/** Initialize bwscoin core: Basic context setup.
  *  @note This can be done before daemonization. Do not call Shutdown() if this function fails.
  *  @pre Parameters should be parsed and config file should be read.
  */
@@ -44,13 +44,13 @@ bool AppInitParameterInteraction();
  */
 bool AppInitSanityChecks();
 /**
- * Lock paicoin core data directory.
+ * Lock bwscoin core data directory.
  * @note This should only be done after daemonization. Do not call Shutdown() if this function fails.
  * @pre Parameters should be parsed and config file should be read, AppInitSanityChecks should have been called.
  */
 bool AppInitLockDataDirectory();
 /**
- * PAI Coin core main initialization.
+ * BWS Coin core main initialization.
  * @note This should only be done after daemonization. Call Shutdown() if this function fails.
  * @pre Parameters should be parsed and config file should be read, AppInitLockDataDirectory should have been called.
  */
@@ -58,8 +58,8 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler);
 
 /** The help message mode determines what help message to show */
 enum HelpMessageMode {
-    HMM_PAICOIND,
-    HMM_PAICOIN_QT
+    HMM_BWSCOIND,
+    HMM_BWSCOIN_QT
 };
 
 /** Help for options shared between UI and daemon (for -help) */
@@ -67,4 +67,4 @@ std::string HelpMessage(HelpMessageMode mode);
 /** Returns licensing information (for -version) */
 std::string LicenseInfo();
 
-#endif // PAICOIN_INIT_H
+#endif // BWSCOIN_INIT_H

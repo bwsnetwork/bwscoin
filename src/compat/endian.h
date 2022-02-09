@@ -2,11 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_COMPAT_ENDIAN_H
-#define PAICOIN_COMPAT_ENDIAN_H
+#ifndef BWSCOIN_COMPAT_ENDIAN_H
+#define BWSCOIN_COMPAT_ENDIAN_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #include "compat/byteswap.h"
@@ -193,4 +193,4 @@ inline uint64_t le64toh(uint64_t little_endian_64bits)
 
 #endif // WORDS_BIGENDIAN
 
-#endif // PAICOIN_COMPAT_ENDIAN_H
+#endif // BWSCOIN_COMPAT_ENDIAN_H

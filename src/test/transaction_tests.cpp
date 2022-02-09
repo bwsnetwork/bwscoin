@@ -8,7 +8,7 @@
 
 #include "data/tx_invalid.json.h"
 #include "data/tx_valid.json.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 
 #include "clientversion.h"
 #include "checkqueue.h"
@@ -23,7 +23,7 @@
 #include "script/sign.h"
 #include "script/script_error.h"
 #include "script/standard.h"
-#include "script/pai_data_classifier.h"
+#include "script/bws_data_classifier.h"
 #include "utilstrencodings.h"
 #include "stake/staketx.h"
 

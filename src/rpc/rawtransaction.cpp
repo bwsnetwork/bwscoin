@@ -117,10 +117,10 @@ bool CheckFilterAgainstVoutTxs(const CTransaction& tx, const lt_DestinationSet& 
 
 void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry, bool includeStake, const lt_HashToTransactionMap * const pHashToTransactionMap = nullptr)
 {
-    // Call into TxToUniv() in paicoin-common to decode the transaction hex.
+    // Call into TxToUniv() in bwscoin-common to decode the transaction hex.
     //
     // Blockchain contextual information (confirmations and blocktime) is not
-    // available to code in paicoin-common, so we query them here and push the
+    // available to code in bwscoin-common, so we query them here and push the
     // data into the returned UniValue.
     TxToUniv(tx, uint256(), entry, includeStake, true, RPCSerializationFlags(), pHashToTransactionMap);
 
@@ -206,7 +206,7 @@ UniValue getrawtransaction(const JSONRPCRequest& request)
             "         \"reqSigs\" : n,            (numeric) The required sigs\n"
             "         \"type\" : \"pubkeyhash\",  (string) The type, eg 'pubkeyhash'\n"
             "         \"addresses\" : [           (json array of string)\n"
-            "           \"address\"        (string) paicoin address\n"
+            "           \"address\"        (string) bwscoin address\n"
             "           ,...\n"
             "         ]\n"
             "       }\n"
@@ -283,7 +283,7 @@ UniValue searchrawtransactions(const JSONRPCRequest& request)
 		    "Usage of this RPC requires the optional --addrindex flag to be activated, otherwise all responses will simply return with an error stating the address index has not yet been built.\n"
 		    "Similarly, until the address index has caught up with the current best height, all requests will return an error response in order to avoid serving stale data.\n"
             "\nArguments:\n"
-            "1. \"address\"      (string, required) The PAIcoin address to search for\n"
+            "1. \"address\"      (string, required) The BWScoin address to search for\n"
             "2. \"verbose\"= 0|1 (integer, optional, default=\"0\") Specifies the transaction is returned as a JSON object instead of hex-encoded string\n"
             "3. \"skip\"         (integer, optional) The number of leading transactions to leave out of the final response\n"
             "4. \"count\"        (integer, optional) The maximum number of transactions to return\n"
@@ -327,7 +327,7 @@ UniValue searchrawtransactions(const JSONRPCRequest& request)
             const auto& sAddr    = addr.get_str();
             CTxDestination destination = DecodeDestination(sAddr);
             if (!IsValidDestination(destination))
-                throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, std::string("Invalid PAIcoin address: ") + sAddr);
+                throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, std::string("Invalid BWScoin address: ") + sAddr);
             if (setFilterAddrs.count(destination))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ") + sAddr);
             setFilterAddrs.insert(destination);
@@ -340,7 +340,7 @@ UniValue searchrawtransactions(const JSONRPCRequest& request)
     const auto& name_ = request.params[0].get_str();
     CTxDestination destination = DecodeDestination(name_);
     if (!IsValidDestination(destination))
-        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid PAIcoin address: ") + name_);
+        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWScoin address: ") + name_);
 
     std::set<CExtDiskTxPos> setpos;
     if (!FindTransactionsByDestination(destination, setpos))
@@ -536,7 +536,7 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
             "     ]\n"
             "2. \"outputs\"               (object, required) a json object with outputs\n"
             "    {\n"
-            "      \"address\": x.xxx,    (numeric or string, required) The key is the paicoin address, the numeric value (can be string) is the " + CURRENCY_UNIT + " amount\n"
+            "      \"address\": x.xxx,    (numeric or string, required) The key is the bwscoin address, the numeric value (can be string) is the " + CURRENCY_UNIT + " amount\n"
             "      \"data\": \"hex\"      (string, required) The key is \"data\", the value is hex encoded data\n"
             "      \"struct\"             (object, required) An object with individual data items to be added to the script\n"
             "       {\n"
@@ -656,7 +656,7 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
         } else {
             CTxDestination destination = DecodeDestination(name_);
             if (!IsValidDestination(destination)) {
-                throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid PAI Coin address: ") + name_);
+                throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWS Coin address: ") + name_);
             }
 
             if (!destinations.insert(destination).second) {
@@ -727,7 +727,7 @@ UniValue decoderawtransaction(const JSONRPCRequest& request)
             "         \"reqSigs\" : n,            (numeric) The required sigs\n"
             "         \"type\" : \"pubkeyhash\",  (string) The type, eg 'pubkeyhash'\n"
             "         \"addresses\" : [           (json array of string)\n"
-            "           \"12tvKAXCxZjSmdNbao16dKXC8tRWfcF5oc\"   (string) paicoin address\n"
+            "           \"12tvKAXCxZjSmdNbao16dKXC8tRWfcF5oc\"   (string) bwscoin address\n"
             "           ,...\n"
             "         ]\n"
             "       }\n"
@@ -770,7 +770,7 @@ UniValue decodescript(const JSONRPCRequest& request)
             "  \"type\":\"type\", (string) The output type\n"
             "  \"reqSigs\": n,    (numeric) The required signatures\n"
             "  \"addresses\": [   (json array of string)\n"
-            "     \"address\"     (string) paicoin address\n"
+            "     \"address\"     (string) bwscoin address\n"
             "     ,...\n"
             "  ],\n"
             "  \"p2sh\",\"address\" (string) address of P2SH script wrapping this redeem script (not returned if the script is already a P2SH).\n"

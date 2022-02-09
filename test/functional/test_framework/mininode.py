@@ -4,17 +4,17 @@
 # Copyright (c) 2010-2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""PAI Coin P2P network half-a-node.
+"""BWS Coin P2P network half-a-node.
 
 This python code was modified from ArtForz' public domain  half-a-node, as
 found in the mini-node branch of http://github.com/jgarzik/pynode.
 
-NodeConn: an object which manages p2p connectivity to a paicoin node
+NodeConn: an object which manages p2p connectivity to a bwscoin node
 NodeConnCB: a base class that describes the interface for receiving
             callbacks with network messages from a NodeConn
 CBlock, CTransaction, CBlockHeader, CTxIn, CTxOut, etc....:
     data structures that should map to corresponding structures in
-    paicoin/primitives
+    bwscoin/primitives
 msg_block, msg_tx, msg_headers, etc.:
     data structures that represent network messages
 ser_*, deser_*: functions that handle serialization/deserialization
@@ -45,7 +45,7 @@ MY_RELAY = 1 # from version 70001 onwards, fRelay should be appended to version 
 MAX_INV_SZ = 50000
 MAX_BLOCK_BASE_SIZE = 1000000
 
-COIN = 100000000 # 1 PAI in satoshis
+COIN = 100000000 # 1 BWS in satoshis
 
 NODE_NETWORK = (1 << 0)
 # NODE_GETUTXO = (1 << 1)
@@ -254,7 +254,7 @@ def FromHex(obj, hex_string):
 def ToHex(obj):
     return bytes_to_hex_str(obj.serialize())
 
-# Objects that map to paicoind objects, which can be serialized/deserialized
+# Objects that map to bwscoind objects, which can be serialized/deserialized
 
 class CAddress(object):
     def __init__(self):
@@ -488,7 +488,7 @@ class CTransaction(object):
         if len(self.vin) == 0:
             flags = struct.unpack("<B", f.read(1))[0]
             # Not sure why flags can't be zero, but this
-            # matches the implementation in paicoind
+            # matches the implementation in bwscoind
             if (flags != 0):
                 self.vin = deser_vector(f, CTxIn)
                 self.vout = deser_vector(f, CTxOut)
@@ -625,11 +625,11 @@ class CBlockHeader(object):
             self.nStakeDifficulty = struct.unpack("<q", f.read(8))[0]
             self.nVoteBits= struct.unpack("<H", f.read(2))[0]
             self.nTicketPoolSize= struct.unpack("<I", f.read(4))[0]
-            self.ticketLotteryState= deser_hexcode(self.ticketLotteryState,48) # when GetHex is used in paicoind use deser_uint48
+            self.ticketLotteryState= deser_hexcode(self.ticketLotteryState,48) # when GetHex is used in bwscoind use deser_uint48
             self.nVoters= struct.unpack("<H", f.read(2))[0]
             self.nFreshStake= struct.unpack("<B", f.read(1))[0]
             self.nRevocations= struct.unpack("<B",  f.read(1))[0]
-            self.extraData= deser_hexcode(self.extraData,256) # when GetHex is used in paicoind use deser_uint256
+            self.extraData= deser_hexcode(self.extraData,256) # when GetHex is used in bwscoind use deser_uint256
             self.nStakeVersion= struct.unpack("<I", f.read(4))[0]
         self.sha256 = None
         self.hash = None
@@ -647,11 +647,11 @@ class CBlockHeader(object):
             r += struct.pack("<q", self.nStakeDifficulty)
             r += struct.pack("<H", self.nVoteBits)
             r += struct.pack("<I", self.nTicketPoolSize)
-            r += ser_hexcode(self.ticketLotteryState) # when GetHex is used in paicoind use ser_uint48
+            r += ser_hexcode(self.ticketLotteryState) # when GetHex is used in bwscoind use ser_uint48
             r += struct.pack("<H", self.nVoters)
             r += struct.pack("<B", self.nFreshStake)
             r += struct.pack("<B", self.nRevocations)
-            r += ser_hexcode(self.extraData) # when GetHex is used in paicoind use ser_uint256
+            r += ser_hexcode(self.extraData) # when GetHex is used in bwscoind use ser_uint256
             r += struct.pack("<I", self.nStakeVersion)
         return r
 
@@ -668,11 +668,11 @@ class CBlockHeader(object):
                 r += struct.pack("<q", self.nStakeDifficulty)
                 r += struct.pack("<H", self.nVoteBits)
                 r += struct.pack("<I", self.nTicketPoolSize)
-                r += ser_hexcode(self.ticketLotteryState) # when GetHex is used in paicoind use ser_uint48
+                r += ser_hexcode(self.ticketLotteryState) # when GetHex is used in bwscoind use ser_uint48
                 r += struct.pack("<H", self.nVoters)
                 r += struct.pack("<B", self.nFreshStake)
                 r += struct.pack("<B", self.nRevocations)
-                r += ser_hexcode(self.extraData) # when GetHex is used in paicoind use ser_uint256
+                r += ser_hexcode(self.extraData) # when GetHex is used in bwscoind use ser_uint256
                 r += struct.pack("<I", self.nStakeVersion)
                 self.sha256 = uint256_from_str(shake256(r))
                 self.hash = encode(shake256(r)[::-1], 'hex_codec').decode('ascii')
@@ -1412,7 +1412,7 @@ class msg_headers(object):
         self.headers = headers if headers is not None else []
 
     def deserialize(self, f):
-        # comment in paicoind indicates these should be deserialized as blocks
+        # comment in bwscoind indicates these should be deserialized as blocks
         blocks = deser_vector(f, CBlock)
         for x in blocks:
             self.headers.append(CBlockHeader(x))
@@ -1553,7 +1553,7 @@ class msg_witness_blocktxn(msg_blocktxn):
         return r
 
 class NodeConnCB(object):
-    """Callback and helper functions for P2P connection to a paicoind node.
+    """Callback and helper functions for P2P connection to a bwscoind node.
 
     Individual testcases should subclass this and override the on_* methods
     if they want to alter message handling behaviour.
@@ -1774,7 +1774,7 @@ class NodeConn(asyncore.dispatcher):
             vt.addrFrom.port = 0
             self.send_message(vt, True)
 
-        logger.info('Connecting to PAI Coin Node: %s:%d' % (self.dstaddr, self.dstport))
+        logger.info('Connecting to BWS Coin Node: %s:%d' % (self.dstaddr, self.dstport))
 
         try:
             self.connect((dstaddr, dstport))

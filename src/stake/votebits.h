@@ -4,8 +4,8 @@
  */
 
 
-#ifndef PAICOIN_STAKE_VOTEBITS_H
-#define PAICOIN_STAKE_VOTEBITS_H
+#ifndef BWSCOIN_STAKE_VOTEBITS_H
+#define BWSCOIN_STAKE_VOTEBITS_H
 
 #include <cstdint>
 
@@ -99,4 +99,4 @@ private:
     uint16_t vb;
 };
 
-#endif //PAICOIN_STAKE_VOTEBITS_H
+#endif //BWSCOIN_STAKE_VOTEBITS_H

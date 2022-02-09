@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_SENDCOINSENTRY_H
-#define PAICOIN_QT_SENDCOINSENTRY_H
+#ifndef BWSCOIN_QT_SENDCOINSENTRY_H
+#define BWSCOIN_QT_SENDCOINSENTRY_H
 
 #include "walletmodel.h"
 
@@ -17,7 +17,7 @@ namespace Ui {
 }
 
 /**
- * A single entry in the dialog for sending paicoins.
+ * A single entry in the dialog for sending bwscoins.
  * Stacked widget, with different UIs for payment requests
  * with a strong payee identity.
  */
@@ -70,4 +70,4 @@ private:
     bool updateLabel(const QString &address);
 };
 
-#endif // PAICOIN_QT_SENDCOINSENTRY_H
+#endif // BWSCOIN_QT_SENDCOINSENTRY_H

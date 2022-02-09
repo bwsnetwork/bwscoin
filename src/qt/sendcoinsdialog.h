@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_SENDCOINSDIALOG_H
-#define PAICOIN_QT_SENDCOINSDIALOG_H
+#ifndef BWSCOIN_QT_SENDCOINSDIALOG_H
+#define BWSCOIN_QT_SENDCOINSDIALOG_H
 
 #include "walletmodel.h"
 
@@ -25,7 +25,7 @@ QT_BEGIN_NAMESPACE
 class QUrl;
 QT_END_NAMESPACE
 
-/** Dialog for sending paicoins */
+/** Dialog for sending bwscoins */
 class SendCoinsDialog : public QDialog
 {
     Q_OBJECT
@@ -120,4 +120,4 @@ private:
     int secDelay;
 };
 
-#endif // PAICOIN_QT_SENDCOINSDIALOG_H
+#endif // BWSCOIN_QT_SENDCOINSDIALOG_H

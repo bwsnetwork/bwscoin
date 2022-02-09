@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_SCRIPT_INTERPRETER_H
-#define PAICOIN_SCRIPT_INTERPRETER_H
+#ifndef BWSCOIN_SCRIPT_INTERPRETER_H
+#define BWSCOIN_SCRIPT_INTERPRETER_H
 
 #include "script_error.h"
 #include "primitives/transaction.h"
@@ -188,4 +188,4 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, const C
 
 size_t CountWitnessSigOps(const CScript& scriptSig, const CScript& scriptPubKey, const CScriptWitness* witness, unsigned int flags);
 
-#endif // PAICOIN_SCRIPT_INTERPRETER_H
+#endif // BWSCOIN_SCRIPT_INTERPRETER_H

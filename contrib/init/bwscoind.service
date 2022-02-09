@@ -1,0 +1,22 @@
+[Unit]
+Description=BWS Coin's distributed currency daemon
+After=network.target
+
+[Service]
+User=bwscoin
+Group=bwscoin
+
+Type=forking
+PIDFile=/var/lib/bwscoind/bwscoind.pid
+ExecStart=/usr/bin/bwscoind -daemon -pid=/var/lib/bwscoind/bwscoind.pid \
+-conf=/etc/bwscoin/bwscoin.conf -datadir=/var/lib/bwscoind -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

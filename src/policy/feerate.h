@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_POLICY_FEERATE_H
-#define PAICOIN_POLICY_FEERATE_H
+#ifndef BWSCOIN_POLICY_FEERATE_H
+#define BWSCOIN_POLICY_FEERATE_H
 
 #include "amount.h"
 #include "serialize.h"
@@ -59,4 +59,4 @@ public:
     }
 };
 
-#endif //  PAICOIN_POLICY_FEERATE_H
+#endif //  BWSCOIN_POLICY_FEERATE_H

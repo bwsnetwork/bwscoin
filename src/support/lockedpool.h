@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_SUPPORT_LOCKEDPOOL_H
-#define PAICOIN_SUPPORT_LOCKEDPOOL_H
+#ifndef BWSCOIN_SUPPORT_LOCKEDPOOL_H
+#define BWSCOIN_SUPPORT_LOCKEDPOOL_H
 
 #include <stdint.h>
 #include <list>
@@ -231,4 +231,4 @@ private:
     static std::once_flag init_flag;
 };
 
-#endif // PAICOIN_SUPPORT_LOCKEDPOOL_H
+#endif // BWSCOIN_SUPPORT_LOCKEDPOOL_H

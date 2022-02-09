@@ -1,12 +1,12 @@
 /* * Copyright (c) 2009-2016 The Bitcoin Core developers
- * Copyright (c) 2017-2020 Project PAI Foundation
+ * Copyright (c) 2017-2020 Project BWS Foundation
  * Distributed under the MIT software license, see the accompanying
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  */
 
 
-#ifndef PAICOIN_QT_WALLETMODEL_H
-#define PAICOIN_QT_WALLETMODEL_H
+#ifndef BWSCOIN_QT_WALLETMODEL_H
+#define BWSCOIN_QT_WALLETMODEL_H
 
 #include <amount.h>
 #include <key.h>
@@ -102,7 +102,7 @@ public:
     }
 };
 
-/** Interface to PAI Coin wallet from Qt view code. */
+/** Interface to BWS Coin wallet from Qt view code. */
 class WalletModel : public QObject
 {
     Q_OBJECT
@@ -293,4 +293,4 @@ public Q_SLOTS:
     void pollBalanceChanged();
 };
 
-#endif // PAICOIN_QT_WALLETMODEL_H
+#endif // BWSCOIN_QT_WALLETMODEL_H

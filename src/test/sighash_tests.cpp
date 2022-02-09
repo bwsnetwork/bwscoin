@@ -10,7 +10,7 @@
 #include "script/script.h"
 #include "serialize.h"
 #include "streams.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 #include "util.h"
 #include "utilstrencodings.h"
 #include "version.h"
@@ -105,7 +105,7 @@ void static RandomTransaction(CMutableTransaction &tx, bool fSingle) {
         txin.prevout.hash = InsecureRand256();
         txin.prevout.n = InsecureRandBits(2);
         RandomScript(txin.scriptSig);
-        txin.nSequence = (InsecureRandBool()) ? InsecureRand32() : (unsigned int)-1;
+        txin.nSequence = (InsecureRandBool()) ? InsecureRand32() : std::numeric_limits<uint32_t>::max();
     }
     for (int out = 0; out < outs; out++) {
         tx.vout.push_back(CTxOut());
@@ -121,7 +121,7 @@ BOOST_FIXTURE_TEST_SUITE(sighash_tests, BasicTestingSetup)
  * Note: If this unit test needs an update, follow this procedure:
  * 1. uncomment the definition of PRINT_SIGHASH_JSON
  * 2. make check
- * 3. from test_paicoin.log copy the output json into sighash.json
+ * 3. overwrite data/sighash.json with the newly generated file
  * 4. comment the definition of PRINT_SIGHASH_JSON
  * 5. make check
  */ 
@@ -132,8 +132,9 @@ BOOST_AUTO_TEST_CASE(sighash_test)
     SeedInsecureRand(false);
 
     #if defined(PRINT_SIGHASH_JSON)
-    std::cout << "[\n";
-    std::cout << "\t[\"raw_transaction, script, input_index, hashType, signature_hash (result)\"],\n";
+    std::ofstream sighash_file("sighash.json");
+    sighash_file << "[\n";
+    sighash_file << "\t[\"raw_transaction, script, input_index, hashType, signature_hash (result)\"],\n";
     int nRandomTests = 500;
     #else
     int nRandomTests = 50000;
@@ -147,27 +148,28 @@ BOOST_AUTO_TEST_CASE(sighash_test)
         int nIn = InsecureRandRange(txTo.vin.size());
 
         uint256 sh, sho;
-        sho = SignatureHashOld(scriptCode, txTo, nIn, nHashType);
+        sho = SignatureHashOld(scriptCode, CTransaction(txTo), nIn, nHashType);
         sh = SignatureHash(scriptCode, txTo, nIn, nHashType, 0, SIGVERSION_BASE);
         #if defined(PRINT_SIGHASH_JSON)
         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
         ss << txTo;
 
-        std::cout << "\t[\"" ;
-        std::cout << HexStr(ss.begin(), ss.end()) << "\", \"";
-        std::cout << HexStr(scriptCode) << "\", ";
-        std::cout << nIn << ", ";
-        std::cout << nHashType << ", \"";
-        std::cout << sho.GetHex() << "\"]";
+        sighash_file << "\t[\"" ;
+        sighash_file << HexStr(ss.begin(), ss.end()) << "\", \"";
+        sighash_file << HexStr(scriptCode) << "\", ";
+        sighash_file << nIn << ", ";
+        sighash_file << nHashType << ", \"";
+        sighash_file << sho.GetHex() << "\"]";
         if (i+1 != nRandomTests) {
-          std::cout << ",";
+          sighash_file << ",";
         }
-        std::cout << "\n";
+        sighash_file << "\n";
         #endif
         BOOST_CHECK(sh == sho);
     }
     #if defined(PRINT_SIGHASH_JSON)
-    std::cout << "]\n";
+    sighash_file << "]\n";
+    sighash_file.close();
     #endif
 }
 

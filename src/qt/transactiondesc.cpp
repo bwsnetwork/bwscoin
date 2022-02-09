@@ -8,7 +8,7 @@
 
 #include "transactiondesc.h"
 
-#include "paicoinunits.h"
+#include "bwscoinunits.h"
 #include "guiutil.h"
 #include "paymentserver.h"
 #include "transactionrecord.h"
@@ -142,7 +142,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
             nUnmatured += wallet->GetCredit(txClass, i, wtx.tx->vout[i], ISMINE_ALL);
         strHTML += "<b>" + tr("Credit") + ":</b> ";
         if (wtx.IsInMainChain())
-            strHTML += PAIcoinUnits::formatHtmlWithUnit(unit, nUnmatured)+ " (" + tr("matures in %n more block(s)", "", wtx.GetBlocksToMaturity()) + ")";
+            strHTML += BWScoinUnits::formatHtmlWithUnit(unit, nUnmatured)+ " (" + tr("matures in %n more block(s)", "", wtx.GetBlocksToMaturity()) + ")";
         else
             strHTML += "(" + tr("not accepted") + ")";
         strHTML += "<br>";
@@ -152,7 +152,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
         //
         // Credit
         //
-        strHTML += "<b>" + tr("Credit") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, nNet) + "<br>";
+        strHTML += "<b>" + tr("Credit") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, nNet) + "<br>";
     }
     else
     {
@@ -203,9 +203,9 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
                     }
                 }
 
-                strHTML += "<b>" + tr("Debit") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, -txout.nValue) + "<br>";
+                strHTML += "<b>" + tr("Debit") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, -txout.nValue) + "<br>";
                 if(toSelf)
-                    strHTML += "<b>" + tr("Credit") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, txout.nValue) + "<br>";
+                    strHTML += "<b>" + tr("Credit") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, txout.nValue) + "<br>";
             }
 
             if (fAllToMe)
@@ -213,13 +213,13 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
                 // Payment to self
                 CAmount nChange = wtx.GetChange();
                 CAmount nValue = nCredit - nChange;
-                strHTML += "<b>" + tr("Total debit") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, -nValue) + "<br>";
-                strHTML += "<b>" + tr("Total credit") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, nValue) + "<br>";
+                strHTML += "<b>" + tr("Total debit") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, -nValue) + "<br>";
+                strHTML += "<b>" + tr("Total credit") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, nValue) + "<br>";
             }
 
             CAmount nTxFee = nDebit - wtx.tx->GetValueOut();
             if (nTxFee > 0)
-                strHTML += "<b>" + tr("Transaction fee") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, -nTxFee) + "<br>";
+                strHTML += "<b>" + tr("Transaction fee") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, -nTxFee) + "<br>";
         }
         else
         {
@@ -228,16 +228,16 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
             //
             for (const CTxIn& txin : wtx.tx->vin)
                 if (wallet->IsMine(txin))
-                    strHTML += "<b>" + tr("Debit") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, -wallet->GetDebit(txClass, txin, ISMINE_ALL)) + "<br>";
+                    strHTML += "<b>" + tr("Debit") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, -wallet->GetDebit(txClass, txin, ISMINE_ALL)) + "<br>";
             for (uint32_t i = 0; i < wtx.tx->vout.size(); ++i) {
                 const CTxOut& txout = wtx.tx->vout[i];
                 if (wallet->IsMine(txout))
-                    strHTML += "<b>" + tr("Credit") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, wallet->GetCredit(txClass, i, txout, ISMINE_ALL)) + "<br>";
+                    strHTML += "<b>" + tr("Credit") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, wallet->GetCredit(txClass, i, txout, ISMINE_ALL)) + "<br>";
             }
         }
     }
 
-    strHTML += "<b>" + tr("Net amount") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, nNet, true) + "<br>";
+    strHTML += "<b>" + tr("Net amount") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, nNet, true) + "<br>";
 
     //
     // Message
@@ -251,7 +251,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
     strHTML += "<b>" + tr("Transaction total size") + ":</b> " + QString::number(wtx.tx->GetTotalSize()) + " bytes<br>";
     strHTML += "<b>" + tr("Output index") + ":</b> " + QString::number(rec->getOutputIndex()) + "<br>";
 
-    // Message from normal paicoin:URI (paicoin:123...?message=example)
+    // Message from normal bwscoin:URI (bwscoin:123...?message=example)
     for (const std::pair<std::string, std::string>& r : wtx.vOrderForm)
         if (r.first == "Message")
             strHTML += "<br><b>" + tr("Message") + ":</b><br>" + GUIUtil::HtmlEscape(r.second, true) + "<br>";
@@ -285,11 +285,11 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
         strHTML += "<hr><br>" + tr("Debug information") + "<br><br>";
         for (const CTxIn& txin : wtx.tx->vin)
             if(wallet->IsMine(txin))
-                strHTML += "<b>" + tr("Debit") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, -wallet->GetDebit(txClass, txin, ISMINE_ALL)) + "<br>";
+                strHTML += "<b>" + tr("Debit") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, -wallet->GetDebit(txClass, txin, ISMINE_ALL)) + "<br>";
         for (uint32_t i = 0; i < wtx.tx->vout.size(); ++i) {
             const CTxOut& txout = wtx.tx->vout[i];
             if (wallet->IsMine(txout))
-                strHTML += "<b>" + tr("Credit") + ":</b> " + PAIcoinUnits::formatHtmlWithUnit(unit, wallet->GetCredit(txClass, i, txout, ISMINE_ALL)) + "<br>";
+                strHTML += "<b>" + tr("Credit") + ":</b> " + BWScoinUnits::formatHtmlWithUnit(unit, wallet->GetCredit(txClass, i, txout, ISMINE_ALL)) + "<br>";
         }
 
         strHTML += "<br><b>" + tr("Transaction") + ":</b><br>";
@@ -315,7 +315,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
                             strHTML += GUIUtil::HtmlEscape(wallet->mapAddressBook[address].name) + " ";
                         strHTML += QString::fromStdString(EncodeDestination(address));
                     }
-                    strHTML = strHTML + " " + tr("Amount") + "=" + PAIcoinUnits::formatHtmlWithUnit(unit, vout.nValue);
+                    strHTML = strHTML + " " + tr("Amount") + "=" + BWScoinUnits::formatHtmlWithUnit(unit, vout.nValue);
                     strHTML = strHTML + " IsMine=" + (wallet->IsMine(vout) & ISMINE_SPENDABLE ? tr("true") : tr("false")) + "</li>";
                     strHTML = strHTML + " IsWatchOnly=" + (wallet->IsMine(vout) & ISMINE_WATCH_ONLY ? tr("true") : tr("false")) + "</li>";
                 }

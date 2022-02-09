@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_WALLET_WALLETDB_H
-#define PAICOIN_WALLET_WALLETDB_H
+#ifndef BWSCOIN_WALLET_WALLETDB_H
+#define BWSCOIN_WALLET_WALLETDB_H
 
 #include "amount.h"
 #include "primitives/transaction.h"
@@ -254,4 +254,4 @@ private:
 //! Compacts BDB state so that wallet.dat is self-contained (if there are changes)
 void MaybeCompactWalletDB();
 
-#endif // PAICOIN_WALLET_WALLETDB_H
+#endif // BWSCOIN_WALLET_WALLETDB_H

@@ -13,10 +13,10 @@ Scenarios:
 import os
 import time
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework import util
 
-class StakeAPITest(PAIcoinTestFramework):
+class StakeAPITest(BWScoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
         self.enable_mocktime()

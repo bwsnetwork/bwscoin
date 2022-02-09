@@ -19,35 +19,25 @@ else
 LIBUNIVALUE = $(UNIVALUE_LIBS)
 endif
 
-PAICOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
+BWSCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
 
-PAICOIN_INCLUDES += -I$(srcdir)/secp256k1/include
-PAICOIN_INCLUDES += $(UNIVALUE_CFLAGS)
+BWSCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
+BWSCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
 
-LIBPAICOIN_SERVER=libpaicoin_server.a
-LIBPAICOIN_COMMON=libpaicoin_common.a
-LIBPAICOIN_CONSENSUS=libpaicoin_consensus.a
-LIBPAICOIN_CLI=libpaicoin_cli.a
-LIBPAICOIN_UTIL=libpaicoin_util.a
-LIBPAICOIN_CRYPTO=crypto/libpaicoin_crypto.a
-LIBPAICOINQT=qt/libpaicoinqt.a
+LIBBWSCOIN_SERVER=libbwscoin_server.a
+LIBBWSCOIN_COMMON=libbwscoin_common.a
+LIBBWSCOIN_CONSENSUS=libbwscoin_consensus.a
+LIBBWSCOIN_CLI=libbwscoin_cli.a
+LIBBWSCOIN_UTIL=libbwscoin_util.a
+LIBBWSCOIN_CRYPTO=crypto/libbwscoin_crypto.a
+LIBBWSCOINQT=qt/libbwscoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
-if TARGET_WINDOWS
-LIBPAICOINHASH=-L$(srcdir)/crypto/paicoinhash/win -lpaicoinhash
-else
-if TARGET_DARWIN
-LIBPAICOINHASH=-L$(srcdir)/crypto/paicoinhash/macos -lpaicoinhash
-else
-LIBPAICOINHASH= -L$(srcdir)/crypto/paicoinhash/linux -lpaicoinhash
-endif
-endif
-
 if ENABLE_ZMQ
-LIBPAICOIN_ZMQ=libpaicoin_zmq.a
+LIBBWSCOIN_ZMQ=libbwscoin_zmq.a
 endif
 if ENABLE_WALLET
-LIBPAICOIN_WALLET=libpaicoin_wallet.a
+LIBBWSCOIN_WALLET=libbwscoin_wallet.a
 endif
 
 $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
@@ -56,31 +46,31 @@ $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
 # Make is not made aware of per-object dependencies to avoid limiting building parallelization
 # But to build the less dependent modules first, we manually select their order here:
 EXTRA_LIBRARIES += \
-  $(LIBPAICOIN_CRYPTO) \
-  $(LIBPAICOIN_UTIL) \
-  $(LIBPAICOIN_COMMON) \
-  $(LIBPAICOIN_CONSENSUS) \
-  $(LIBPAICOIN_SERVER) \
-  $(LIBPAICOIN_CLI) \
-  $(LIBPAICOIN_WALLET) \
-  $(LIBPAICOIN_ZMQ)
+  $(LIBBWSCOIN_CRYPTO) \
+  $(LIBBWSCOIN_UTIL) \
+  $(LIBBWSCOIN_COMMON) \
+  $(LIBBWSCOIN_CONSENSUS) \
+  $(LIBBWSCOIN_SERVER) \
+  $(LIBBWSCOIN_CLI) \
+  $(LIBBWSCOIN_WALLET) \
+  $(LIBBWSCOIN_ZMQ)
 
 bin_PROGRAMS =
 noinst_PROGRAMS =
 TESTS =
 BENCHMARKS =
 
-if BUILD_PAICOIND
-  bin_PROGRAMS += paicoind
+if BUILD_BWSCOIND
+  bin_PROGRAMS += bwscoind
 endif
 
-if BUILD_PAICOIN_UTILS
-  bin_PROGRAMS += paicoin-cli paicoin-block-generator paicoin-tx
+if BUILD_BWSCOIN_UTILS
+  bin_PROGRAMS += bwscoin-cli bwscoin-block-generator bwscoin-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
-# paicoin core #
-PAICOIN_CORE_H = \
+# bwscoin core #
+BWSCOIN_CORE_H = \
   addrdb.h \
   addrman.h \
   base58.h \
@@ -106,6 +96,7 @@ PAICOIN_CORE_H = \
   core_memusage.h \
   cuckoocache.h \
   fs.h \
+  httpclient.h \
   httprpc.h \
   httpserver.h \
   indirectmap.h \
@@ -118,6 +109,8 @@ PAICOIN_CORE_H = \
   memusage.h \
   merkleblock.h \
   miner.h \
+  ml/verification_client.h \
+  ml/taskinfo_client.h \
   net.h \
   net_processing.h \
   netaddress.h \
@@ -167,12 +160,6 @@ PAICOIN_CORE_H = \
   utiltime.h \
   validation.h \
   validationinterface.h \
-  verifier.pb.h \
-  verifier.grpc.pb.h \
-  verification_client.h \
-  task_info.pb.h \
-  task_info.grpc.pb.h \
-  task_info_client.h \
   versionbits.h \
   wallet/coincontrol.h \
   wallet/crypter.h \
@@ -194,28 +181,27 @@ obj/build.h: FORCE
 	@$(MKDIR_P) $(builddir)/obj
 	@$(top_srcdir)/share/genbuild.sh "$(abs_top_builddir)/src/obj/build.h" \
 	  "$(abs_top_srcdir)"
-libpaicoin_util_a-clientversion.$(OBJEXT): obj/build.h
+libbwscoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between paicoind and paicoin-qt
-libpaicoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(PAICOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
-libpaicoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpaicoin_server_a_SOURCES = \
-  task_info.pb.cc \
-  task_info.grpc.pb.cc \
-  verifier.pb.cc \
-  verifier.grpc.pb.cc \
+# server: shared between bwscoind and bwscoin-qt
+libbwscoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
+libbwscoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbwscoin_server_a_SOURCES = \
   addrdb.cpp \
   addrman.cpp \
   bloom.cpp \
   blockencodings.cpp \
   checkpoints.cpp \
   consensus/tx_verify.cpp \
+  httpclient.cpp \
   httprpc.cpp \
   httpserver.cpp \
   init.cpp \
   dbwrapper.cpp \
   merkleblock.cpp \
   miner.cpp \
+  ml/verification_client.cpp \
+  ml/taskinfo_client.cpp \
   net.cpp \
   net_processing.cpp \
   noui.cpp \
@@ -244,23 +230,23 @@ libpaicoin_server_a_SOURCES = \
   validation.cpp \
   validationinterface.cpp \
   versionbits.cpp \
-  $(PAICOIN_CORE_H)
+  $(BWSCOIN_CORE_H)
 
 if ENABLE_ZMQ
-libpaicoin_zmq_a_CPPFLAGS = $(PAICOIN_INCLUDES) $(ZMQ_CFLAGS)
-libpaicoin_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpaicoin_zmq_a_SOURCES = \
+libbwscoin_zmq_a_CPPFLAGS = $(BWSCOIN_INCLUDES) $(ZMQ_CFLAGS)
+libbwscoin_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbwscoin_zmq_a_SOURCES = \
   zmq/zmqabstractnotifier.cpp \
   zmq/zmqnotificationinterface.cpp \
   zmq/zmqpublishnotifier.cpp
 endif
 
 
-# wallet: shared between paicoind and paicoin-qt, but only linked
+# wallet: shared between bwscoind and bwscoin-qt, but only linked
 # when wallet enabled
-libpaicoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(PAICOIN_INCLUDES)
-libpaicoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpaicoin_wallet_a_SOURCES = \
+libbwscoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES)
+libbwscoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbwscoin_wallet_a_SOURCES = \
   wallet/crypter.cpp \
   wallet/db.cpp \
   wallet/feebumper.cpp \
@@ -277,13 +263,13 @@ libpaicoin_wallet_a_SOURCES = \
   wallet/wallet.cpp \
   wallet/walletdb.cpp \
   stake/stakepoolfee.cpp \
-  $(PAICOIN_CORE_H)
+  $(BWSCOIN_CORE_H)
 
 # crypto primitives library
-crypto_libpaicoin_crypto_a_CFLAGS = $(AM_CFLAGS) $(PIC_FLAGS)
-crypto_libpaicoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS)
-crypto_libpaicoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-crypto_libpaicoin_crypto_a_SOURCES = \
+crypto_libbwscoin_crypto_a_CFLAGS = $(AM_CFLAGS) $(PIC_FLAGS)
+crypto_libbwscoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS)
+crypto_libbwscoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+crypto_libbwscoin_crypto_a_SOURCES = \
   crypto/aes.cpp \
   crypto/aes.h \
   crypto/chacha20.h \
@@ -305,13 +291,13 @@ crypto_libpaicoin_crypto_a_SOURCES = \
   crypto/tiny_sha3.h
 
 if USE_ASM
-crypto_libpaicoin_crypto_a_SOURCES += crypto/sha256_sse4.cpp
+crypto_libbwscoin_crypto_a_SOURCES += crypto/sha256_sse4.cpp
 endif
 
 # consensus: shared between all executables that validate any consensus rules.
-libpaicoin_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(PAICOIN_INCLUDES)
-libpaicoin_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpaicoin_consensus_a_SOURCES = \
+libbwscoin_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES)
+libbwscoin_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbwscoin_consensus_a_SOURCES = \
   amount.h \
   arith_uint256.cpp \
   arith_uint256.h \
@@ -331,7 +317,7 @@ libpaicoin_consensus_a_SOURCES = \
   primitives/transaction.h \
   pubkey.cpp \
   pubkey.h \
-  script/paicoinconsensus.cpp \
+  script/bwscoinconsensus.cpp \
   script/interpreter.cpp \
   script/interpreter.h \
   script/script.cpp \
@@ -364,12 +350,11 @@ libpaicoin_consensus_a_SOURCES = \
   utilstrencodings.cpp \
   utilstrencodings.h \
   version.h
-#libpaicoin_consensus_a_LDFLAGS = $(LIBPAICOINHASH)
 
-# common: shared between paicoind, and paicoin-qt and non-server tools
-libpaicoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(PAICOIN_INCLUDES)
-libpaicoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpaicoin_common_a_SOURCES = \
+# common: shared between bwscoind, and bwscoin-qt and non-server tools
+libbwscoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES)
+libbwscoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbwscoin_common_a_SOURCES = \
   base58.cpp \
   chainparams.cpp \
   coins.cpp \
@@ -388,14 +373,14 @@ libpaicoin_common_a_SOURCES = \
   script/standard.cpp \
   stake/stakepoolfee.cpp \
   warnings.cpp \
-  $(PAICOIN_CORE_H)
+  $(BWSCOIN_CORE_H)
 
 # util: shared between all executables.
 # This library *must* be included to make sure that the glibc
 # backward-compatibility objects and their sanity checks are linked.
-libpaicoin_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(PAICOIN_INCLUDES)
-libpaicoin_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpaicoin_util_a_SOURCES = \
+libbwscoin_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES)
+libbwscoin_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbwscoin_util_a_SOURCES = \
   support/lockedpool.cpp \
   chainparamsbase.cpp \
   clientversion.cpp \
@@ -412,109 +397,105 @@ libpaicoin_util_a_SOURCES = \
   utilmoneystr.cpp \
   utilstrencodings.cpp \
   utiltime.cpp \
-  $(PAICOIN_CORE_H)
+  $(BWSCOIN_CORE_H)
 
 if GLIBC_BACK_COMPAT
-libpaicoin_util_a_SOURCES += compat/glibc_compat.cpp
+libbwscoin_util_a_SOURCES += compat/glibc_compat.cpp
 endif
 
-# cli: shared between paicoin-cli, paicoin-block-generator and paicoin-qt
-libpaicoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(PAICOIN_INCLUDES)
-libpaicoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libpaicoin_cli_a_SOURCES = \
+# cli: shared between bwscoin-cli, bwscoin-block-generator and bwscoin-qt
+libbwscoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES)
+libbwscoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbwscoin_cli_a_SOURCES = \
   rpc/client.cpp \
-  $(PAICOIN_CORE_H)
+  $(BWSCOIN_CORE_H)
 
-nodist_libpaicoin_util_a_SOURCES = $(srcdir)/obj/build.h
+nodist_libbwscoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
-# paicoind binary #
-paicoind_SOURCES = paicoind.cpp
-paicoind_CPPFLAGS = $(AM_CPPFLAGS) $(PAICOIN_INCLUDES)
-paicoind_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-paicoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# bwscoind binary #
+bwscoind_SOURCES = bwscoind.cpp
+bwscoind_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES)
+bwscoind_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+bwscoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-paicoind_SOURCES += paicoind-res.rc
+bwscoind_SOURCES += bwscoind-res.rc
 endif
 
-paicoind_LDADD = \
-  $(LIBPAICOIN_SERVER) \
-  $(LIBPAICOIN_COMMON) \
+bwscoind_LDADD = \
+  $(LIBBWSCOIN_SERVER) \
+  $(LIBBWSCOIN_COMMON) \
   $(LIBUNIVALUE) \
-  $(LIBPAICOIN_UTIL) \
-  $(LIBPAICOIN_WALLET) \
-  $(LIBPAICOIN_ZMQ) \
-  $(LIBPAICOIN_CONSENSUS) \
-  $(LIBPAICOINHASH) \
-  $(LIBPAICOIN_CRYPTO) \
+  $(LIBBWSCOIN_UTIL) \
+  $(LIBBWSCOIN_WALLET) \
+  $(LIBBWSCOIN_ZMQ) \
+  $(LIBBWSCOIN_CONSENSUS) \
+  $(LIBBWSCOIN_CRYPTO) \
   $(LIBLEVELDB) \
   $(LIBLEVELDB_SSE42) \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-paicoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(GRPC_LIBS) $(PROTOC_LIBS) $(PROTOBUF_LIBS)
+bwscoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
-# paicoin-cli binary #
-paicoin_cli_SOURCES = paicoin-cli.cpp
-paicoin_cli_CPPFLAGS = $(AM_CPPFLAGS) $(PAICOIN_INCLUDES) $(EVENT_CFLAGS)
-paicoin_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-paicoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# bwscoin-cli binary #
+bwscoin_cli_SOURCES = bwscoin-cli.cpp
+bwscoin_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES) $(EVENT_CFLAGS)
+bwscoin_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+bwscoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-paicoin_cli_SOURCES += paicoin-cli-res.rc
+bwscoin_cli_SOURCES += bwscoin-cli-res.rc
 endif
 
-paicoin_cli_LDADD = \
-  $(LIBPAICOIN_CLI) \
+bwscoin_cli_LDADD = \
+  $(LIBBWSCOIN_CLI) \
   $(LIBUNIVALUE) \
-  $(LIBPAICOIN_UTIL) \
-  $(LIBPAICOINHASH) \
-  $(LIBPAICOIN_CRYPTO)
+  $(LIBBWSCOIN_UTIL) \
+  $(LIBBWSCOIN_CRYPTO)
 
-paicoin_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+bwscoin_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
-# paicoin-block-generator binary #
-paicoin_block_generator_SOURCES = paicoin-block-generator.cpp
-paicoin_block_generator_CPPFLAGS = $(AM_CPPFLAGS) $(PAICOIN_INCLUDES) $(EVENT_CFLAGS)
-paicoin_block_generator_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-paicoin_block_generator_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# bwscoin-block-generator binary #
+bwscoin_block_generator_SOURCES = bwscoin-block-generator.cpp
+bwscoin_block_generator_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES) $(EVENT_CFLAGS)
+bwscoin_block_generator_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+bwscoin_block_generator_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-paicoin_block_generator_SOURCES += paicoin-block-generator-res.rc
+bwscoin_block_generator_SOURCES += bwscoin-block-generator-res.rc
 endif
 
-paicoin_block_generator_LDADD = \
-  $(LIBPAICOIN_CLI) \
+bwscoin_block_generator_LDADD = \
+  $(LIBBWSCOIN_CLI) \
   $(LIBUNIVALUE) \
-  $(LIBPAICOIN_UTIL) \
-  $(LIBPAICOINHASH) \
-  $(LIBPAICOIN_CRYPTO)
+  $(LIBBWSCOIN_UTIL) \
+  $(LIBBWSCOIN_CRYPTO)
 
-paicoin_block_generator_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+bwscoin_block_generator_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
-# paicoin-tx binary #
-paicoin_tx_SOURCES = paicoin-tx.cpp
-paicoin_tx_CPPFLAGS = $(AM_CPPFLAGS) $(PAICOIN_INCLUDES)
-paicoin_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-paicoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# bwscoin-tx binary #
+bwscoin_tx_SOURCES = bwscoin-tx.cpp
+bwscoin_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BWSCOIN_INCLUDES)
+bwscoin_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+bwscoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-paicoin_tx_SOURCES += paicoin-tx-res.rc
+bwscoin_tx_SOURCES += bwscoin-tx-res.rc
 endif
 
-paicoin_tx_LDADD = \
+bwscoin_tx_LDADD = \
   $(LIBUNIVALUE) \
-  $(LIBPAICOIN_COMMON) \
-  $(LIBPAICOIN_UTIL) \
-  $(LIBPAICOIN_CONSENSUS) \
-  $(LIBPAICOINHASH) \
-  $(LIBPAICOIN_CRYPTO) \
+  $(LIBBWSCOIN_COMMON) \
+  $(LIBBWSCOIN_UTIL) \
+  $(LIBBWSCOIN_CONSENSUS) \
+  $(LIBBWSCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-paicoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+bwscoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 CTAES_DIST =  crypto/ctaes/bench.c
@@ -543,12 +524,12 @@ DISTCLEANFILES = obj/build.h
 EXTRA_DIST = $(CTAES_DIST)
 
 
-config/paicoin-config.h: config/stamp-h1
+config/bwscoin-config.h: config/stamp-h1
 	@$(MAKE) -C $(top_builddir) $(subdir)/$(@)
-config/stamp-h1: $(top_srcdir)/$(subdir)/config/paicoin-config.h.in $(top_builddir)/config.status
+config/stamp-h1: $(top_srcdir)/$(subdir)/config/bwscoin-config.h.in $(top_builddir)/config.status
 	$(AM_V_at)$(MAKE) -C $(top_builddir) $(subdir)/$(@)
-$(top_srcdir)/$(subdir)/config/paicoin-config.h.in:  $(am__configure_deps)
-	$(AM_V_at)$(MAKE) -C $(top_srcdir) $(subdir)/config/paicoin-config.h.in
+$(top_srcdir)/$(subdir)/config/bwscoin-config.h.in:  $(am__configure_deps)
+	$(AM_V_at)$(MAKE) -C $(top_srcdir) $(subdir)/config/bwscoin-config.h.in
 
 clean-local:
 	-$(MAKE) -C secp256k1 clean
@@ -577,10 +558,6 @@ if HARDEN
 	@echo "Checking binary security..."
 	$(AM_V_at) READELF=$(READELF) OBJDUMP=$(OBJDUMP) $(top_srcdir)/contrib/devtools/security-check.py < $(bin_PROGRAMS)
 endif
-
-%.grpc.pb.cc %.grpc.pb.h: %.proto
-	@test -f $(PROTOC)
-	$(AM_V_GEN) $(PROTOC) --grpc_out=$(@D) --proto_path=$(<D) --plugin=protoc-gen-grpc=$(dir $(PROTOC))grpc_cpp_plugin $<
 
 %.pb.cc %.pb.h: %.proto
 	@test -f $(PROTOC)

@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_CHECKPOINTS_H
-#define PAICOIN_CHECKPOINTS_H
+#ifndef BWSCOIN_CHECKPOINTS_H
+#define BWSCOIN_CHECKPOINTS_H
 
 #include "uint256.h"
 
@@ -24,4 +24,4 @@ CBlockIndex* GetLastCheckpoint(const CCheckpointData& data);
 
 } //namespace Checkpoints
 
-#endif // PAICOIN_CHECKPOINTS_H
+#endif // BWSCOIN_CHECKPOINTS_H

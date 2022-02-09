@@ -14,11 +14,11 @@ Scenarios using operations:
     listtickets
 """
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import *
 from test_framework.mininode import COIN
 
-class WalletTicketOperations(PAIcoinTestFramework):
+class WalletTicketOperations(BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 1
@@ -87,7 +87,7 @@ class WalletTicketOperations(PAIcoinTestFramework):
         # getticketfee tests:
         # 1. valid parameters
         x = self.nodes[0].getticketfee()
-        assert(x == "0.00002000 PAI/kB")
+        assert(x == "0.00002000 BWS/kB")
         # 2. invalid parameters
         assert_raises_rpc_error(-1, None, self.nodes[0].getticketfee, "param1")
         assert_raises_rpc_error(-1, None, self.nodes[0].getticketfee, "param1", "param2")
@@ -221,7 +221,7 @@ class WalletTicketOperations(PAIcoinTestFramework):
         x = self.nodes[0].setticketfee(0.02)
         assert(x == True)
         x = self.nodes[0].getticketfee()
-        assert(x == "0.02000000 PAI/kB")
+        assert(x == "0.02000000 BWS/kB")
         # 2. invalid parameters
         assert_raises_rpc_error(-1, None, self.nodes[0].setticketfee)
         assert_raises_rpc_error(-8, None, self.nodes[0].setticketfee, -0.002)

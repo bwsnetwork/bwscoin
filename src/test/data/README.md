@@ -1,7 +1,7 @@
 Description
 ------------
 
-This directory contains data-driven tests for various aspects of PAI Coin.
+This directory contains data-driven tests for various aspects of BWS Coin.
 
 License
 --------

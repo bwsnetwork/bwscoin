@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_WALLET_DB_H
-#define PAICOIN_WALLET_DB_H
+#ifndef BWSCOIN_WALLET_DB_H
+#define BWSCOIN_WALLET_DB_H
 
 #include "clientversion.h"
 #include "fs.h"
@@ -371,4 +371,4 @@ public:
     bool static Rewrite(CWalletDBWrapper& dbw, const char* pszSkip = nullptr);
 };
 
-#endif // PAICOIN_WALLET_DB_H
+#endif // BWSCOIN_WALLET_DB_H

@@ -1,7 +1,7 @@
-PAI Coin Core Daemon version v0.16.01
+BWS Coin Core Daemon version v0.16.01
 
 Usage:
-  paicoind [options]                     Start PAI Coin Core Daemon
+  bwscoind [options]                     Start BWS Coin Core Daemon
 
 Options:
 
@@ -28,7 +28,7 @@ Options:
        0000000000000000000000000000000000000000000000000000000000000000)
 
   -conf=<file>
-       Specify configuration file (default: paicoin.conf)
+       Specify configuration file (default: bwscoin.conf)
 
   -daemon
        Run in the background as a daemon and accept commands
@@ -64,7 +64,7 @@ Options:
        leave that many cores free, default: 0)
 
   -pid=<file>
-       Specify pid file (default: paicoind.pid)
+       Specify pid file (default: bwscoind.pid)
 
   -prune=<n>
        Reduce storage requirements by enabling pruning (deleting) of old
@@ -222,22 +222,22 @@ Wallet options:
        Set key pool size to <n> (default: 1000)
 
   -fallbackfee=<amt>
-       A fee rate (in PAI/kB) that will be used when fee estimation has
+       A fee rate (in BWS/kB) that will be used when fee estimation has
        insufficient data (default: 0.0002)
 
   -discardfee=<amt>
-       The fee rate (in PAI/kB) that indicates your tolerance for discarding
+       The fee rate (in BWS/kB) that indicates your tolerance for discarding
        change by adding it to the fee (default: 0.0001). Note: An output
        is discarded if it is dust at this rate, but we will always
        discard up to the dust relay fee and a discard fee above that is
        limited by the fee estimate for the longest target
 
   -mintxfee=<amt>
-       Fees (in PAI/kB) smaller than this are considered zero fee for
+       Fees (in BWS/kB) smaller than this are considered zero fee for
        transaction creation (default: 0.00001)
 
   -paytxfee=<amt>
-       Fee (in PAI/kB) to add to transactions you send (default: 0.00)
+       Fee (in BWS/kB) to add to transactions you send (default: 0.00)
 
   -rescan
        Rescan the block chain for missing wallet transactions on startup
@@ -381,7 +381,7 @@ Debugging/Testing options:
        Prepend debug output with timestamp (default: 1)
 
   -maxtxfee=<amt>
-       Maximum total fees (in PAI) to use in a single wallet transaction or raw
+       Maximum total fees (in BWS) to use in a single wallet transaction or raw
        transaction; setting this too low may abort large transactions
        (default: 0.10)
 
@@ -413,7 +413,7 @@ Node relay options:
        Enable transaction replacement in the memory pool (default: 1)
 
   -minrelaytxfee=<amt>
-       Fees (in PAI/kB) smaller than this are considered zero fee for relaying,
+       Fees (in BWS/kB) smaller than this are considered zero fee for relaying,
        mining and transaction creation (default: 0.00001)
 
   -whitelistrelay
@@ -433,7 +433,7 @@ Block creation options:
        Set maximum block size in bytes (default: 750000)
 
   -blockmintxfee=<amt>
-       Set lowest fee rate (in PAI/kB) for transactions to be included in block
+       Set lowest fee rate (in BWS/kB) for transactions to be included in block
        creation. (default: 0.00001)
 
 RPC server options:

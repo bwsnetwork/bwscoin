@@ -1,51 +1,44 @@
-Proposed PoW/PoS Hybrid Consensus Mechanism
+Proposed PoUW Consensus Mechanism
 ===========================================
 
-The contributing developers of Project PAI have released a white paper proposing a Hybrid PoW/PoS consensus mechanism. Read the white paper [here](https://projectpai.com/assets/files/whitepaper/Prospective-Hybrid-Consensus-for-Project-PAI.pdf).
+The contributing developers of BWS Coin have released a white paper proposing a Proof of Useful Work (PoUW) consensus mechanism. Read the white paper [here](https://valdi.ai/whitepaper).
 
-PAI Coin Core integration/staging tree
+BWS Coin Core integration/staging tree
 =====================================
 
-https://projectpai.com
+https://valdi.ai
 
-What is Project PAI and PAI Coin?
+What is Valdi Labs and BWS Coin?
 ----------------
 
-Project PAI is an open-source, blockchain-based platform designed to allow
-everyone to create, manage, and use their own Personal Artificial Intelligence (PAI).
-The PAI Blockchain Protocol (PAI blockchain) enables a decentralized AI economy
+The BWS Blockchain Protocol (BWS blockchain) enables a decentralized AI economy
 where application developers can create products and services that will be beneficial
-to the PAI ecosystem and users can contribute their PAI data to improve and enhance the
+to the BWS ecosystem and users can contribute their BWS data to improve and enhance the
 platform's AI algorithms. In addition, companies and developers can easily create
-their own token on top of the PAI blockchain to facilitate interaction and transaction
-in their own unique experiences. The focal point of all interactions on the PAI
-blockchain are PAIs - intelligent 3D avatars that look, talk and behave just like their
-human counterparts, made from the digital profiles of the user's online behavior.
+their own token on top of the BWS blockchain to facilitate interaction and transaction
+in their own unique experiences.
 
-PAI Coin is a digital currency that enables instant payments to anyone, anywhere in the world.
-PAI Coin uses peer-to-peer technology to operate with no central authority: managing
+BWS Coin is a digital currency that enables instant payments to anyone, anywhere in the world.
+BWS Coin uses peer-to-peer technology to operate with no central authority: managing
 transactions and issuing money are carried out collectively by the network.
-PAI Coin Core is the name of the open-source software which enables the use of this currency.
+BWS Coin Core is the name of the open-source software which enables the use of this currency.
 
-Read the whitepapers [here](https://projectpai.com/pai-whitepaper/).
+Read the whitepapers [here](https://valdi.ai/whitepaper).
 
 License
 -------
 
-PAI Coin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+BWS Coin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.
 
 Development Process
 -------------------
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/projectpai/paicoin/tags) are created
-regularly to indicate new official, stable release versions of PAI Coin Core.
+completely stable. [Tags](https://github.com/valdi-labs/bwscoin/tags) are created
+regularly to indicate new official, stable release versions of BWS Coin Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
-
-The developer [forum](https://www.paiforum.com/?forum=665374) should be used 
-to discuss complicated or controversial changes before working on a patch set.
 
 Testing
 -------
@@ -78,30 +71,7 @@ Community Resources
 
 ### English
 
-- [PAI Forum](https://www.paiforum.com)
-- [Telegram (USA)](https://t.me/projectpai)
-- [Telegram (EU)](https://t.me/projectpaiEUR)
-- [Twitter](https://twitter.com/projectpai)
-- [Facebook](https://www.facebook.com/projectpai)
-- [LinkedIn](https://www.linkedin.com/company/projectpai/)
-- [Medium](https://medium.com/project-pai)
-- [YouTube](https://www.youtube.com/c/projectpai)
-
-### Chinese
-
-- [Telegram](https://t.me/projectpaiCN)
-- [Weibo](https://weibo.com/p/1005055231677544/)
-- [Youku](http://i.youku.com/i/UNjA4ODk0MDE3Ng==)
-- WeChat
-
-### Japanese
-
-- [Telegram](https://t.me/ProjectPAIJapanOFFICIAL)
-- [Line](http://line.me/ti/g/ZeZog_6Gbc)
-- [Ameba](https://ameblo.jp/projectpai/)
-
-### Korean
-
-- [Telegram](https://t.me/ProjectPAIKoreaOFFICIAL)
-- [Kakao](https://open.kakao.com/o/ggXD4VN)
-- [Naver](https://blog.naver.com/projectpai/)
+- [Twitter](https://twitter.com/valdilabs)
+- [Medium](https://valdi.medium.com/)
+- [YouTube](https://www.youtube.com/channel/UCND0qYcW98slzhYxCPK54WA)
+- [Discord](https://discord.gg/Gb62FKnd9A)

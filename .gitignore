@@ -2,14 +2,14 @@
 *.tar.gz
 
 *.exe
-src/paicoin
-src/paicoind
-src/paicoin-cli
-src/paicoin-block-generator
-src/paicoin-tx
-src/test/test_paicoin
-src/test/test_paicoin_fuzzy
-src/qt/test/test_paicoin-qt
+src/bwscoin
+src/bwscoind
+src/bwscoin-cli
+src/bwscoin-block-generator
+src/bwscoin-tx
+src/test/test_bwscoin
+src/test/test_bwscoin_fuzzy
+src/qt/test/test_bwscoin-qt
 
 # autoreconf
 Makefile.in
@@ -32,8 +32,8 @@ config.log
 config.status
 configure
 libtool
-src/config/paicoin-config.h
-src/config/paicoin-config.h.in
+src/config/bwscoin-config.h
+src/config/bwscoin-config.h.in
 src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
@@ -76,12 +76,12 @@ src/qt/test/moc*.cpp
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-paicoin-qt
-PAIcoin-Qt.app
+bwscoin-qt
+BWScoin-Qt.app
 
 # Unit-tests
 Makefile.test
-paicoin-qt_test
+bwscoin-qt_test
 
 # Resources cpp
 qrc_*.cpp
@@ -94,7 +94,7 @@ build
 *.gcno
 *.gcda
 /*.info
-test_paicoin.coverage/
+test_bwscoin.coverage/
 total.coverage/
 coverage_percent.txt
 
@@ -109,5 +109,5 @@ test/cache/*
 
 /doc/doxygen/
 
-libpaicoinconsensus.pc
+libbwscoinconsensus.pc
 contrib/devtools/split-debug.sh

@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_KEY_H
-#define PAICOIN_KEY_H
+#ifndef BWSCOIN_KEY_H
+#define BWSCOIN_KEY_H
 
 #include "pubkey.h"
 #include "serialize.h"
@@ -186,4 +186,4 @@ void ECC_Stop();
 /** Check that required EC support is available at runtime. */
 bool ECC_InitSanityCheck();
 
-#endif // PAICOIN_KEY_H
+#endif // BWSCOIN_KEY_H

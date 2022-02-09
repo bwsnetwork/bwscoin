@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_RPCREGISTER_H
-#define PAICOIN_RPCREGISTER_H
+#ifndef BWSCOIN_RPCREGISTER_H
+#define BWSCOIN_RPCREGISTER_H
 
 /** These are in one header file to avoid creating tons of single-function
  * headers for everything under src/rpc/ */

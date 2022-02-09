@@ -15,10 +15,10 @@ RPCs tested are:
     - renameaccount
 """
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import assert_equal, assert_raises_rpc_error
 
-class WalletAccountsTest(PAIcoinTestFramework):
+class WalletAccountsTest(BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 1
@@ -36,7 +36,7 @@ class WalletAccountsTest(PAIcoinTestFramework):
         assert_equal(node.getbalance(), 3000)
 
         # there should be 2 address groups
-        # each with 1 address with a balance of 50 PAIcoins
+        # each with 1 address with a balance of 50 BWScoins
         address_groups = node.listaddressgroupings()
         assert_equal(len(address_groups), 2)
         # the addresses aren't linked now, but will be after we send to the

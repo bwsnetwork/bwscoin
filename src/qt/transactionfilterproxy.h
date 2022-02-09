@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_TRANSACTIONFILTERPROXY_H
-#define PAICOIN_QT_TRANSACTIONFILTERPROXY_H
+#ifndef BWSCOIN_QT_TRANSACTIONFILTERPROXY_H
+#define BWSCOIN_QT_TRANSACTIONFILTERPROXY_H
 
 #include "amount.h"
 
@@ -65,4 +65,4 @@ private:
     bool showInactive;
 };
 
-#endif // PAICOIN_QT_TRANSACTIONFILTERPROXY_H
+#endif // BWSCOIN_QT_TRANSACTIONFILTERPROXY_H

@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-SystemD: paicoind.service
-Upstart: paicoind.conf
-OpenRC:  paicoind.openrc
-         paicoind.openrcconf
-CentOS:  paicoind.init
-OS X:    org.paicoin.paicoind.plist
+SystemD: bwscoind.service
+Upstart: bwscoind.conf
+OpenRC:  bwscoind.openrc
+         bwscoind.openrcconf
+CentOS:  bwscoind.init
+OS X:    org.bwscoin.bwscoind.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

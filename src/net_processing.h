@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_NET_PROCESSING_H
-#define PAICOIN_NET_PROCESSING_H
+#ifndef BWSCOIN_NET_PROCESSING_H
+#define BWSCOIN_NET_PROCESSING_H
 
 #include "net.h"
 #include "validationinterface.h"
@@ -93,4 +93,4 @@ bool ProcessMessages(CNode* pfrom, CConnman& connman, const std::atomic<bool>& i
  */
 bool SendMessages(CNode* pto, CConnman& connman, const std::atomic<bool>& interrupt);
 
-#endif // PAICOIN_NET_PROCESSING_H
+#endif // BWSCOIN_NET_PROCESSING_H

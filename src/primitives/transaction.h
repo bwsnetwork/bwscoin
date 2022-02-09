@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_PRIMITIVES_TRANSACTION_H
-#define PAICOIN_PRIMITIVES_TRANSACTION_H
+#ifndef BWSCOIN_PRIMITIVES_TRANSACTION_H
+#define BWSCOIN_PRIMITIVES_TRANSACTION_H
 
 #include <stdint.h>
 #include "amount.h"
@@ -423,4 +423,4 @@ typedef std::shared_ptr<const CTransaction> CTransactionRef;
 static inline CTransactionRef MakeTransactionRef() { return std::make_shared<const CTransaction>(); }
 template <typename Tx> static inline CTransactionRef MakeTransactionRef(Tx&& txIn) { return std::make_shared<const CTransaction>(std::forward<Tx>(txIn)); }
 
-#endif // PAICOIN_PRIMITIVES_TRANSACTION_H
+#endif // BWSCOIN_PRIMITIVES_TRANSACTION_H

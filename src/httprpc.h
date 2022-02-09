@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_HTTPRPC_H
-#define PAICOIN_HTTPRPC_H
+#ifndef BWSCOIN_HTTPRPC_H
+#define BWSCOIN_HTTPRPC_H
 
 /** Start HTTP RPC subsystem.
  * Precondition; HTTP and RPC has been started.

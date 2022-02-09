@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/bwscoin/.bwscoin" ]; then
+	BWSCOIND_DEFAULT_DATADIR="/var/lib/bwscoin/.bwscoin"
+else
+	BWSCOIND_DEFAULT_DATADIR="/var/lib/bwscoind"
+fi
+
+BWSCOIND_CONFIGFILE=${BWSCOIND_CONFIGFILE:-/etc/bwscoin/bwscoin.conf}
+BWSCOIND_PIDDIR=${BWSCOIND_PIDDIR:-/var/run/bwscoind}
+BWSCOIND_PIDFILE=${BWSCOIND_PIDFILE:-${BWSCOIND_PIDDIR}/bwscoind.pid}
+BWSCOIND_DATADIR=${BWSCOIND_DATADIR:-${BWSCOIND_DEFAULT_DATADIR}}
+BWSCOIND_USER=${BWSCOIND_USER:-${BWSCOIN_USER:-bwscoin}}
+BWSCOIND_GROUP=${BWSCOIND_GROUP:-bwscoin}
+BWSCOIND_BIN=${BWSCOIND_BIN:-/usr/bin/bwscoind}
+BWSCOIND_NICE=${BWSCOIND_NICE:-${NICELEVEL:-0}}
+BWSCOIND_OPTS="${BWSCOIND_OPTS:-${BWSCOIN_OPTS}}"
+
+name="BWS Coin Core Daemon"
+description="BWS Coin cryptocurrency P2P network daemon"
+
+command="/usr/bin/bwscoind"
+command_args="-pid=\"${BWSCOIND_PIDFILE}\" \
+		-conf=\"${BWSCOIND_CONFIGFILE}\" \
+		-datadir=\"${BWSCOIND_DATADIR}\" \
+		-daemon \
+		${BWSCOIND_OPTS}"
+
+required_files="${BWSCOIND_CONFIGFILE}"
+start_stop_daemon_args="-u ${BWSCOIND_USER} \
+			-N ${BWSCOIND_NICE} -w 2000"
+pidfile="${BWSCOIND_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${BWSCOIND_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${BWSCOIND_USER}:${BWSCOIND_GROUP}" \
+	"${BWSCOIND_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${BWSCOIND_USER}:${BWSCOIND_GROUP}" \
+	"${BWSCOIND_PIDDIR}"
+
+	checkpath -f \
+	-o ${BWSCOIND_USER}:${BWSCOIND_GROUP} \
+	-m 0660 \
+	${BWSCOIND_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${BWSCOIND_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run bwscoind."
+		eerror "The setting must appear in ${BWSCOIND_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following "
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"BWS Coin Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

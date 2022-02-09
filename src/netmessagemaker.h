@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_NETMESSAGEMAKER_H
-#define PAICOIN_NETMESSAGEMAKER_H
+#ifndef BWSCOIN_NETMESSAGEMAKER_H
+#define BWSCOIN_NETMESSAGEMAKER_H
 
 #include "net.h"
 #include "serialize.h"
@@ -33,4 +33,4 @@ private:
     const int nVersion;
 };
 
-#endif // PAICOIN_NETMESSAGEMAKER_H
+#endif // BWSCOIN_NETMESSAGEMAKER_H

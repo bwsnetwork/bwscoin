@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_SCHEDULER_H
-#define PAICOIN_SCHEDULER_H
+#ifndef BWSCOIN_SCHEDULER_H
+#define BWSCOIN_SCHEDULER_H
 
 //
 // NOTE:

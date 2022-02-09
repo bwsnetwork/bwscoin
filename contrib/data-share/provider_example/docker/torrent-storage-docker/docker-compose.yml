@@ -6,8 +6,8 @@ services:
                         dockerfile: Dockerfile-transmission
                 image: transmission
                 volumes:
-                        - ./configs:/home/oben/.transmission:rw
-                        - ./Downloads:/home/oben/Downloads:rw
+                        - ./configs:/home/valdi/.transmission:rw
+                        - ./Downloads:/home/valdi/Downloads:rw
                 ports:
                         - 8000:8000
                 links:

@@ -13,7 +13,7 @@
 #include <key_io.h>
 #include <script/script.h>
 #include <utilstrencodings.h>
-#include <test/test_paicoin.h>
+#include <test/test_bwscoin.h>
 
 #include <boost/test/unit_test.hpp>
 

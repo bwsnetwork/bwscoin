@@ -2,7 +2,7 @@ Multisig with P2SH
 ==================
 
 This document provides instructions on how to create M-of-N (M<=N) multisig
-pay-to-script hash (P2SH) addresses for safe storage of PAI Coin.
+pay-to-script hash (P2SH) addresses for safe storage of BWS Coin.
 
 Keypair generation
 ------------------
@@ -69,10 +69,10 @@ Address generation
 ------------------
 
 Given N key pairs, an M-of-N multisig address can be generated with only the N public keys previously generated.
-This is done using `paicoin-cli` as follows. Note that `paicoind` must be running. Please ensure the PAI Coin
+This is done using `bwscoin-cli` as follows. Note that `bwscoind` must be running. Please ensure the BWS Coin
 Daemon is pointed to the correct network (e.g., mainnet, testnet).
 
-Usage of `./paicoin-cli createmultisig`:
+Usage of `./bwscoin-cli createmultisig`:
 ```
 createmultisig nrequired ["key",...]
 
@@ -81,9 +81,9 @@ It returns a json object with the address and redeemScript.
 
 Arguments:
 1. nrequired      (numeric, required) The number of required signatures out of the n keys or addresses.
-2. "keys"       (string, required) A json array of keys which are paicoin addresses or hex-encoded public keys
+2. "keys"       (string, required) A json array of keys which are bwscoin addresses or hex-encoded public keys
      [
-       "key"    (string) paicoin address or hex-encoded public key
+       "key"    (string) bwscoin address or hex-encoded public key
        ,...
      ]
 
@@ -96,9 +96,9 @@ Result:
 
 ### Example
 
-Create a 2-of-2 multisig address from 2 real mainnet public keys, using PAI Coin CLI (just an example, DO NOT USE the resulting address):
+Create a 2-of-2 multisig address from 2 real mainnet public keys, using BWS Coin CLI (just an example, DO NOT USE the resulting address):
 ```
-paicoin-cli createmultisig 2 "[\"048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e1\",\"04cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda47\"]"
+bwscoin-cli createmultisig 2 "[\"048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e1\",\"04cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda47\"]"
 ```
 
 Output:
@@ -135,12 +135,12 @@ as an example 2-of-2 P2SH address containing a single UTXO to be partially spent
 by this address as follows:
 
 ```
-paicoin-cli importaddress "uNMTaHRJS1vM4FwqLtoURoDm6UPjNaWbzt"
+bwscoin-cli importaddress "uNMTaHRJS1vM4FwqLtoURoDm6UPjNaWbzt"
 ```
 
 The required information about the UTXOs can then be found with:
 ```
-paicoin-cli listunspent
+bwscoin-cli listunspent
 ```
 
 This yields the following example output:
@@ -161,7 +161,7 @@ This yields the following example output:
 ] 
 ```
 
-In this example, 0.4 PAI Coin will be sent to the destination address `Pm4ojBqHnAyKBxNDgWEcaXejE1xXS3r9iV` while the "change"
+In this example, 0.4 BWS Coin will be sent to the destination address `Pm4ojBqHnAyKBxNDgWEcaXejE1xXS3r9iV` while the "change"
 will be sent to `PmKgrKASftviR88QVzb9kpVFys75yv84mK`, which is an address the sender controls. *Note:* Specifying a proper
 change address is critical when creating a raw transaction. Without the change address, the difference between the value of
 the UTXO and the amount(s) sent to the recipient(s) will be forfeited as a mining fee. *When UTXOs are spent, they are always
@@ -170,7 +170,7 @@ consumed in full.*
 Given the txid and vout values above, together with the destination and change addresses, the `createrawtransaction` command
 can be used as follows:
 ```
-paicoin-cli createrawtransaction "[{\"txid\":\"228e0cb75f672f913af20223ab6c306b6f32bd323b6d93eeffee90fed541c480\",\"vout\":1}]" "{\"Pm4ojBqHnAyKBxNDgWEcaXejE1xXS3r9iV\":0.4,\"PmKgrKASftviR88QVzb9kpVFys75yv84mK\":0.09999}"
+bwscoin-cli createrawtransaction "[{\"txid\":\"228e0cb75f672f913af20223ab6c306b6f32bd323b6d93eeffee90fed541c480\",\"vout\":1}]" "{\"Pm4ojBqHnAyKBxNDgWEcaXejE1xXS3r9iV\":0.4,\"PmKgrKASftviR88QVzb9kpVFys75yv84mK\":0.09999}"
 ```
 
 Note that the sum of the outputs is 0.49999. The difference of 0.00001 is the mining fee, also known as a transaction fee. A non-zero
@@ -186,10 +186,10 @@ Given the hex string identifier previously outputted from the `createrawtransact
 
 #### Sign transaction with first private key
 
-The private key corresponding to the first public key used to create the multisig address from which funds are being spent signs the transaction as follows. The values of `scriptPubKey` and `redeemScript` can be obtained from the output of the `paicoin-cli listunspent` command and the output of the `paicoin-cli createmultisig` command, respectively. 
+The private key corresponding to the first public key used to create the multisig address from which funds are being spent signs the transaction as follows. The values of `scriptPubKey` and `redeemScript` can be obtained from the output of the `bwscoin-cli listunspent` command and the output of the `bwscoin-cli createmultisig` command, respectively. 
 
 ```
-paicoin-cli signrawtransaction "020000000180c441d5fe90eeffee936d3b32bd326f6b306cab2302f23a912f675fb70c8e220100000000ffffffff02005a6202000000001976a914901e49db87c87f8b522e86cad5b66781943ef72588ac98929800000000001976a91492eec985767887aa9e209191d2db18806465375b88ac00000000" "[{\"txid\":\"228e0cb75f672f913af20223ab6c306b6f32bd323b6d93eeffee90fed541c480\",\"vout\":1,\"scriptPubKey\":\"a914257481de4b6a4f5030cff147f7480c716d3597ff87\",\"redeemScript\":\"5241048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e14104cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda4752ae\"}]" "[\"9JsEicNHdZkxYvna5Fo6VUHRe7k5239i2mC2rCTpm7aWbFp33ea\"]"
+bwscoin-cli signrawtransaction "020000000180c441d5fe90eeffee936d3b32bd326f6b306cab2302f23a912f675fb70c8e220100000000ffffffff02005a6202000000001976a914901e49db87c87f8b522e86cad5b66781943ef72588ac98929800000000001976a91492eec985767887aa9e209191d2db18806465375b88ac00000000" "[{\"txid\":\"228e0cb75f672f913af20223ab6c306b6f32bd323b6d93eeffee90fed541c480\",\"vout\":1,\"scriptPubKey\":\"a914257481de4b6a4f5030cff147f7480c716d3597ff87\",\"redeemScript\":\"5241048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e14104cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda4752ae\"}]" "[\"9JsEicNHdZkxYvna5Fo6VUHRe7k5239i2mC2rCTpm7aWbFp33ea\"]"
 ```
 
 The final value in brackets is the first private key and is obtained from the `mainnet.privateAddress` field in the output key pair file of `generate-keys.py`.
@@ -219,7 +219,7 @@ Execution of this command produces a new hex string identifier, which is then us
 The private key corresponding to the second public key used to create the multisig address from which funds are being spent signs the transaction in the same way as the first, but this time using the (longer) hex string identifier outputted from the first signing step. The complete command, with private key redacted, and the corresponding output, is shown below.
 
 ```
-paicoin-cli signrawtransaction "020000000180c441d5fe90eeffee936d3b32bd326f6b306cab2302f23a912f675fb70c8e2201000000d30048304502210094395ae0a1d5bac4d981b3b2dfd114db877d819a8eb7ef164994869251235864022073d4dc8d59846a75b9d8980a96e088d9eb054c14b29f2deb6d5ae9babe20695a014c875241048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e14104cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda4752aeffffffff02005a6202000000001976a914901e49db87c87f8b522e86cad5b66781943ef72588ac98929800000000001976a91492eec985767887aa9e209191d2db18806465375b88ac00000000" "[{\"txid\":\"228e0cb75f672f913af20223ab6c306b6f32bd323b6d93eeffee90fed541c480\",\"vout\":1,\"scriptPubKey\":\"a914257481de4b6a4f5030cff147f7480c716d3597ff87\",\"redeemScript\":\"5241048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e14104cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda4752ae\"}]" "[\"9K3UYBs5uqpfqHVUxQVLaFsPLwuh8aXZn2iaujStArSwSv81iMo\"]"
+bwscoin-cli signrawtransaction "020000000180c441d5fe90eeffee936d3b32bd326f6b306cab2302f23a912f675fb70c8e2201000000d30048304502210094395ae0a1d5bac4d981b3b2dfd114db877d819a8eb7ef164994869251235864022073d4dc8d59846a75b9d8980a96e088d9eb054c14b29f2deb6d5ae9babe20695a014c875241048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e14104cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda4752aeffffffff02005a6202000000001976a914901e49db87c87f8b522e86cad5b66781943ef72588ac98929800000000001976a91492eec985767887aa9e209191d2db18806465375b88ac00000000" "[{\"txid\":\"228e0cb75f672f913af20223ab6c306b6f32bd323b6d93eeffee90fed541c480\",\"vout\":1,\"scriptPubKey\":\"a914257481de4b6a4f5030cff147f7480c716d3597ff87\",\"redeemScript\":\"5241048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e14104cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda4752ae\"}]" "[\"9K3UYBs5uqpfqHVUxQVLaFsPLwuh8aXZn2iaujStArSwSv81iMo\"]"
 {
   "hex": "020000000180c441d5fe90eeffee936d3b32bd326f6b306cab2302f23a912f675fb70c8e2201000000fd1c010048304502210094395ae0a1d5bac4d981b3b2dfd114db877d819a8eb7ef164994869251235864022073d4dc8d59846a75b9d8980a96e088d9eb054c14b29f2deb6d5ae9babe20695a01483045022100e7aa8115856e55d3feba9d61156477a740d57fa3ca55f1b8173313315c5ba15e02201c88d20e403921b575217eddcd2e814fe808a92ef839686cb8542156ca9aaf9e014c875241048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e14104cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda4752aeffffffff02005a6202000000001976a914901e49db87c87f8b522e86cad5b66781943ef72588ac98929800000000001976a91492eec985767887aa9e209191d2db18806465375b88ac00000000",
   "complete": true
@@ -233,7 +233,7 @@ The `"complete": true` output indicates the transaction is ready to be publicly 
 The hex string output of the final `signrawtransaction` command is used with `sendrawtransaction` to broadcast the transaction to the mempool for permanent inclusion in a block.
 
 ```
-./paicoin-cli sendrawtransaction "020000000180c441d5fe90eeffee936d3b32bd326f6b306cab2302f23a912f675fb70c8e2201000000fd1c010048304502210094395ae0a1d5bac4d981b3b2dfd114db877d819a8eb7ef164994869251235864022073d4dc8d59846a75b9d8980a96e088d9eb054c14b29f2deb6d5ae9babe20695a01483045022100e7aa8115856e55d3feba9d61156477a740d57fa3ca55f1b8173313315c5ba15e02201c88d20e403921b575217eddcd2e814fe808a92ef839686cb8542156ca9aaf9e014c875241048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e14104cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda4752aeffffffff02005a6202000000001976a914901e49db87c87f8b522e86cad5b66781943ef72588ac98929800000000001976a91492eec985767887aa9e209191d2db18806465375b88ac00000000"
+./bwscoin-cli sendrawtransaction "020000000180c441d5fe90eeffee936d3b32bd326f6b306cab2302f23a912f675fb70c8e2201000000fd1c010048304502210094395ae0a1d5bac4d981b3b2dfd114db877d819a8eb7ef164994869251235864022073d4dc8d59846a75b9d8980a96e088d9eb054c14b29f2deb6d5ae9babe20695a01483045022100e7aa8115856e55d3feba9d61156477a740d57fa3ca55f1b8173313315c5ba15e02201c88d20e403921b575217eddcd2e814fe808a92ef839686cb8542156ca9aaf9e014c875241048cebeb3f66ed8d7d60f9f05bfaa867cf0f4a3974213a72f80f149d52877a1d5d7be4bb7a3c6dc1c9330ad6d930cca058201e6ba90a7777a465f50a58d38c07e14104cfa9429bc27d41a425ebf077a26807f540a40d07ebb3d6db48032e08112a28533712cb90d139334bbd6879b8f9f81dbefe16b2d6337c644ae77cd988120cda4752aeffffffff02005a6202000000001976a914901e49db87c87f8b522e86cad5b66781943ef72588ac98929800000000001976a91492eec985767887aa9e209191d2db18806465375b88ac00000000"
 ```
 
 Upon success, this command produces the Transaction ID, or `txid`, as output.
@@ -242,12 +242,12 @@ Upon success, this command produces the Transaction ID, or `txid`, as output.
 ac27910180b6c5a324741ccf3e39eba8c993e5ecd12f36e0eedd683af0a49b16
 ```
 
-### View the transaction on the PAI Blockchain
+### View the transaction on the BWS Blockchain
 
-If `paicoind` is run using the `-reindex -txindex` flags to maintain a full index of transactions, the CLI can be used to retrieve information about the transaction using its `txid` as follows, complete with its corresponding output.
+If `bwscoind` is run using the `-reindex -txindex` flags to maintain a full index of transactions, the CLI can be used to retrieve information about the transaction using its `txid` as follows, complete with its corresponding output.
 
 ```
-paicoin-cli getrawtransaction ac27910180b6c5a324741ccf3e39eba8c993e5ecd12f36e0eedd683af0a49b16 1
+bwscoin-cli getrawtransaction ac27910180b6c5a324741ccf3e39eba8c993e5ecd12f36e0eedd683af0a49b16 1
 {
   "txid": "ac27910180b6c5a324741ccf3e39eba8c993e5ecd12f36e0eedd683af0a49b16",
   "hash": "ac27910180b6c5a324741ccf3e39eba8c993e5ecd12f36e0eedd683af0a49b16",
@@ -302,4 +302,4 @@ paicoin-cli getrawtransaction ac27910180b6c5a324741ccf3e39eba8c993e5ecd12f36e0ee
 }
 ```
 
-Alternatively, an online block explorer, like https://paichain.info, can be used as well. See the transaction [here](https://paichain.info/ui/tx/ac27910180b6c5a324741ccf3e39eba8c993e5ecd12f36e0eedd683af0a49b16).
+Alternatively, an online block explorer, like https://bwschain.info, can be used as well. See the transaction [here](https://bwschain.info/ui/tx/ac27910180b6c5a324741ccf3e39eba8c993e5ecd12f36e0eedd683af0a49b16).

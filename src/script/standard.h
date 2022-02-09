@@ -6,12 +6,12 @@
  */
 
 
-#ifndef PAICOIN_SCRIPT_STANDARD_H
-#define PAICOIN_SCRIPT_STANDARD_H
+#ifndef BWSCOIN_SCRIPT_STANDARD_H
+#define BWSCOIN_SCRIPT_STANDARD_H
 
 #include "script/interpreter.h"
 #include "uint256.h"
-#include "pai_data_classifier.h"
+#include "bws_data_classifier.h"
 
 #include <boost/variant.hpp>
 
@@ -91,7 +91,7 @@ public:
  *  * CNoDestination: no destination set
  *  * CKeyID: TX_PUBKEYHASH destination
  *  * CScriptID: TX_SCRIPTHASH destination
- *  A CTxDestination is the internal data type encoded in a paicoin address
+ *  A CTxDestination is the internal data type encoded in a bwscoin address
  */
 typedef boost::variant<CNoDestination, CKeyID, CScriptID> CTxDestination;
 
@@ -133,7 +133,7 @@ bool ExtractDestination(const CScript& scriptPubKey, CTxDestination& addressRet)
 bool ExtractDestinations(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<CTxDestination>& addressRet, int& nRequiredRet);
 
 /**
- * Generate a PAI Coin scriptPubKey for the given CTxDestination. Returns a P2PKH
+ * Generate a BWS Coin scriptPubKey for the given CTxDestination. Returns a P2PKH
  * script for a CKeyID destination, a P2SH script for a CScriptID, and an empty
  * script for CNoDestination.
  */
@@ -157,4 +157,4 @@ CScript GetScriptForWitness(const CScript& redeemscript);
  */
 CScript GetScriptForStructuredData(EDataClass eDataClass);
 
-#endif // PAICOIN_SCRIPT_STANDARD_H
+#endif // BWSCOIN_SCRIPT_STANDARD_H

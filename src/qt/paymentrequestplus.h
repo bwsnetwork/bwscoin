@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PAICOIN_QT_PAYMENTREQUESTPLUS_H
-#define PAICOIN_QT_PAYMENTREQUESTPLUS_H
+#ifndef BWSCOIN_QT_PAYMENTREQUESTPLUS_H
+#define BWSCOIN_QT_PAYMENTREQUESTPLUS_H
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -52,4 +52,4 @@ private:
     payments::PaymentDetails details;
 };
 
-#endif // PAICOIN_QT_PAYMENTREQUESTPLUS_H
+#endif // BWSCOIN_QT_PAYMENTREQUESTPLUS_H

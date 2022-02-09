@@ -17,13 +17,13 @@
         ticketvwrap
 """
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import *
 
 def have_same_elements(left, right):
     return len(left) == len(right) and set(left) == set(right)
 
-class TicketOperations(PAIcoinTestFramework):
+class TicketOperations(BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 1

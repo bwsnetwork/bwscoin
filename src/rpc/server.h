@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_RPCSERVER_H
-#define PAICOIN_RPCSERVER_H
+#ifndef BWSCOIN_RPCSERVER_H
+#define BWSCOIN_RPCSERVER_H
 
 #include "amount.h"
 #include "rpc/protocol.h"
@@ -140,7 +140,7 @@ public:
 };
 
 /**
- * PAI Coin RPC command dispatcher.
+ * BWS Coin RPC command dispatcher.
  */
 class CRPCTable
 {
@@ -199,4 +199,4 @@ std::string JSONRPCExecBatch(const JSONRPCRequest& jreq, const UniValue& vReq);
 // Retrieves any serialization flags requested in command line argument
 int RPCSerializationFlags();
 
-#endif // PAICOIN_RPCSERVER_H
+#endif // BWSCOIN_RPCSERVER_H

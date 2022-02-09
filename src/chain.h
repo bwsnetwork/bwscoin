@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_CHAIN_H
-#define PAICOIN_CHAIN_H
+#ifndef BWSCOIN_CHAIN_H
+#define BWSCOIN_CHAIN_H
 
 #include "arith_uint256.h"
 #include "primitives/block.h"
@@ -630,4 +630,4 @@ public:
     bool IsForkAtMost(CBlockIndex *pindex, int maxDepth) const;
 };
 
-#endif // PAICOIN_CHAIN_H
+#endif // BWSCOIN_CHAIN_H

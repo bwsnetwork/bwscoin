@@ -2,10 +2,10 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_COMPAT_SANITY_H
-#define PAICOIN_COMPAT_SANITY_H
+#ifndef BWSCOIN_COMPAT_SANITY_H
+#define BWSCOIN_COMPAT_SANITY_H
 
 bool glibc_sanity_test();
 bool glibcxx_sanity_test();
 
-#endif // PAICOIN_COMPAT_SANITY_H
+#endif // BWSCOIN_COMPAT_SANITY_H

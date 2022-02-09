@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_TXDB_H
-#define PAICOIN_TXDB_H
+#ifndef BWSCOIN_TXDB_H
+#define BWSCOIN_TXDB_H
 
 #include "coins.h"
 #include "dbwrapper.h"
@@ -180,4 +180,4 @@ private:
     uint256 salt;
 };
 
-#endif // PAICOIN_TXDB_H
+#endif // BWSCOIN_TXDB_H

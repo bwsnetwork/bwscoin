@@ -2,16 +2,16 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_CHAINPARAMSBASE_H
-#define PAICOIN_CHAINPARAMSBASE_H
+#ifndef BWSCOIN_CHAINPARAMSBASE_H
+#define BWSCOIN_CHAINPARAMSBASE_H
 
 #include <memory>
 #include <string>
 #include <vector>
 
 /**
- * CBaseChainParams defines the base parameters (shared between paicoin-cli, paicoin-block-generator and paicoind)
- * of a given instance of the PAI Coin system.
+ * CBaseChainParams defines the base parameters (shared between bwscoin-cli, bwscoin-block-generator and bwscoind)
+ * of a given instance of the BWS Coin system.
  */
 class CBaseChainParams
 {
@@ -59,4 +59,4 @@ void SelectBaseParams(const std::string& chain);
  */
 std::string ChainNameFromCommandLine();
 
-#endif // PAICOIN_CHAINPARAMSBASE_H
+#endif // BWSCOIN_CHAINPARAMSBASE_H

@@ -8,13 +8,13 @@
     https://docs.decred.org/faq/proof-of-stake/general/#10-what-happens-if-less-than-3-of-the-selected-tickets-vote-on-a-block
 """
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.blocktools import create_coinbase, create_block, add_witness_commitment
 from test_framework.mininode import CBlock, CTransaction, ToHex
 from test_framework.util import *
 from io import BytesIO
 
-class TestGetBlockTemplate(PAIcoinTestFramework):
+class TestGetBlockTemplate(BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2 # we need at least 2 nodes to have non zerp connections for getblocktemplate to work

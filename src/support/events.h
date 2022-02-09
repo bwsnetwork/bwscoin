@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_SUPPORT_EVENTS_H
-#define PAICOIN_SUPPORT_EVENTS_H
+#ifndef BWSCOIN_SUPPORT_EVENTS_H
+#define BWSCOIN_SUPPORT_EVENTS_H
 
 #include <ios>
 #include <memory>
@@ -53,4 +53,4 @@ inline raii_evhttp_connection obtain_evhttp_connection_base(struct event_base* b
     return result;
 }
 
-#endif // PAICOIN_SUPPORT_EVENTS_H
+#endif // BWSCOIN_SUPPORT_EVENTS_H

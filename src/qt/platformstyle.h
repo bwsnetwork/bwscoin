@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_PLATFORMSTYLE_H
-#define PAICOIN_QT_PLATFORMSTYLE_H
+#ifndef BWSCOIN_QT_PLATFORMSTYLE_H
+#define BWSCOIN_QT_PLATFORMSTYLE_H
 
 #include <QIcon>
 #include <QPixmap>
@@ -51,5 +51,5 @@ private:
     /* ... more to come later */
 };
 
-#endif // PAICOIN_QT_PLATFORMSTYLE_H
+#endif // BWSCOIN_QT_PLATFORMSTYLE_H
 

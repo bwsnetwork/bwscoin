@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #include "utiltime.h"

@@ -15,7 +15,7 @@
 #include "random.h"
 #include "script/standard.h"
 #include "script/sign.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 #include "utiltime.h"
 #include "core_io.h"
 #include "keystore.h"

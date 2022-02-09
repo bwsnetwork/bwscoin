@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_SCRIPT_SCRIPT_H
-#define PAICOIN_SCRIPT_SCRIPT_H
+#ifndef BWSCOIN_SCRIPT_SCRIPT_H
+#define BWSCOIN_SCRIPT_SCRIPT_H
 
 #include "crypto/common.h"
 #include "prevector.h"
@@ -643,7 +643,7 @@ public:
     }
 
     /**
-     * Pre-version-0.6, PAI Coin always counted CHECKMULTISIGs
+     * Pre-version-0.6, BWS Coin always counted CHECKMULTISIGs
      * as 20 sigops. With pay-to-script-hash, that changed:
      * CHECKMULTISIGs serialized in scriptSigs are
      * counted more accurately, assuming they are of the form
@@ -711,4 +711,4 @@ public:
     virtual ~CReserveScript() {}
 };
 
-#endif // PAICOIN_SCRIPT_SCRIPT_H
+#endif // BWSCOIN_SCRIPT_SCRIPT_H

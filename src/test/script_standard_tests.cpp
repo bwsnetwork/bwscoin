@@ -12,7 +12,7 @@
 #include "script/script.h"
 #include "script/script_error.h"
 #include "script/standard.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 
 #include <boost/test/unit_test.hpp>
 

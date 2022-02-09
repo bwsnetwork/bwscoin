@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_POLICY_POLICY_H
-#define PAICOIN_POLICY_POLICY_H
+#ifndef BWSCOIN_POLICY_POLICY_H
+#define BWSCOIN_POLICY_POLICY_H
 
 #include "consensus/consensus.h"
 #include "feerate.h"
@@ -108,4 +108,4 @@ extern unsigned int nBytesPerSigOp;
 int64_t GetVirtualTransactionSize(int64_t nWeight, int64_t nSigOpCost);
 int64_t GetVirtualTransactionSize(const CTransaction& tx, int64_t nSigOpCost = 0);
 
-#endif // PAICOIN_POLICY_POLICY_H
+#endif // BWSCOIN_POLICY_POLICY_H

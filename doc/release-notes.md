@@ -6,7 +6,7 @@ and performance improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at github:
 
-  <https://github.com/projectpai/paicoin/issues>
+  <https://github.com/valdi-labs/bwscoin/issues>
 
 
 How to Upgrade
@@ -14,8 +14,8 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the 
-installer (on Windows) or just copy over /Applications/PAIcoin-Qt (on Mac)
-or `paicoind`/`paicoin-qt` (on Linux).
+installer (on Windows) or just copy over /Applications/BWScoin-Qt (on Mac)
+or `bwscoind`/`bwscoin-qt` (on Linux).
 
 The first time you run version 0.15.0, your chainstate database will be converted to a
 new format, which will take anywhere from a few minutes to half an hour,
@@ -40,10 +40,10 @@ processing the entire blockchain.
 Compatibility
 ==============
 
-PAI Coin Core is extensively tested on multiple operating systems using
+BWS Coin Core is extensively tested on multiple operating systems using
 the Linux kernel, macOS 10.8+, and Windows Vista and later. Windows XP is not supported.
 
-PAI Coin Core should also work on most other Unix-like systems but is not
+BWS Coin Core should also work on most other Unix-like systems but is not
 frequently tested on them.
 
 Notable changes

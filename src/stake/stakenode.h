@@ -3,8 +3,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  */
 
-#ifndef PAICOIN_STAKE_STAKENODE_H
-#define PAICOIN_STAKE_STAKENODE_H
+#ifndef BWSCOIN_STAKE_STAKENODE_H
+#define BWSCOIN_STAKE_STAKENODE_H
 
 #include "stake/treap/tickettreap.h"
 #include "serialize.h"
@@ -233,4 +233,4 @@ public:
     std::shared_ptr<StakeNode> DisconnectNode(const uint256& parentLotteryIV, const UndoTicketDataVector& parentUtds, const HashVector& parentTickets) const;
 };
 
-#endif // PAICOIN_STAKE_STAKENODE_H
+#endif // BWSCOIN_STAKE_STAKENODE_H

@@ -273,7 +273,7 @@ UniValue importaddress(const JSONRPCRequest& request)
         const auto data = ParseHex(request.params[0].get_str());
         ImportScript(pwallet, CScript(std::begin(data), std::end(data)), strLabel, fP2SH);
     } else {
-        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid PAI Coin address or script");
+        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid BWS Coin address or script");
     }
 
     if (fRescan)
@@ -557,7 +557,7 @@ UniValue dumpprivkey(const JSONRPCRequest& request)
             "\nReveals the private key corresponding to 'address'.\n"
             "Then the importprivkey can be used with this output\n"
             "\nArguments:\n"
-            "1. \"address\"   (string, required) The paicoin address for the private key\n"
+            "1. \"address\"   (string, required) The bwscoin address for the private key\n"
             "\nResult:\n"
             "\"key\"                (string) The private key\n"
             "\nExamples:\n"
@@ -573,7 +573,7 @@ UniValue dumpprivkey(const JSONRPCRequest& request)
     const auto& strAddress = request.params[0].get_str();
     CTxDestination dest = DecodeDestination(strAddress);
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid PAI Coin address");
+        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid BWS Coin address");
     }
     const auto * const keyID = boost::get<CKeyID>(&dest);
     if (!keyID) {
@@ -598,7 +598,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
             "dumpwallet \"filename\"\n"
             "\nDumps all wallet keys in a human-readable format to a server-side file. This does not allow overwriting existing files.\n"
             "\nArguments:\n"
-            "1. \"filename\"    (string, required) The filename with path (either absolute or relative to paicoind)\n"
+            "1. \"filename\"    (string, required) The filename with path (either absolute or relative to bwscoind)\n"
             "\nResult:\n"
             "{                           (json object)\n"
             "  \"filename\" : {        (string) The filename with full absolute path\n"
@@ -644,7 +644,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
     std::sort(vKeyBirth.begin(), vKeyBirth.end());
 
     // produce output
-    file << strprintf("# Wallet dump created by PAI Coin %s\n", CLIENT_BUILD);
+    file << strprintf("# Wallet dump created by BWS Coin %s\n", CLIENT_BUILD);
     file << strprintf("# * Created on %s\n", EncodeDumpTime(GetTime()));
     file << strprintf("# * Best block at time of backup was %i (%s),\n", chainActive.Height(), chainActive.Tip()->GetBlockHash().ToString());
     file << strprintf("#   mined on %s\n", EncodeDumpTime(chainActive.Tip()->GetBlockTime()));
@@ -1138,7 +1138,7 @@ UniValue importmulti(const JSONRPCRequest& mainRequest)
                                       "block from time %d, which is after or within %d seconds of key creation, and "
                                       "could contain transactions pertaining to the key. As a result, transactions "
                                       "and coins using this key may not appear in the wallet. This error could be "
-                                      "caused by pruning or data corruption (see paicoind log for details) and could "
+                                      "caused by pruning or data corruption (see bwscoind log for details) and could "
                                       "be dealt with by downloading and rescanning the relevant blocks (see -reindex "
                                       "and -rescan options).",
                                 GetImportTimestamp(request, now), scannedTime - TIMESTAMP_WINDOW - 1, TIMESTAMP_WINDOW)));

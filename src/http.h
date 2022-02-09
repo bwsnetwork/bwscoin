@@ -3,8 +3,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  */
 
-#ifndef PAICOIN_HTTP_H
-#define PAICOIN_HTTP_H
+#ifndef BWSCOIN_HTTP_H
+#define BWSCOIN_HTTP_H
 
 /**
  * HTTP status codes
@@ -21,4 +21,4 @@ enum class HTTPStatusCode
     SERVICE_UNAVAILABLE   = 503,
 };
 
-#endif // PAICOIN_HTTP_H
+#endif // BWSCOIN_HTTP_H

@@ -1,8 +1,7 @@
 <pre>PDP: 2
 Layer: Applications
-Title: PAI Data Storage and Sharing
-Author: Alex Waters [alex@waters.nyc]
-        Mark Harvilla [mark@oben.com]
+Title: BWS Data Storage and Sharing
+Author: Mark Harvilla [mark@valdi.ai]
         Patrick Gerzanics [patrick.gerzanics@upandrunningsoftware.com]
 Status: Proposed
 Type: Informational
@@ -10,7 +9,7 @@ Created: 2018-05-15
 License: MIT
 </pre>
 
-# PAI Coin Development Proposal (PDP)
+# BWS Coin Development Proposal (BDP)
 ## Data Storage and Sharing
 - [Abstract](#abstract)
 - [Copyright](#copyright)
@@ -30,7 +29,7 @@ License: MIT
 
 ## Abstract
 
-This document describes an initial specification for extending the standard PAI Coin protocol to include a method of submitting and provisioning access to arbitrary data.  This is achieved by utilizing a segmented network of torrent nodes, a custom `OP_RETURN` data protocol and elliptical encryption.
+This document describes an initial specification for extending the standard BWS Coin protocol to include a method of submitting and provisioning access to arbitrary data.  This is achieved by utilizing a segmented network of torrent nodes, a custom `OP_RETURN` data protocol and elliptical encryption.
 
 The specification consists of several parts. In the first part, the protocol for the `OP_RETURN` format for submitters and recipients is detailed. The second part discusses how the data is stored and distributed in v1 of the implementation.  The third part covers further expansion of ideas for indexing, storage and participant rewards.
 
@@ -50,23 +49,23 @@ Securely sharing data, such as on a public website, has been well-covered for so
 
 **Submitter** -- User that is providing data to a Recipient.
 
-**Provider** -- Data storage provider as tracked in the PAI blockchain.
+**Provider** -- Data storage provider as tracked in the BWS blockchain.
 
 **Recipient** -- Entity that is to receive the data from the Submitter.
 
 #### Flow
 
-**Submitter and Recipient**: Monitor the PAI blockchain for data storage provider OP_RETURN messages to have an index of available storage providers; adding and removing as necessary.
+**Submitter and Recipient**: Monitor the BWS blockchain for data storage provider OP_RETURN messages to have an index of available storage providers; adding and removing as necessary.
 
 **Submitter**: Encrypts required data using the intended recipient’s public key.
 
-**Submitter**: Submits encrypted data to a PAI data storage provider using the Provider API and receives the unique data ID.
+**Submitter**: Submits encrypted data to a BWS data storage provider using the Provider API and receives the unique data ID.
 
 **Provider**: Stores data within their storage network.
 
 **Submitter**: Creates a transaction on the blockchain according to the OP_RETURN protocol. This grants access to the data to the intended recipient as well as pays the storage provider, if necessary.
 
-**Recipient**: Notified via PAI transaction with `OP_RETURN` and their wallet address that data has been submitted.  Retrieves ID from `OP_RETURN`.
+**Recipient**: Notified via BWS transaction with `OP_RETURN` and their wallet address that data has been submitted.  Retrieves ID from `OP_RETURN`.
 
 **Recipient**: Calls Provider API `/get-torrent` to retrieve the torrent file for accessing data.
 
@@ -76,15 +75,15 @@ Securely sharing data, such as on a public website, has been well-covered for so
 
 ### OP_RETURN Protocol
 
-In order to achieve our goals with using the PAI blockchain to track provisioning, revocation and storage requests we need to embed this data into transactions.  To do so, we have chosen to use the standard approach of embedding data in the chain utilizing the op code `OP_RETURN`.
+In order to achieve our goals with using the BWS blockchain to track provisioning, revocation and storage requests we need to embed this data into transactions.  To do so, we have chosen to use the standard approach of embedding data in the chain utilizing the op code `OP_RETURN`.
 
 #### Glossary
 
-**Header**:  The initial 8 bytes after the `OP_RETURN` code that indicate it is a PAI data storage txout and the version currently being used.
+**Header**:  The initial 8 bytes after the `OP_RETURN` code that indicate it is a BWS data storage txout and the version currently being used.
 
 **Payload**: The operation and associated parameters for the request.
 
-**Operations**: Types of requests that can be made via the PAI Coin data storage implementation.
+**Operations**: Types of requests that can be made via the BWS Coin data storage implementation.
 
 **Storage Method**: This is the storage method being utilized.  In the initial implementation we have 0x01 which is the segmented bittorrent based solution as detailed below.
 
@@ -92,16 +91,16 @@ In order to achieve our goals with using the PAI blockchain to track provisionin
 
 <table>
   <tr>
-    <td>PAI PROTOCOL</td>
+    <td>BWS PROTOCOL</td>
     <td>Purpose</td>
     <td>Length (bits)</td>
     <td>Value (hex)</td>
   </tr>
   <tr>
-    <td>PAI HEADER</td>
-    <td>PAI delimiter</td>
+    <td>BWS HEADER</td>
+    <td>BWS delimiter</td>
     <td>8</td>
-    <td>0x92 = crc8("PAI")</td>
+    <td>0x89 = crc8("BWS")</td>
   </tr>
   <tr>
     <td></td>
@@ -116,7 +115,7 @@ In order to achieve our goals with using the PAI blockchain to track provisionin
     <td>0xFFFFFFFFFFFF</td>
   </tr>
   <tr>
-    <td>PAI PAYLOAD</td>
+    <td>BWS PAYLOAD</td>
     <td>Operation</td>
     <td>8</td>
     <td>0x00..0xFE + encoded NOP(0xFF)</td>
@@ -152,7 +151,7 @@ In order to achieve our goals with using the PAI blockchain to track provisionin
     <td></td>
   </tr>
   <tr>
-    <td>PAI CRC</td>
+    <td>BWS CRC</td>
     <td>Checksum</td>
     <td>32</td>
     <td>crc32(header + payload)</td>
@@ -202,13 +201,13 @@ In order to achieve our goals with using the PAI blockchain to track provisionin
 
 **Revoke** -- This method is used to tell the original recipient of the encrypted data that all copies of the provided data should be destroyed and further usage is prohibited.
 
-**Add Provider** -- This method is used with the initial PAI data storage method for submitting base URLs for submitting data to the PAI data storage system per the API definition defined below.
+**Add Provider** -- This method is used with the initial BWS data storage method for submitting base URLs for submitting data to the BWS data storage system per the API definition defined below.
 
-**Remove Provider** -- This method is used with the initial PAI data storage method to indicate that an existing entrypoint should no longer be used and has been retired.
+**Remove Provider** -- This method is used with the initial BWS data storage method to indicate that an existing entrypoint should no longer be used and has been retired.
 
 ### Storage Provider API and Behavior
 
-In order to standardize interactions with PAI data storage providers, below are the initial API paths, parameters and responses.  This is only storage method 0x01 per the `OP_RETURN` protocol. 
+In order to standardize interactions with BWS data storage providers, below are the initial API paths, parameters and responses.  This is only storage method 0x01 per the `OP_RETURN` protocol. 
 
 <table>
   <tr>
@@ -276,4 +275,4 @@ This PDP on its own does not cause any backwards incompatibility.
 
 ## Implementation
 
-An initial implementation of this PDP is included in the PAI Coin core in the `contrib/data-store` directory.  This includes a Python API implementation of the Data Provider specification and Dockerfiles for launching torrent nodes using OpenTracker.  It also includes sample code for submitting `OP_RETURN` transactions and exercising the protocol for Submitters and Recipients.
+An initial implementation of this PDP is included in the BWS Coin core in the `contrib/data-store` directory.  This includes a Python API implementation of the Data Provider specification and Dockerfiles for launching torrent nodes using OpenTracker.  It also includes sample code for submitting `OP_RETURN` transactions and exercising the protocol for Submitters and Recipients.

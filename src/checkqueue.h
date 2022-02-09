@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_CHECKQUEUE_H
-#define PAICOIN_CHECKQUEUE_H
+#ifndef BWSCOIN_CHECKQUEUE_H
+#define BWSCOIN_CHECKQUEUE_H
 
 #include "sync.h"
 
@@ -214,4 +214,4 @@ public:
     }
 };
 
-#endif // PAICOIN_CHECKQUEUE_H
+#endif // BWSCOIN_CHECKQUEUE_H

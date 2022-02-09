@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_ADDRESSTABLEMODEL_H
-#define PAICOIN_QT_ADDRESSTABLEMODEL_H
+#ifndef BWSCOIN_QT_ADDRESSTABLEMODEL_H
+#define BWSCOIN_QT_ADDRESSTABLEMODEL_H
 
 #include <QAbstractTableModel>
 #include <QStringList>
@@ -26,7 +26,7 @@ public:
 
     enum ColumnIndex {
         Label = 0,   /**< User specified label */
-        Address = 1  /**< PAI Coin address */
+        Address = 1  /**< BWS Coin address */
     };
 
     enum RoleIndex {
@@ -92,4 +92,4 @@ public Q_SLOTS:
     friend class AddressTablePriv;
 };
 
-#endif // PAICOIN_QT_ADDRESSTABLEMODEL_H
+#endif // BWSCOIN_QT_ADDRESSTABLEMODEL_H

@@ -5,11 +5,11 @@
  */
 
 
-#ifndef PAICOIN_NETADDRESS_H
-#define PAICOIN_NETADDRESS_H
+#ifndef BWSCOIN_NETADDRESS_H
+#define BWSCOIN_NETADDRESS_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #include "compat.h"
@@ -178,4 +178,4 @@ class CService : public CNetAddr
         }
 };
 
-#endif // PAICOIN_NETADDRESS_H
+#endif // BWSCOIN_NETADDRESS_H

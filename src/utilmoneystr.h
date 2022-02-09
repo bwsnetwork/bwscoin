@@ -6,8 +6,8 @@
 /**
  * Money parsing/formatting utilities.
  */
-#ifndef PAICOIN_UTILMONEYSTR_H
-#define PAICOIN_UTILMONEYSTR_H
+#ifndef BWSCOIN_UTILMONEYSTR_H
+#define BWSCOIN_UTILMONEYSTR_H
 
 #include <stdint.h>
 #include <string>
@@ -21,4 +21,4 @@ std::string FormatMoney(const CAmount& n);
 bool ParseMoney(const std::string& str, CAmount& nRet);
 bool ParseMoney(const char* pszIn, CAmount& nRet);
 
-#endif // PAICOIN_UTILMONEYSTR_H
+#endif // BWSCOIN_UTILMONEYSTR_H

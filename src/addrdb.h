@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_ADDRDB_H
-#define PAICOIN_ADDRDB_H
+#ifndef BWSCOIN_ADDRDB_H
+#define BWSCOIN_ADDRDB_H
 
 #include "fs.h"
 #include "serialize.h"
@@ -99,4 +99,4 @@ public:
     bool Read(banmap_t& banSet);
 };
 
-#endif // PAICOIN_ADDRDB_H
+#endif // BWSCOIN_ADDRDB_H

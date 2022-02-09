@@ -22,13 +22,13 @@ from test_framework.mininode import (
     msg_getheaders,
     wait_until,
 )
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import (
     assert_equal,
     p2p_port,
 )
 
-class P2PFingerprintTest(PAIcoinTestFramework):
+class P2PFingerprintTest(BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 1

@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_OPTIONSDIALOG_H
-#define PAICOIN_QT_OPTIONSDIALOG_H
+#ifndef BWSCOIN_QT_OPTIONSDIALOG_H
+#define BWSCOIN_QT_OPTIONSDIALOG_H
 
 #include <QDialog>
 #include <QValidator>
@@ -47,7 +47,7 @@ private Q_SLOTS:
     /* set OK button state (enabled / disabled) */
     void setOkButtonState(bool fState);
     void on_resetButton_clicked();
-    void on_openPAIcoinConfButton_clicked();
+    void on_openBWScoinConfButton_clicked();
     void on_okButton_clicked();
     void on_cancelButton_clicked();
     
@@ -68,4 +68,4 @@ private:
     QDataWidgetMapper *mapper;
 };
 
-#endif // PAICOIN_QT_OPTIONSDIALOG_H
+#endif // BWSCOIN_QT_OPTIONSDIALOG_H

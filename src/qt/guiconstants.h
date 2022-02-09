@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_GUICONSTANTS_H
-#define PAICOIN_QT_GUICONSTANTS_H
+#ifndef BWSCOIN_QT_GUICONSTANTS_H
+#define BWSCOIN_QT_GUICONSTANTS_H
 
 /* Milliseconds between model updates */
 static const int MODEL_UPDATE_DELAY = 250;
@@ -11,7 +11,7 @@ static const int MODEL_UPDATE_DELAY = 250;
 /* AskPassphraseDialog -- Maximum passphrase length */
 static const int MAX_PASSPHRASE_SIZE = 1024;
 
-/* PAIcoinGUI -- Size of icons in status bar */
+/* BWScoinGUI -- Size of icons in status bar */
 static const int STATUSBAR_ICONSIZE = 16;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
@@ -48,9 +48,9 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 36
 
-#define QAPP_ORG_NAME "PAI Coin"
-#define QAPP_ORG_DOMAIN "paicoin.org"
-#define QAPP_APP_NAME_DEFAULT "PAI Coin-Qt"
-#define QAPP_APP_NAME_TESTNET "PAI Coin-Qt-testnet"
+#define QAPP_ORG_NAME "BWS Coin"
+#define QAPP_ORG_DOMAIN "bwscoin.org"
+#define QAPP_APP_NAME_DEFAULT "BWS Coin-Qt"
+#define QAPP_APP_NAME_TESTNET "BWS Coin-Qt-testnet"
 
-#endif // PAICOIN_QT_GUICONSTANTS_H
+#endif // BWSCOIN_QT_GUICONSTANTS_H

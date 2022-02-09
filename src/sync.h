@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_SYNC_H
-#define PAICOIN_SYNC_H
+#ifndef BWSCOIN_SYNC_H
+#define BWSCOIN_SYNC_H
 
 #include "threadsafety.h"
 
@@ -287,4 +287,4 @@ public:
     }
 };
 
-#endif // PAICOIN_SYNC_H
+#endif // BWSCOIN_SYNC_H

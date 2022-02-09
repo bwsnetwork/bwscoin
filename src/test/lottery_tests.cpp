@@ -6,7 +6,7 @@
 //
 
 
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 #include <boost/test/unit_test.hpp>
 #include "uint256.h"
 #include "stake/hash256prng.h"
@@ -38,10 +38,6 @@ BOOST_AUTO_TEST_CASE(lottery_num_selection)
     auto tooFewTickets = 4;
     auto justEnoughTickets = 5;
     auto ticketsPerBlock = uint16_t(5);
-
-    BOOST_CHECK_THROW(
-        prng.FindTicketIdxs(tooFewTickets,ticketsPerBlock),
-        std::runtime_error);
 
     { 
         auto tickets = prng.FindTicketIdxs(ticketsInPool, ticketsPerBlock);

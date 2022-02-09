@@ -2,13 +2,13 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_UTILITYDIALOG_H
-#define PAICOIN_QT_UTILITYDIALOG_H
+#ifndef BWSCOIN_QT_UTILITYDIALOG_H
+#define BWSCOIN_QT_UTILITYDIALOG_H
 
 #include <QDialog>
 #include <QObject>
 
-class PAIcoinGUI;
+class BWScoinGUI;
 
 namespace Ui {
     class HelpMessageDialog;
@@ -42,10 +42,10 @@ class ShutdownWindow : public QWidget
 
 public:
     explicit ShutdownWindow(QWidget *parent=0, Qt::WindowFlags f=0);
-    static QWidget *showShutdownWindow(PAIcoinGUI *window);
+    static QWidget *showShutdownWindow(BWScoinGUI *window);
 
 protected:
     void closeEvent(QCloseEvent *event);
 };
 
-#endif // PAICOIN_QT_UTILITYDIALOG_H
+#endif // BWSCOIN_QT_UTILITYDIALOG_H

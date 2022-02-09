@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_VALIDATIONINTERFACE_H
-#define PAICOIN_VALIDATIONINTERFACE_H
+#ifndef BWSCOIN_VALIDATIONINTERFACE_H
+#define BWSCOIN_VALIDATIONINTERFACE_H
 
 #include <memory>
 
@@ -100,4 +100,4 @@ public:
 
 CMainSignals& GetMainSignals();
 
-#endif // PAICOIN_VALIDATIONINTERFACE_H
+#endif // BWSCOIN_VALIDATIONINTERFACE_H

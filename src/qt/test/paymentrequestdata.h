@@ -434,7 +434,7 @@ HSLaRgHfUDeEPr4hydy4dtfu59KNwe2xsHOHu/SpO4L8SrA4Dm9A7SlNBVWdcLbw\
 d2hj739GDLz0b5KuJ2SG6VknMRQM976w/m2qlq0ccVGaaZ2zMIGfpzL3p6adwx/5\
 ";
 
-// PAICOIN Note: If updating the MAX_COINS
+// BWSCOIN Note: If updating the MAX_COINS
 // - git clone https://github.com/gavinandresen/paymentrequest.git
 // - sudo apt-get install openssl protobuf-compiler protobuf-c-compiler
 // - Edit the Makefile and insert SHELL=/bin/bash on the first non-comment line
@@ -451,7 +451,7 @@ d2hj739GDLz0b5KuJ2SG6VknMRQM976w/m2qlq0ccVGaaZ2zMIGfpzL3p6adwx/5\
 // - Copy the content of the payment.out file in the constant below (paymentrequest5_cert2_BASE64) and format it appropriately
 
 //
-// Payment request with amount overflow (amount is set to 21000001 PAI)
+// Payment request with amount overflow (amount is set to 21000001 BWS)
 //
 const char* paymentrequest5_cert2_BASE64 =
 "\

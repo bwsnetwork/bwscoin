@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_OPTIONSMODEL_H
-#define PAICOIN_QT_OPTIONSMODEL_H
+#ifndef BWSCOIN_QT_OPTIONSMODEL_H
+#define BWSCOIN_QT_OPTIONSMODEL_H
 
 #include "amount.h"
 
@@ -13,7 +13,7 @@ QT_BEGIN_NAMESPACE
 class QNetworkProxy;
 QT_END_NAMESPACE
 
-/** Interface from Qt to configuration data structure for PAI Coin client.
+/** Interface from Qt to configuration data structure for BWS Coin client.
    To Qt, the options are presented as a list with the different options
    laid out vertically.
    This can be changed to a tree once the settings become sufficiently
@@ -38,7 +38,7 @@ public:
         ProxyUseTor,            // bool
         ProxyIPTor,             // QString
         ProxyPortTor,           // int
-        DisplayUnit,            // PAIcoinUnits::Unit
+        DisplayUnit,            // BWScoinUnits::Unit
         ThirdPartyTxUrls,       // QString
         Language,               // QString
         CoinControlFeatures,    // bool
@@ -95,4 +95,4 @@ Q_SIGNALS:
     void hideTrayIconChanged(bool);
 };
 
-#endif // PAICOIN_QT_OPTIONSMODEL_H
+#endif // BWSCOIN_QT_OPTIONSMODEL_H

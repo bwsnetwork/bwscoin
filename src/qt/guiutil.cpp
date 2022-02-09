@@ -8,8 +8,8 @@
 
 #include <qt/guiutil.h>
 
-#include <qt/paicoinaddressvalidator.h>
-#include <qt/paicoinunits.h>
+#include <qt/bwscoinaddressvalidator.h>
+#include <qt/bwscoinunits.h>
 #include <qt/qvalidatedlineedit.h>
 #include <qt/walletmodel.h>
 
@@ -134,11 +134,11 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 #if QT_VERSION >= 0x040700
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-    widget->setPlaceholderText(QObject::tr("Enter a PAI Coin address (e.g. %1)").arg(
+    widget->setPlaceholderText(QObject::tr("Enter a BWS Coin address (e.g. %1)").arg(
         QString::fromStdString(DummyAddress(Params()))));
 #endif
-    widget->setValidator(new PAIcoinAddressEntryValidator(parent));
-    widget->setCheckValidator(new PAIcoinAddressCheckValidator(parent));
+    widget->setValidator(new BWScoinAddressEntryValidator(parent));
+    widget->setCheckValidator(new BWScoinAddressCheckValidator(parent));
 }
 
 void setupAmountWidget(QLineEdit *widget, QWidget *parent)
@@ -150,10 +150,10 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
     widget->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 }
 
-bool parsePAIcoinURI(const QUrl &uri, SendCoinsRecipient *out)
+bool parseBWScoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no paicoin: URI
-    if(!uri.isValid() || uri.scheme() != QString("paicoin"))
+    // return if URI is not valid or is no bwscoin: URI
+    if(!uri.isValid() || uri.scheme() != QString("bwscoin"))
         return false;
 
     SendCoinsRecipient rv;
@@ -193,7 +193,7 @@ bool parsePAIcoinURI(const QUrl &uri, SendCoinsRecipient *out)
         {
             if(!i->second.isEmpty())
             {
-                if(!PAIcoinUnits::parse(PAIcoinUnits::PAI, i->second, &rv.amount))
+                if(!BWScoinUnits::parse(BWScoinUnits::BWS, i->second, &rv.amount))
                 {
                     return false;
                 }
@@ -211,28 +211,28 @@ bool parsePAIcoinURI(const QUrl &uri, SendCoinsRecipient *out)
     return true;
 }
 
-bool parsePAIcoinURI(QString uri, SendCoinsRecipient *out)
+bool parseBWScoinURI(QString uri, SendCoinsRecipient *out)
 {
-    // Convert paicoin:// to paicoin:
+    // Convert bwscoin:// to bwscoin:
     //
-    //    Cannot handle this later, because paicoin:// will cause Qt to see the part after // as host,
+    //    Cannot handle this later, because bwscoin:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("paicoin://", Qt::CaseInsensitive))
+    if(uri.startsWith("bwscoin://", Qt::CaseInsensitive))
     {
-        uri.replace(0, 10, "paicoin:");
+        uri.replace(0, 10, "bwscoin:");
     }
     QUrl uriInstance(uri);
-    return parsePAIcoinURI(uriInstance, out);
+    return parseBWScoinURI(uriInstance, out);
 }
 
-QString formatPAIcoinURI(const SendCoinsRecipient &info)
+QString formatBWScoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("paicoin:%1").arg(info.address);
+    QString ret = QString("bwscoin:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
     {
-        ret += QString("?amount=%1").arg(PAIcoinUnits::format(PAIcoinUnits::PAI, info.amount, false, PAIcoinUnits::separatorNever));
+        ret += QString("?amount=%1").arg(BWScoinUnits::format(BWScoinUnits::BWS, info.amount, false, BWScoinUnits::separatorNever));
         paramCount++;
     }
 
@@ -422,9 +422,9 @@ void openDebugLogfile()
         QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathDebug)));
 }
 
-bool openPAIcoinConf()
+bool openBWScoinConf()
 {
-    boost::filesystem::path pathConfig = GetConfigFile(PAICOIN_CONF_FILENAME);
+    boost::filesystem::path pathConfig = GetConfigFile(BWSCOIN_CONF_FILENAME);
 
     /* Create the file */
     boost::filesystem::ofstream configFile(pathConfig, std::ios_base::app);
@@ -434,7 +434,7 @@ bool openPAIcoinConf()
 
     configFile.close();
 
-    /* Open paicoin.conf with the associated application */
+    /* Open bwscoin.conf with the associated application */
     return QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
 }
 
@@ -622,15 +622,15 @@ fs::path static StartupShortcutPath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "PAIcoin.lnk";
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "BWScoin.lnk";
     if (chain == CBaseChainParams::TESTNET) // Remove this special case when CBaseChainParams::TESTNET = "testnet4"
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "PAIcoin (testnet).lnk";
-    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("PAIcoin (%s).lnk", chain);
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "BWScoin (testnet).lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("BWScoin (%s).lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
 {
-    // check for PAIcoin*.lnk
+    // check for BWScoin*.lnk
     return fs::exists(StartupShortcutPath());
 }
 
@@ -720,8 +720,8 @@ fs::path static GetAutostartFilePath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetAutostartDir() / "paicoin.desktop";
-    return GetAutostartDir() / strprintf("paicoin-%s.lnk", chain);
+        return GetAutostartDir() / "bwscoin.desktop";
+    return GetAutostartDir() / strprintf("bwscoin-%s.lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -761,13 +761,13 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         if (!optionFile.good())
             return false;
         std::string chain = ChainNameFromCommandLine();
-        // Write a paicoin.desktop file to the autostart directory:
+        // Write a bwscoin.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=PAIcoin\n";
+            optionFile << "Name=BWScoin\n";
         else
-            optionFile << strprintf("Name=PAIcoin (%s)\n", chain);
+            optionFile << strprintf("Name=BWScoin (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -testnet=%d -regtest=%d\n", gArgs.GetBoolArg("-testnet", false), gArgs.GetBoolArg("-regtest", false));
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -793,7 +793,7 @@ LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef
         return nullptr;
     }
 
-    // loop through the list of startup items and try to find the paicoin app
+    // loop through the list of startup items and try to find the bwscoin app
     for(int i = 0; i < CFArrayGetCount(listSnapshot); i++) {
         LSSharedFileListItemRef item = (LSSharedFileListItemRef)CFArrayGetValueAtIndex(listSnapshot, i);
         UInt32 resolutionFlags = kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes;
@@ -827,38 +827,38 @@ LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef
 
 bool GetStartOnSystemStartup()
 {
-    CFURLRef paicoinAppUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    if (paicoinAppUrl == nullptr) {
+    CFURLRef bwscoinAppUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+    if (bwscoinAppUrl == nullptr) {
         return false;
     }
 
     LSSharedFileListRef loginItems = LSSharedFileListCreate(nullptr, kLSSharedFileListSessionLoginItems, nullptr);
-    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, paicoinAppUrl);
+    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bwscoinAppUrl);
 
-    CFRelease(paicoinAppUrl);
+    CFRelease(bwscoinAppUrl);
     return !!foundItem; // return boolified object
 }
 
 bool SetStartOnSystemStartup(bool fAutoStart)
 {
-    CFURLRef paicoinAppUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    if (paicoinAppUrl == nullptr) {
+    CFURLRef bwscoinAppUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+    if (bwscoinAppUrl == nullptr) {
         return false;
     }
 
     LSSharedFileListRef loginItems = LSSharedFileListCreate(nullptr, kLSSharedFileListSessionLoginItems, nullptr);
-    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, paicoinAppUrl);
+    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bwscoinAppUrl);
 
     if(fAutoStart && !foundItem) {
-        // add paicoin app to startup item list
-        LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, nullptr, nullptr, paicoinAppUrl, nullptr, nullptr);
+        // add bwscoin app to startup item list
+        LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, nullptr, nullptr, bwscoinAppUrl, nullptr, nullptr);
     }
     else if(!fAutoStart && foundItem) {
         // remove item
         LSSharedFileListItemRemove(loginItems, foundItem);
     }
 
-    CFRelease(paicoinAppUrl);
+    CFRelease(bwscoinAppUrl);
     return true;
 }
 #pragma GCC diagnostic pop

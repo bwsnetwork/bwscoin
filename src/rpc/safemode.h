@@ -2,11 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_RPC_SAFEMODE_H
-#define PAICOIN_RPC_SAFEMODE_H
+#ifndef BWSCOIN_RPC_SAFEMODE_H
+#define BWSCOIN_RPC_SAFEMODE_H
 
 static const bool DEFAULT_DISABLE_SAFEMODE = true;
 
 void ObserveSafeMode();
 
-#endif // PAICOIN_RPC_SAFEMODE_H
+#endif // BWSCOIN_RPC_SAFEMODE_H

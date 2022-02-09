@@ -1,9 +1,9 @@
 .PHONY: FORCE
 all: FORCE
-	$(MAKE) -C .. paicoin_qt test_paicoin_qt
+	$(MAKE) -C .. bwscoin_qt test_bwscoin_qt
 clean: FORCE
-	$(MAKE) -C .. paicoin_qt_clean test_paicoin_qt_clean
+	$(MAKE) -C .. bwscoin_qt_clean test_bwscoin_qt_clean
 check: FORCE
-	$(MAKE) -C .. test_paicoin_qt_check
-paicoin-qt paicoin-qt.exe: FORCE
-	 $(MAKE) -C .. paicoin_qt
+	$(MAKE) -C .. test_bwscoin_qt_check
+bwscoin-qt bwscoin-qt.exe: FORCE
+	 $(MAKE) -C .. bwscoin_qt

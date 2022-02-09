@@ -368,7 +368,7 @@ Thanks to everyone who directly contributed to this release:
 - Anders Øyvind Urke-Sætre
 - Andrew Chow
 - Anthony Towns
-- PAIDrak
+- BtcDrak
 - Chris Stewart
 - Christian Barcenas
 - Christian Decker

@@ -6,11 +6,11 @@
 
 
 
-#ifndef PAICOIN_VALIDATION_H
-#define PAICOIN_VALIDATION_H
+#ifndef BWSCOIN_VALIDATION_H
+#define BWSCOIN_VALIDATION_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/paicoin-config.h"
+#include "config/bwscoin-config.h"
 #endif
 
 #include "amount.h"
@@ -554,4 +554,4 @@ struct CompareBlocksByHeight
 /** Get the set of chain tips */
 std::set<CBlockIndex*, CompareBlocksByHeight> GetChainTips();
 
-#endif // PAICOIN_VALIDATION_H
+#endif // BWSCOIN_VALIDATION_H

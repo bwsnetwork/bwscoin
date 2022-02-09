@@ -13,11 +13,11 @@ stake difficulty check fails
     - see multinode_hybrid_fork.py for the scenario that buys after the fork
 """
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import *
 from test_framework.mininode import COIN
 
-class MultinodeHybridConsensusForkWithTickets(PAIcoinTestFramework):
+class MultinodeHybridConsensusForkWithTickets(BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2

@@ -3,17 +3,17 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-"""Test that the PAIcoinTestFramwork was updated to use the extended BlockHeader and 
+"""Test that the BWScoinTestFramework was updated to use the extended BlockHeader and 
    the SHAKE256 hashing algorithm above Hybrid Consensus Fork
 """
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import *
 from test_framework.blocktools import *
 from io import BytesIO
 # from test_framework.mininode import CBlock, CTransaction, ToHex
 
-class TestHybridConsensusTestFramework(PAIcoinTestFramework):
+class TestHybridConsensusTestFramework(BWScoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2 # we need at least 2 nodes to have non zero connections for getblocktemplate to work

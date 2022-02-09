@@ -10,7 +10,7 @@
 
 #include "addressbookpage.h"
 #include "askpassphrasedialog.h"
-#include "paicoingui.h"
+#include "bwscoingui.h"
 #include "clientmodel.h"
 #include "guiutil.h"
 #include "optionsmodel.h"
@@ -88,7 +88,7 @@ WalletView::~WalletView()
 {
 }
 
-void WalletView::setPAIcoinGUI(PAIcoinGUI *gui)
+void WalletView::setBWScoinGUI(BWScoinGUI *gui)
 {
     if (gui)
     {

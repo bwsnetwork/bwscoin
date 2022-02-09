@@ -5,7 +5,7 @@
 #include "random.h"
 #include "scheduler.h"
 
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 
 #include <boost/bind/bind.hpp>
 #include <boost/thread.hpp>

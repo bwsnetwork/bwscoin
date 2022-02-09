@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_INTRO_H
-#define PAICOIN_QT_INTRO_H
+#ifndef BWSCOIN_QT_INTRO_H
+#define BWSCOIN_QT_INTRO_H
 
 #include <QDialog>
 #include <QMutex>
@@ -75,4 +75,4 @@ private:
     friend class FreespaceChecker;
 };
 
-#endif // PAICOIN_QT_INTRO_H
+#endif // BWSCOIN_QT_INTRO_H

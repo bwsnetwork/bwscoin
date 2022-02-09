@@ -4,8 +4,8 @@
  */
 
 
-#ifndef PAICOIN_STAKE_EXTENDEDVOTEBITS_H
-#define PAICOIN_STAKE_EXTENDEDVOTEBITS_H
+#ifndef BWSCOIN_STAKE_EXTENDEDVOTEBITS_H
+#define BWSCOIN_STAKE_EXTENDEDVOTEBITS_H
 
 #include <string>
 #include <vector>
@@ -70,4 +70,4 @@ private:
     std::vector<unsigned char> v;
 };
 
-#endif //PAICOIN_STAKE_EXTENDEDVOTEBITS_H
+#endif //BWSCOIN_STAKE_EXTENDEDVOTEBITS_H

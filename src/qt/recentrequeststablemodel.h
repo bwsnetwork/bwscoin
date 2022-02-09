@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_QT_RECENTREQUESTSTABLEMODEL_H
-#define PAICOIN_QT_RECENTREQUESTSTABLEMODEL_H
+#ifndef BWSCOIN_QT_RECENTREQUESTSTABLEMODEL_H
+#define BWSCOIN_QT_RECENTREQUESTSTABLEMODEL_H
 
 #include "walletmodel.h"
 
@@ -52,7 +52,7 @@ private:
     Qt::SortOrder order;
 };
 
-/** Model for list of recently generated payment requests / paicoin: URIs.
+/** Model for list of recently generated payment requests / bwscoin: URIs.
  * Part of wallet model.
  */
 class RecentRequestsTableModel: public QAbstractTableModel
@@ -104,4 +104,4 @@ private:
     QString getAmountTitle();
 };
 
-#endif // PAICOIN_QT_RECENTREQUESTSTABLEMODEL_H
+#endif // BWSCOIN_QT_RECENTREQUESTSTABLEMODEL_H

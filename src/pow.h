@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_POW_H
-#define PAICOIN_POW_H
+#ifndef BWSCOIN_POW_H
+#define BWSCOIN_POW_H
 
 #include "amount.h"
 
@@ -90,4 +90,4 @@ CAmount GetTotalBlockSubsidy(int nHeight, const Consensus::Params& consensusPara
 // Note: only the newer algorithm estimateNextStakeDifficultyV2 is ported
 int64_t EstimateNextStakeDifficulty(const CBlockIndex* pindexLast, int newTickets, bool useMaxTickets, const Consensus::Params& params);
 
-#endif // PAICOIN_POW_H
+#endif // BWSCOIN_POW_H

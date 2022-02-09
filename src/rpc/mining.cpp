@@ -169,7 +169,7 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
             "\nMine blocks immediately to a specified address (before the RPC call returns)\n"
             "\nArguments:\n"
             "1. nblocks      (numeric, required) How many blocks are generated immediately.\n"
-            "2. address      (string, required) The address to send the newly generated paicoin to.\n"
+            "2. address      (string, required) The address to send the newly generated bwscoin to.\n"
             "3. maxtries     (numeric, optional) How many iterations to try (default = 1000000).\n"
             "\nResult:\n"
             "[ blockhashes ]     (array) hashes of blocks generated\n"
@@ -210,7 +210,7 @@ UniValue submitusefulwork(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. submitusefulwork_request         (json object) A json object in the following spec\n"
             "     {\n"
-            "       \"address\":\"miner_address\"       (string, required) The address to send the newly generated paicoin to.\n"
+            "       \"address\":\"miner_address\"       (string, required) The address to send the newly generated bwscoin to.\n"
             "       \"pow_msg_history_id\":\"msg_history_id\"           (string, required) Message History ID\n"
             "       \"pow_msg_id\":\"msg_id\" (string, required) Message ID\n"
             "       \"pow_nonce\":\"nonce\" (numeric, required) Nonce\n"
@@ -282,7 +282,7 @@ UniValue getmininginfo(const JSONRPCRequest& request)
             "  \"pooledtx\": n              (numeric) The size of the mempool\n"
             "  \"chain\": \"xxxx\",           (string) current network name as defined in BIP70 (main, test, regtest)\n"
             "  \"warnings\": \"...\"          (string) any network and blockchain warnings\n"
-            "  \"errors\": \"...\"            (string) DEPRECATED. Same as warnings. Only shown when paicoind is started with -deprecatedrpc=getmininginfo\n"
+            "  \"errors\": \"...\"            (string) DEPRECATED. Same as warnings. Only shown when bwscoind is started with -deprecatedrpc=getmininginfo\n"
             "}\n"
             "\nExamples:\n"
             + HelpExampleCli("getmininginfo", "")
@@ -308,7 +308,7 @@ UniValue getmininginfo(const JSONRPCRequest& request)
 }
 
 
-// NOTE: Unlike wallet RPC (which use PAI values), mining RPCs follow GBT (BIP 22) in using satoshi amounts
+// NOTE: Unlike wallet RPC (which use BWS values), mining RPCs follow GBT (BIP 22) in using satoshi amounts
 UniValue prioritisetransaction(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() != 3)
@@ -531,10 +531,10 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     if (gArgs.GetBoolArg("-ignore-not-connected", false) == false)
     {
         if (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)
-            throw JSONRPCError(RPCErrorCode::CLIENT_NOT_CONNECTED, "PAIcoin is not connected!");
+            throw JSONRPCError(RPCErrorCode::CLIENT_NOT_CONNECTED, "BWScoin is not connected!");
 
         if (IsInitialBlockDownload())
-            throw JSONRPCError(RPCErrorCode::CLIENT_IN_INITIAL_DOWNLOAD, "PAIcoin is downloading blocks...");
+            throw JSONRPCError(RPCErrorCode::CLIENT_IN_INITIAL_DOWNLOAD, "BWScoin is downloading blocks...");
     }
 
     static unsigned int nTransactionsUpdatedLast;
@@ -927,7 +927,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         coinbaseTx.vin[0].prevout.SetNull();
         coinbaseTx.vout.resize(1);
         coinbaseTx.vout[0].scriptPubKey = scriptPubKey;
-        coinbaseTx.vout[0].nValue = nFees + GetBlockSubsidy(nHeight, Params().GetConsensus());
+        coinbaseTx.vout[0].nValue = nFees + GetMinerSubsidy(nHeight, Params().GetConsensus());
         coinbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
 
         UniValue coinbase(UniValue::VOBJ);
@@ -964,7 +964,6 @@ UniValue submitblock(const JSONRPCRequest& request)
         throw std::runtime_error{
             "submitblock \"hexdata\"  ( \"dummy\" )\n"
             "\nAttempts to submit new block to network.\n"
-            "See https://en.paicoin.it/wiki/BIP_0022 for full specification.\n"
 
             "\nArguments:\n"
             "1. \"hexdata\"        (string, required) the hex-encoded block data to submit\n"
@@ -1401,13 +1400,13 @@ UniValue ticketfeeinfo(const JSONRPCRequest& request)
     if (request.fHelp || request.params.size() > 2)
         throw std::runtime_error{
             "ticketfeeinfo (blocks windows)\n"
-            "\nGet various information about ticket fees from the mempool, blocks, and difficulty windows (units: PAI/kB)\n"
+            "\nGet various information about ticket fees from the mempool, blocks, and difficulty windows (units: BWS/kB)\n"
             "\nArguments:\n"
             "1. blocks  (numeric, optional) The number of blocks, starting from the chain tip and descending, to return fee information about\n"
             "2. windows (numeric, optional) The number of difficulty windows to return ticket fee information about\n"
             "\nResult:\n"
             "{\n"
-            "   \"feeinfomempool\": {   (object)          Ticket fee information for all tickets in the mempool (units: PAI/kB)\n"
+            "   \"feeinfomempool\": {   (object)          Ticket fee information for all tickets in the mempool (units: BWS/kB)\n"
             "   \"number\": n,          (numeric)         Number of transactions in the mempool\n"
             "   \"min\": n.nnn,         (numeric)         Minimum transaction fee in the mempool\n"
             "   \"max\": n.nnn,         (numeric)         Maximum transaction fee in the mempool\n"
@@ -1415,7 +1414,7 @@ UniValue ticketfeeinfo(const JSONRPCRequest& request)
             "   \"median\": n.nnn,      (numeric)         Median of transaction fees in the mempool\n"
             "   \"stddev\": n.nnn,      (numeric)         Standard deviation of transaction fees in the mempool\n"
             "   },\n"
-            "   \"feeinfoblocks\": [{   (array of object) Ticket fee information for a given list of blocks descending from the chain tip (units: PAI/kB)\n"
+            "   \"feeinfoblocks\": [{   (array of object) Ticket fee information for a given list of blocks descending from the chain tip (units: BWS/kB)\n"
             "   \"height\": n,          (numeric)         Height of the block\n"
             "   \"number\": n,          (numeric)         Number of transactions in the block\n"
             "   \"min\": n.nnn,         (numeric)         Minimum transaction fee in the block\n"
@@ -1424,7 +1423,7 @@ UniValue ticketfeeinfo(const JSONRPCRequest& request)
             "   \"median\": n.nnn,      (numeric)         Median of transaction fees in the block\n"
             "   \"stddev\": n.nnn,      (numeric)         Standard deviation of transaction fees in the block\n"
             "   },...],\n"
-            "   \"feeinfowindows\": [{  (array of object) Ticket fee information for a window period where the stake difficulty was the same (units: PAI/kB)\n"
+            "   \"feeinfowindows\": [{  (array of object) Ticket fee information for a window period where the stake difficulty was the same (units: BWS/kB)\n"
             "   \"startheight\": n,     (numeric)         First block in the window (inclusive)\n"
             "   \"endheight\": n,       (numeric)         Last block in the window (exclusive)\n"
             "   \"number\": n,          (numeric)         Number of transactions in the window\n"
@@ -1719,7 +1718,7 @@ UniValue estimatefee(const JSONRPCRequest& request)
 
     if (!IsDeprecatedRPCEnabled("estimatefee")) {
         throw JSONRPCError(RPCErrorCode::METHOD_DEPRECATED, "estimatefee is deprecated and will be fully removed in v0.17. "
-            "To use estimatefee in v0.16, restart paicoind with -deprecatedrpc=estimatefee.\n"
+            "To use estimatefee in v0.16, restart bwscoind with -deprecatedrpc=estimatefee.\n"
             "Projects should transition to using estimatesmartfee before upgrading to v0.17");
     }
 

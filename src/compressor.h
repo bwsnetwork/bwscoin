@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PAICOIN_COMPRESSOR_H
-#define PAICOIN_COMPRESSOR_H
+#ifndef BWSCOIN_COMPRESSOR_H
+#define BWSCOIN_COMPRESSOR_H
 
 #include "primitives/transaction.h"
 #include "script/script.h"
@@ -118,4 +118,4 @@ public:
     }
 };
 
-#endif // PAICOIN_COMPRESSOR_H
+#endif // BWSCOIN_COMPRESSOR_H

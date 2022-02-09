@@ -670,7 +670,7 @@ Thanks to everyone who contributed to this release:
 - Benedict Chan
 - Ben Holden-Crowther
 - Bryan Bishop
-- PAIDrak
+- BtcDrak
 - Christian von Roques
 - Clinton Christian
 - Cory Fields

@@ -40,13 +40,13 @@ from the root of the repository.
 **Note**: You only need Berkeley DB if the wallet is enabled (see [*Disable-wallet mode*](/doc/build-osx.md#disable-wallet-mode)).
 
 
-Build PAI Coin Core
+Build BWS Coin Core
 ------------------------
 
-1. Clone the paicoin source code and cd into `paicoin`
+1. Clone the bwscoin source code and cd into `bwscoin`
 
-        git clone https://github.com/projectpai/paicoin
-        cd paicoin
+        git clone https://github.com/valdi-labs/bwscoin
+        cd bwscoin
 
 2. If you have Catalina 10.15 or a higher version, then you must run this command:
 
@@ -58,9 +58,9 @@ Build PAI Coin Core
 
 	CPATH=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/
 
-3.  Build paicoin-core:
+3.  Build bwscoin-core:
 
-    Configure and build the headless paicoin binaries as well as the GUI (if Qt is found).
+    Configure and build the headless bwscoin binaries as well as the GUI (if Qt is found).
 
     You can enable the GUI build by passing `--with-gui=auto` to configure.
 
@@ -93,37 +93,37 @@ Mining is also possible in disable-wallet mode using the `getblocktemplate` RPC 
 Running
 -------
 
-PAI Coin Core is now available at `./src/paicoind`
+BWS Coin Core is now available at `./src/bwscoind`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=paicoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/PAIcoin/paicoin.conf"
+    echo -e "rpcuser=bwscoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/BWScoin/bwscoin.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/PAIcoin/paicoin.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/BWScoin/bwscoin.conf"
 
-The first time you run paicoind, it will start downloading the blockchain. This process could take several hours.
+The first time you run bwscoind, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/PAIcoin/debug.log
+    tail -f $HOME/Library/Application\ Support/BWScoin/debug.log
 
 Other commands:
 -------
 
-    ./src/paicoind -daemon # Starts the paicoin daemon.
-    ./src/paicoin-cli --help # Outputs a list of command-line options.
-    ./src/paicoin-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/bwscoind -daemon # Starts the bwscoin daemon.
+    ./src/bwscoin-cli --help # Outputs a list of command-line options.
+    ./src/bwscoin-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Using Qt Creator as IDE
 ------------------------
-You can use Qt Creator as an IDE, for paicoin development.
+You can use Qt Creator as an IDE, for bwscoin development.
 Download and install the community edition of [Qt Creator](https://www.qt.io/download/).
 Uncheck everything except Qt Creator during the installation process.
 
 1. Make sure you installed everything through Homebrew mentioned above
 2. Do a proper ./configure --enable-debug
 3. In Qt Creator do "New Project" -> Import Project -> Import Existing Project
-4. Enter "paicoin-qt" as project name, enter src/qt as location
+4. Enter "bwscoin-qt" as project name, enter src/qt as location
 5. Leave the file selection as it is
 6. Confirm the "summary page"
 7. In the "Projects" tab select "Manage Kits..."

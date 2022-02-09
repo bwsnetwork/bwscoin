@@ -6,14 +6,14 @@
  */
 
 
-#ifndef PAICOIN_RPCPROTOCOL_H
-#define PAICOIN_RPCPROTOCOL_H
+#ifndef BWSCOIN_RPCPROTOCOL_H
+#define BWSCOIN_RPCPROTOCOL_H
 
 #include <string>
 
 #include <univalue.h>
 
-//! PAI Coin RPC error codes
+//! BWS Coin RPC error codes
 enum class RPCErrorCode
 {
     //! Standard JSON-RPC 2.0 errors
@@ -24,7 +24,7 @@ enum class RPCErrorCode
     // It should not be used for application-layer errors.
     METHOD_NOT_FOUND = -32601,
     INVALID_PARAMS   = -32602,
-    // INTERNAL_ERROR should only be used for genuine errors in paicoind
+    // INTERNAL_ERROR should only be used for genuine errors in bwscoind
     // (for example datadir corruption).
     INTERNAL_ERROR   = -32603,
     PARSE_ERROR      = -32700,
@@ -50,7 +50,7 @@ enum class RPCErrorCode
     TRANSACTION_ALREADY_IN_CHAIN= VERIFY_ALREADY_IN_CHAIN,
 
     //! P2P client errors
-    CLIENT_NOT_CONNECTED        = -9,  //!< PAI Coin is not connected
+    CLIENT_NOT_CONNECTED        = -9,  //!< BWS Coin is not connected
     CLIENT_IN_INITIAL_DOWNLOAD  = -10, //!< Still downloading initial blocks
     CLIENT_NODE_ALREADY_ADDED   = -23, //!< Node is already added
     CLIENT_NODE_NOT_ADDED       = -24, //!< Node has not been added before
@@ -84,4 +84,4 @@ bool GetAuthCookie(std::string *cookie_out);
 /** Delete RPC authentication cookie from disk */
 void DeleteAuthCookie();
 
-#endif // PAICOIN_RPCPROTOCOL_H
+#endif // BWSCOIN_RPCPROTOCOL_H

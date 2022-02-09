@@ -7,7 +7,7 @@
 
 
 #include "stake/treap/tickettreap.h"
-#include "test/test_paicoin.h"
+#include "test/test_bwscoin.h"
 #include <boost/test/unit_test.hpp>
 
 BOOST_FIXTURE_TEST_SUITE(tickettreap_tests, BasicTestingSetup)

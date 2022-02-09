@@ -22,5 +22,5 @@
  * `sudo systemctl transmission-daemon start`  
  
  
-#### Create paichain tx with data
-`python create_paichain_tx_with_data.py -u 54.218.116.97:8888/file_api/download/71f2eff1-e70b-4ac9-bd66-d5de7f97354f/ -a MpDscYD8xp4MnDLW7WPsEkKVAnAbkUz5t4`
+#### Create bwscoin tx with data
+`python create_bwscoin_tx_with_data.py -u 54.218.116.97:8888/file_api/download/71f2eff1-e70b-4ac9-bd66-d5de7f97354f/ -a MpDscYD8xp4MnDLW7WPsEkKVAnAbkUz5t4`

@@ -4,10 +4,10 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the wallet accounts properly when there is a double-spend conflict."""
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import *
 
-class TxnMallTest(PAIcoinTestFramework):
+class TxnMallTest(BWScoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 4
 
@@ -22,7 +22,7 @@ class TxnMallTest(PAIcoinTestFramework):
         disconnect_nodes(self.nodes[2], 1)
 
     def run_test(self):
-        # All nodes should start with 37,500 PAI:
+        # All nodes should start with 37,500 BWS:
         starting_balance = 37500
         for i in range(4):
             assert_equal(self.nodes[i].getbalance(), starting_balance)
@@ -43,7 +43,7 @@ class TxnMallTest(PAIcoinTestFramework):
         # Coins are sent to node1_address
         node1_address = self.nodes[1].getnewaddress("from0")
 
-        # First: use raw transaction API to send 37490 PAI to node1_address,
+        # First: use raw transaction API to send 37490 BWS to node1_address,
         # but don't broadcast:
         doublespend_fee = Decimal('-.02')
         rawtx_input_0 = {}
@@ -61,7 +61,7 @@ class TxnMallTest(PAIcoinTestFramework):
         doublespend = self.nodes[0].signrawtransaction(rawtx)
         assert_equal(doublespend["complete"], True)
 
-        # Create two spends using 1 50 PAI coin each
+        # Create two spends using 1 50 BWS Coin each
         txid1 = self.nodes[0].sendfrom("foo", node1_address, 40, 0)
         txid2 = self.nodes[0].sendfrom("bar", node1_address, 20, 0)
         
@@ -73,7 +73,7 @@ class TxnMallTest(PAIcoinTestFramework):
         tx1 = self.nodes[0].gettransaction(txid1)
         tx2 = self.nodes[0].gettransaction(txid2)
 
-        # Node0's balance should be starting balance, plus 1500PAI for another
+        # Node0's balance should be starting balance, plus 1500BWS for another
         # matured block, minus 40, minus 20, and minus transaction fees:
         expected = starting_balance + fund_foo_tx["fee"] + fund_bar_tx["fee"]
         if self.options.mine_block: expected += 1500
@@ -115,7 +115,7 @@ class TxnMallTest(PAIcoinTestFramework):
         assert_equal(tx1["confirmations"], -2)
         assert_equal(tx2["confirmations"], -2)
 
-        # Node0's total balance should be starting balance, plus 3000PAI for
+        # Node0's total balance should be starting balance, plus 3000BWS for
         # two more matured blocks, minus 37490 for the double-spend, plus fees (which are
         # negative):
         expected = starting_balance + 3000 - 37490 + fund_foo_tx["fee"] + fund_bar_tx["fee"] + doublespend_fee

@@ -216,13 +216,13 @@ UniValue getnewaddress(const JSONRPCRequest& request)
     if (request.fHelp || request.params.size() > 1)
         throw std::runtime_error{
             "getnewaddress ( \"account\" )\n"
-            "\nReturns a new PAI Coin address for receiving payments.\n"
+            "\nReturns a new BWS Coin address for receiving payments.\n"
             "If 'account' is specified (DEPRECATED), it is added to the address book \n"
             "so payments received with the address will be credited to 'account'.\n"
             "\nArguments:\n"
             "1. \"account\"        (string, optional) DEPRECATED. The account name for the address to be linked to. If not provided, the default account \"\" is used. It can also be set to the empty string \"\" to represent the default account. The account does not need to exist, it will be created if there is no account by the given name.\n"
             "\nResult:\n"
-            "\"address\"    (string) The new paicoin address\n"
+            "\"address\"    (string) The new bwscoin address\n"
             "\nExamples:\n"
             + HelpExampleCli("getnewaddress", "")
             + HelpExampleRpc("getnewaddress", "")
@@ -328,11 +328,11 @@ UniValue getaccountaddress(const JSONRPCRequest& request)
     if (request.fHelp || request.params.size() != 1)
         throw std::runtime_error{
             "getaccountaddress \"account\"\n"
-            "\nDEPRECATED. Returns the current PAI Coin address for receiving payments to this account.\n"
+            "\nDEPRECATED. Returns the current BWS Coin address for receiving payments to this account.\n"
             "\nArguments:\n"
             "1. \"account\"       (string, required) The account name for the address. It can also be set to the empty string \"\" to represent the default account. The account does not need to exist, it will be created and a new address created  if there is no account by the given name.\n"
             "\nResult:\n"
-            "\"address\"          (string) The account paicoin address\n"
+            "\"address\"          (string) The account bwscoin address\n"
             "\nExamples:\n"
             + HelpExampleCli("getaccountaddress", "")
             + HelpExampleCli("getaccountaddress", "\"\"")
@@ -359,7 +359,7 @@ UniValue getrawchangeaddress(const JSONRPCRequest& request)
     if (request.fHelp || request.params.size() > 0)
         throw std::runtime_error{
             "getrawchangeaddress\n"
-            "\nReturns a new PAI Coin address, for receiving change.\n"
+            "\nReturns a new BWS Coin address, for receiving change.\n"
             "This is for use with raw transactions, NOT normal use.\n"
             "\nResult:\n"
             "\"address\"    (string) The address\n"
@@ -399,7 +399,7 @@ UniValue setaccount(const JSONRPCRequest& request)
             "setaccount \"address\" \"account\"\n"
             "\nDEPRECATED. Sets the account associated with the given address.\n"
             "\nArguments:\n"
-            "1. \"address\"         (string, required) The paicoin address to be associated with an account.\n"
+            "1. \"address\"         (string, required) The bwscoin address to be associated with an account.\n"
             "2. \"account\"         (string, required) The account to assign the address to.\n"
             "\nExamples:\n"
             + HelpExampleCli("setaccount", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\" \"tabby\"")
@@ -410,7 +410,7 @@ UniValue setaccount(const JSONRPCRequest& request)
 
     const auto dest = DecodeDestination(request.params[0].get_str());
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid PAI Coin address");
+        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid BWS Coin address");
     }
 
     std::string strAccount;
@@ -447,7 +447,7 @@ UniValue getaccount(const JSONRPCRequest& request)
             "getaccount \"address\"\n"
             "\nDEPRECATED. Returns the account associated with the given address.\n"
             "\nArguments:\n"
-            "1. \"address\"         (string, required) The paicoin address for account lookup.\n"
+            "1. \"address\"         (string, required) The bwscoin address for account lookup.\n"
             "\nResult:\n"
             "\"accountname\"        (string) the account address\n"
             "\nExamples:\n"
@@ -459,7 +459,7 @@ UniValue getaccount(const JSONRPCRequest& request)
 
     const auto dest = DecodeDestination(request.params[0].get_str());
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid PAI Coin address");
+        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid BWS Coin address");
     }
 
     std::string strAccount;
@@ -486,7 +486,7 @@ UniValue getaddressesbyaccount(const JSONRPCRequest& request)
             "1. \"account\"        (string, required) The account name.\n"
             "\nResult:\n"
             "[                     (json array of string)\n"
-            "  \"address\"         (string) a paicoin address associated with the given account\n"
+            "  \"address\"         (string) a bwscoin address associated with the given account\n"
             "  ,...\n"
             "]\n"
             "\nExamples:\n"
@@ -525,7 +525,7 @@ static void SendMoney(CWallet * const pwallet, const CTxDestination &address, CA
         throw JSONRPCError(RPCErrorCode::CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
     }
 
-    // Parse PAI Coin address
+    // Parse BWS Coin address
     const auto scriptPubKey = GetScriptForDestination(address);
 
     // Create and send the transaction
@@ -561,7 +561,7 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
             "\nSend an amount to a given address.\n"
             + HelpRequiringPassphrase(pwallet) +
             "\nArguments:\n"
-            "1. \"address\"            (string, required) The paicoin address to send to.\n"
+            "1. \"address\"            (string, required) The bwscoin address to send to.\n"
             "2. \"amount\"             (numeric or string, required) The amount in " + CURRENCY_UNIT + " to send. eg 0.1\n"
             "3. \"comment\"            (string, optional) A comment used to store what the transaction is for. \n"
             "                             This is not part of the transaction, just kept in your wallet.\n"
@@ -569,7 +569,7 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
             "                             to which you're sending the transaction. This is not part of the \n"
             "                             transaction, just kept in your wallet.\n"
             "5. subtractfeefromamount  (boolean, optional, default=false) The fee will be deducted from the amount being sent.\n"
-            "                             The recipient will receive less paicoins than you enter in the amount field.\n"
+            "                             The recipient will receive less bwscoins than you enter in the amount field.\n"
             "6. replaceable            (boolean, optional) Allow this transaction to be replaced by a transaction with higher fees via BIP 125\n"
             "7. conf_target            (numeric, optional) Confirmation target (in blocks)\n"
             "8. \"estimate_mode\"      (string, optional, default=UNSET) The fee estimate mode, must be one of:\n"
@@ -650,7 +650,7 @@ UniValue listaddressgroupings(const JSONRPCRequest& request)
             "[\n"
             "  [\n"
             "    [\n"
-            "      \"address\",            (string) The paicoin address\n"
+            "      \"address\",            (string) The bwscoin address\n"
             "      amount,                 (numeric) The amount in " + CURRENCY_UNIT + "\n"
             "      \"account\"             (string, optional) DEPRECATED. The account\n"
             "    ]\n"
@@ -700,7 +700,7 @@ UniValue signmessage(const JSONRPCRequest& request)
             "\nSign a message with the private key of an address"
             + HelpRequiringPassphrase(pwallet) + "\n"
             "\nArguments:\n"
-            "1. \"address\"         (string, required) The paicoin address to use for the private key.\n"
+            "1. \"address\"         (string, required) The bwscoin address to use for the private key.\n"
             "2. \"message\"         (string, required) The message to create a signature of.\n"
             "\nResult:\n"
             "\"signature\"          (string) The signature of the message encoded in base 64\n"
@@ -760,7 +760,7 @@ UniValue getreceivedbyaddress(const JSONRPCRequest& request)
             "getreceivedbyaddress \"address\" ( minconf )\n"
             "\nReturns the total amount received by the given address in transactions with at least minconf confirmations.\n"
             "\nArguments:\n"
-            "1. \"address\"         (string, required) The paicoin address for transactions.\n"
+            "1. \"address\"         (string, required) The bwscoin address for transactions.\n"
             "2. minconf             (numeric, optional, default=1) Only include transactions confirmed at least this many times.\n"
             "\nResult:\n"
             "amount   (numeric) The total amount in " + CURRENCY_UNIT + " received at this address.\n"
@@ -778,10 +778,10 @@ UniValue getreceivedbyaddress(const JSONRPCRequest& request)
     ObserveSafeMode();
     LOCK2(cs_main, pwallet->cs_wallet);
 
-    // PAI Coin address
+    // BWS Coin address
     const auto dest = DecodeDestination(request.params[0].get_str());
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid PAI Coin address");
+        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid BWS Coin address");
     }
     const auto scriptPubKey = GetScriptForDestination(dest);
     if (!IsMine(*pwallet, scriptPubKey)) {
@@ -952,7 +952,7 @@ UniValue setticketfee(const JSONRPCRequest& request)
             "setticketfee fee\n"
             "\nModify the fee per kB of the serialized tx size used each time more fee is required for an authored stake transaction.\n"
             "\nArguments:\n"
-            "1. fee     (numeric, required) The new fee per kB of the serialized tx size valued in PAI\n"
+            "1. fee     (numeric, required) The new fee per kB of the serialized tx size valued in BWS\n"
             "\nResult:\n"
             "true|false (boolean)           The boolean return status\n"
             + HelpExampleCli("setticketfee", "0.02")
@@ -1182,14 +1182,14 @@ UniValue sendfrom(const JSONRPCRequest& request)
     if (request.fHelp || request.params.size() < 3 || request.params.size() > 6)
         throw std::runtime_error{
             "sendfrom \"fromaccount\" \"toaddress\" amount ( minconf \"comment\" \"comment_to\" )\n"
-            "\nDEPRECATED (use sendtoaddress). Sent an amount from an account to a paicoin address."
+            "\nDEPRECATED (use sendtoaddress). Sent an amount from an account to a bwscoin address."
             + HelpRequiringPassphrase(pwallet) + "\n"
             "\nArguments:\n"
             "1. \"fromaccount\"       (string, required) The name of the account to send funds from. May be the default account using \"\".\n"
             "                       Specifying an account does not influence coin selection, but it does associate the newly created\n"
             "                       transaction with the account, so the account's balance computation and transaction history can reflect\n"
             "                       the spend.\n"
-            "2. \"toaddress\"         (string, required) The paicoin address to send funds to.\n"
+            "2. \"toaddress\"         (string, required) The bwscoin address to send funds to.\n"
             "3. amount                (numeric or string, required) The amount in " + CURRENCY_UNIT + " (transaction fee is added on top).\n"
             "4. minconf               (numeric, optional, default=1) Only use funds with at least this many confirmations.\n"
             "5. \"comment\"           (string, optional) A comment used to store what the transaction is for. \n"
@@ -1214,7 +1214,7 @@ UniValue sendfrom(const JSONRPCRequest& request)
     const auto strAccount = AccountFromValue(request.params[0]);
     const auto dest = DecodeDestination(request.params[1].get_str());
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid PAI Coin address");
+        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid BWS Coin address");
     }
     const auto nAmount = AmountFromValue(request.params[2]);
     if (nAmount <= 0)
@@ -1258,14 +1258,14 @@ UniValue sendmany(const JSONRPCRequest& request)
             "1. \"fromaccount\"         (string, required) DEPRECATED. The account to send the funds from. Should be \"\" for the default account\n"
             "2. \"amounts\"             (string, required) A json object with addresses and amounts\n"
             "    {\n"
-            "      \"address\":amount   (numeric or string) The paicoin address is the key, the numeric amount (can be string) in " + CURRENCY_UNIT + " is the value\n"
+            "      \"address\":amount   (numeric or string) The bwscoin address is the key, the numeric amount (can be string) in " + CURRENCY_UNIT + " is the value\n"
             "      ,...\n"
             "    }\n"
             "3. minconf                 (numeric, optional, default=1) Only use the balance confirmed at least this many times.\n"
             "4. \"comment\"             (string, optional) A comment\n"
             "5. subtractfeefrom         (array, optional) A json array with addresses.\n"
             "                           The fee will be equally deducted from the amount of each selected address.\n"
-            "                           Those recipients will receive less paicoins than you enter in their corresponding amount field.\n"
+            "                           Those recipients will receive less bwscoins than you enter in their corresponding amount field.\n"
             "                           If no addresses are specified here, the sender pays the fee.\n"
             "    [\n"
             "      \"address\"          (string) Subtract fee from this address\n"
@@ -1335,7 +1335,7 @@ UniValue sendmany(const JSONRPCRequest& request)
     for (const auto& name_ : sendTo.getKeys()) {
         const auto dest = DecodeDestination(name_);
         if (!IsValidDestination(dest)) {
-            throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid PAI Coin address: ") + name_);
+            throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWS Coin address: ") + name_);
         }
 
         if (destinations.count(dest)) {
@@ -1399,20 +1399,20 @@ UniValue addmultisigaddress(const JSONRPCRequest& request)
         throw std::runtime_error{
             "addmultisigaddress nrequired [\"key\",...] ( \"account\" )\n"
             "\nAdd a nrequired-to-sign multisignature address to the wallet.\n"
-            "Each key is a PAI Coin address or hex-encoded public key.\n"
+            "Each key is a BWS Coin address or hex-encoded public key.\n"
             "If 'account' is specified (DEPRECATED), assign address to that account.\n"
 
             "\nArguments:\n"
             "1. nrequired        (numeric, required) The number of required signatures out of the n keys or addresses.\n"
-            "2. \"keys\"         (string, required) A json array of paicoin addresses or hex-encoded public keys\n"
+            "2. \"keys\"         (string, required) A json array of bwscoin addresses or hex-encoded public keys\n"
             "     [\n"
-            "       \"address\"  (string) paicoin address or hex-encoded public key\n"
+            "       \"address\"  (string) bwscoin address or hex-encoded public key\n"
             "       ...,\n"
             "     ]\n"
             "3. \"account\"      (string, optional) DEPRECATED. An account to assign the addresses to.\n"
 
             "\nResult:\n"
-            "\"address\"         (string) A paicoin address associated with the keys.\n"
+            "\"address\"         (string) A bwscoin address associated with the keys.\n"
 
             "\nExamples:\n"
             "\nAdd a multisig address from 2 addresses\n"
@@ -1523,7 +1523,7 @@ UniValue addwitnessaddress(const JSONRPCRequest& request)
 
     const auto dest = DecodeDestination(request.params[0].get_str());
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid PAI Coin address");
+        throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid BWS Coin address");
     }
 
     Witnessifier w{pwallet};
@@ -1891,7 +1891,7 @@ UniValue listtransactions(const JSONRPCRequest& request)
             "  {\n"
             "    \"account\":\"accountname\",       (string) DEPRECATED. The account name associated with the transaction. \n"
             "                                                It will be \"\" for the default account.\n"
-            "    \"address\":\"address\",    (string) The paicoin address of the transaction. Not present for \n"
+            "    \"address\":\"address\",    (string) The bwscoin address of the transaction. Not present for \n"
             "                                                move transactions (category = move).\n"
             "    \"category\":\"send|receive|move\", (string) The transaction category. 'move' is a local (off blockchain)\n"
             "                                                transaction between accounts, and not associated with an address,\n"
@@ -2107,7 +2107,7 @@ UniValue listsinceblock(const JSONRPCRequest& request)
             "{\n"
             "  \"transactions\": [\n"
             "    \"account\":\"accountname\",       (string) DEPRECATED. The account name associated with the transaction. Will be \"\" for the default account.\n"
-            "    \"address\":\"address\",    (string) The paicoin address of the transaction. Not present for move transactions (category = move).\n"
+            "    \"address\":\"address\",    (string) The bwscoin address of the transaction. Not present for move transactions (category = move).\n"
             "    \"category\":\"send|receive\",     (string) The transaction category. 'send' has negative amounts, 'receive' has positive amounts.\n"
             "    \"amount\": x.xxx,          (numeric) The amount in " + CURRENCY_UNIT + ". This is negative for the 'send' category, and for the 'move' category for moves \n"
             "                                          outbound. It is positive for the 'receive' category, and for the 'move' category for inbound funds.\n"
@@ -2252,7 +2252,7 @@ UniValue gettransaction(const JSONRPCRequest& request)
             "  \"details\" : [\n"
             "    {\n"
             "      \"account\" : \"accountname\",      (string) DEPRECATED. The account name involved in the transaction, can be \"\" for the default account.\n"
-            "      \"address\" : \"address\",          (string) The paicoin address involved in the transaction\n"
+            "      \"address\" : \"address\",          (string) The bwscoin address involved in the transaction\n"
             "      \"category\" : \"send|receive\",    (string) The category, either 'send' or 'receive'\n"
             "      \"amount\" : x.xxx,                 (numeric) The amount in " + CURRENCY_UNIT + "\n"
             "      \"label\" : \"label\",              (string) A comment for the address/transaction, if any\n"
@@ -2435,7 +2435,7 @@ UniValue walletpassphrase(const JSONRPCRequest& request)
         throw std::runtime_error{
             "walletpassphrase \"passphrase\" timeout\n"
             "\nStores the wallet decryption key in memory for 'timeout' seconds.\n"
-            "This is needed prior to performing transactions related to private keys such as sending paicoins\n"
+            "This is needed prior to performing transactions related to private keys such as sending bwscoins\n"
             "\nArguments:\n"
             "1. \"passphrase\"     (string, required) The wallet passphrase\n"
             "2. timeout            (numeric, required) The time to keep the decryption key in seconds.\n"
@@ -2598,7 +2598,7 @@ UniValue encryptwallet(const JSONRPCRequest& request)
             "\nExamples:\n"
             "\nEncrypt your wallet\n"
             + HelpExampleCli("encryptwallet", "\"my pass phrase\"") +
-            "\nNow set the passphrase to use the wallet, such as for signing or sending paicoin\n"
+            "\nNow set the passphrase to use the wallet, such as for signing or sending bwscoin\n"
             + HelpExampleCli("walletpassphrase", "\"my pass phrase\"") +
             "\nNow we can do something like sign\n"
             + HelpExampleCli("signmessage", "\"address\" \"test message\"") +
@@ -2636,7 +2636,7 @@ UniValue encryptwallet(const JSONRPCRequest& request)
     // slack space in .dat files; that is bad if the old data is
     // unencrypted private keys. So:
     StartShutdown();
-    return "wallet encrypted; PAI Coin server stopping, restart to run with encrypted wallet. The keypool has been flushed and a new HD seed was generated (if you are using HD). You need to make a new backup.";
+    return "wallet encrypted; BWS Coin server stopping, restart to run with encrypted wallet. The keypool has been flushed and a new HD seed was generated (if you are using HD). You need to make a new backup.";
 }
 
 UniValue lockunspent(const JSONRPCRequest& request)
@@ -2652,7 +2652,7 @@ UniValue lockunspent(const JSONRPCRequest& request)
             "\nUpdates list of temporarily unspendable outputs.\n"
             "Temporarily lock (unlock=false) or unlock (unlock=true) specified transaction outputs.\n"
             "If no transaction outputs are specified when unlocking then all current locked transaction outputs are unlocked.\n"
-            "A locked transaction output will not be chosen by automatic coin selection, when spending paicoins.\n"
+            "A locked transaction output will not be chosen by automatic coin selection, when spending bwscoins.\n"
             "Locks are stored in memory only. Nodes start with zero locked outputs, and the locked output list\n"
             "is always cleared (by virtue of process exit) when a node stops or fails.\n"
             "Also see the listunspent call\n"
@@ -3203,9 +3203,9 @@ UniValue listunspent(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. minconf          (numeric, optional, default=1) The minimum confirmations to filter\n"
             "2. maxconf          (numeric, optional, default=9999999) The maximum confirmations to filter\n"
-            "3. \"addresses\"      (string) A json array of paicoin addresses to filter\n"
+            "3. \"addresses\"      (string) A json array of bwscoin addresses to filter\n"
             "    [\n"
-            "      \"address\"     (string) paicoin address\n"
+            "      \"address\"     (string) bwscoin address\n"
             "      ,...\n"
             "    ]\n"
             "4. include_unsafe (bool, optional, default=true) Include outputs that are not safe to spend\n"
@@ -3222,7 +3222,7 @@ UniValue listunspent(const JSONRPCRequest& request)
             "  {\n"
             "    \"txid\" : \"txid\",          (string) the transaction id \n"
             "    \"vout\" : n,               (numeric) the vout value\n"
-            "    \"address\" : \"address\",    (string) the paicoin address\n"
+            "    \"address\" : \"address\",    (string) the bwscoin address\n"
             "    \"account\" : \"account\",    (string) DEPRECATED. The associated account, or \"\" for the default account\n"
             "    \"scriptPubKey\" : \"key\",   (string) the script key\n"
             "    \"amount\" : x.xxx,         (numeric) the transaction output amount in " + CURRENCY_UNIT + "\n"
@@ -3267,7 +3267,7 @@ UniValue listunspent(const JSONRPCRequest& request)
             const auto& input = inputs[idx];
             const auto dest = DecodeDestination(input.get_str());
             if (!IsValidDestination(dest)) {
-                throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid PAI Coin address: ") + input.get_str());
+                throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWS Coin address: ") + input.get_str());
             }
             if (!destinations.insert(dest).second) {
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ") + input.get_str());
@@ -3371,13 +3371,13 @@ UniValue purchaseticket(const JSONRPCRequest& request)
             "8.  poolfees           (numeric, optional)            The amount of fees to pay to the stake pool\n"
             "9.  expiry             (numeric, optional)            Height at which the purchase tickets expire\n"
             "10.  \"comment\"         (string, optional)             Unused\n"
-            "11. ticketfee          (numeric, optional)            The transaction fee rate (PAI/kB) to use (overrides fees set by the wallet config or settxfee RPC)\n"
+            "11. ticketfee          (numeric, optional)            The transaction fee rate (BWS/kB) to use (overrides fees set by the wallet config or settxfee RPC)\n"
 
             "\nResult:\n"
             "\"value\"              (string) Hashes of resulting ticket transactions\n"
 
             "\nExamples:\n"
-            "\nUse PAI from your default account to purchase a ticket if the current ticket price was a max of 50 PAI\n"
+            "\nUse BWS from your default account to purchase a ticket if the current ticket price was a max of 50 BWS\n"
             + HelpExampleCli("purchaseticket", "\"default\" 50")
             + HelpExampleRpc("purchaseticket", "\"default\" 50") +
             "\nPurchase 5 tickets, as the 5th argument (numtickets) is set to 5\n"
@@ -3501,7 +3501,7 @@ UniValue startticketbuyer(const JSONRPCRequest& request)
             "9.  limit                (numeric, optional)  Limit maximum number of purchased tickets per block\n"
             "10. expiry               (numeric, optional)  The number of blocks after which the ticket transaction will be removed from mempool\n"
             "\nExamples:\n"
-            "\nStart the ticket buyer from your default account to purchase tickets and leaving at least 50 PAI\n"
+            "\nStart the ticket buyer from your default account to purchase tickets and leaving at least 50 BWS\n"
             + HelpExampleCli("startticketbuyer", "\"default\" 50")
             + HelpExampleRpc("startticketbuyer", "\"default\" 50") +
             "\nStart the ticket buyer from your default account to purchase at most 5 tickets in a block\n"
@@ -4505,7 +4505,7 @@ UniValue fundrawtransaction(const JSONRPCRequest& request)
                             "1. \"hexstring\"           (string, required) The hex string of the raw transaction\n"
                             "2. options                 (object, optional)\n"
                             "   {\n"
-                            "     \"changeAddress\"          (string, optional, default pool address) The paicoin address to receive the change\n"
+                            "     \"changeAddress\"          (string, optional, default pool address) The bwscoin address to receive the change\n"
                             "     \"changePosition\"         (numeric, optional, default random) The index of the change output\n"
                             "     \"includeWatching\"        (boolean, optional, default false) Also select inputs which are watch only\n"
                             "     \"lockUnspents\"           (boolean, optional, default false) Lock selected unspent outputs\n"
@@ -4513,7 +4513,7 @@ UniValue fundrawtransaction(const JSONRPCRequest& request)
                             "     \"subtractFeeFromOutputs\" (array, optional) A json array of integers.\n"
                             "                              The fee will be equally deducted from the amount of each specified output.\n"
                             "                              The outputs are specified by their zero-based index, before any change output is added.\n"
-                            "                              Those recipients will receive less paicoins than you enter in their corresponding amount field.\n"
+                            "                              Those recipients will receive less bwscoins than you enter in their corresponding amount field.\n"
                             "                              If no outputs are specified here, the sender pays the fee.\n"
                             "                                  [vout_index,...]\n"
                             "     \"replaceable\"            (boolean, optional) Marks this transaction as BIP125 replaceable.\n"
@@ -4580,7 +4580,7 @@ UniValue fundrawtransaction(const JSONRPCRequest& request)
             const auto dest = DecodeDestination(options["changeAddress"].get_str());
 
             if (!IsValidDestination(dest)) {
-                throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "changeAddress must be a valid paicoin address");
+                throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "changeAddress must be a valid bwscoin address");
             }
 
             coinControl.destChange = dest;
@@ -5129,7 +5129,7 @@ CTxDestination GetOrGenerateAddress(const JSONRPCRequest& request, int paramInde
     if (!request.params[paramIndex].isNull()) {
         dest = DecodeDestination(request.params[paramIndex].get_str());
         if (!IsValidDestination(dest)) {
-            throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid PAIcoin address");
+            throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, "Invalid BWScoin address");
         }
     }
     else{
@@ -5292,9 +5292,9 @@ UniValue sendtomultisig(const JSONRPCRequest& request)
             "A change output is automatically included to send extra output value back to the original account.\n"
             "\nArguments:\n"
             "1. fromaccount (string, required)             Unused\n"
-            "2. amount      (numeric, required)            Amount to send to the payment address valued in PAI coin\n"
+            "2. amount      (numeric, required)            Amount to send to the payment address valued in BWS coin\n"
             "3. pubkeys     (array of string, required)    Pubkey to send to.\n"
-            "4. nrequired   (numeric, optional, default=1) The number of signatures required to redeem outputs paid to this address\n"
+            "4. nrequired   (numeric, optional, default=1) The number of signatures required to redeem outputs BWSd to this address\n"
             "5. minconf     (numeric, optional, default=1) Minimum number of block confirmations required\n"
             "6. comment     (string, optional)             Unused\n"
             "\nResult:\n"

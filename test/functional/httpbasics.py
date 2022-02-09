@@ -4,13 +4,13 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the RPC HTTP basics."""
 
-from test_framework.test_framework import PAIcoinTestFramework
+from test_framework.test_framework import BWScoinTestFramework
 from test_framework.util import *
 
 import http.client
 import urllib.parse
 
-class HTTPBasicsTest (PAIcoinTestFramework):
+class HTTPBasicsTest (BWScoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 3
 
@@ -88,7 +88,7 @@ class HTTPBasicsTest (PAIcoinTestFramework):
         conn.request('POST', '/', '{"method": "getbestblockhash"}', headers)
         out1 = conn.getresponse().read()
         assert(b'"error":null' in out1)
-        assert(conn.sock!=None) #connection must be closed because paicoind should use keep-alive by default
+        assert(conn.sock!=None) #connection must be closed because bwscoind should use keep-alive by default
 
         # Check excessive request size
         conn = http.client.HTTPConnection(urlNode2.hostname, urlNode2.port)

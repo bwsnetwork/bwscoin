@@ -3,8 +3,8 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  */
 
-#ifndef PAICOIN_STAKE_VALUE_H
-#define PAICOIN_STAKE_VALUE_H
+#ifndef BWSCOIN_STAKE_VALUE_H
+#define BWSCOIN_STAKE_VALUE_H
 
 #include <stdint.h>
 
@@ -26,4 +26,4 @@ struct Value final
     bool expired;
 };
 
-#endif // PAICOIN_STAKE_VALUE_H
+#endif // BWSCOIN_STAKE_VALUE_H

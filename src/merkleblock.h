@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_MERKLEBLOCK_H
-#define PAICOIN_MERKLEBLOCK_H
+#ifndef BWSCOIN_MERKLEBLOCK_H
+#define BWSCOIN_MERKLEBLOCK_H
 
 #include "serialize.h"
 #include "uint256.h"
@@ -167,4 +167,4 @@ private:
     CMerkleBlock(const CBlock& block, CBloomFilter* filter, const std::set<uint256>* txids);
 };
 
-#endif // PAICOIN_MERKLEBLOCK_H
+#endif // BWSCOIN_MERKLEBLOCK_H

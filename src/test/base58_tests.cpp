@@ -9,7 +9,7 @@
 #include <test/data/base58_encode_decode.json.h>
 
 #include <base58.h>
-#include <test/test_paicoin.h>
+#include <test/test_bwscoin.h>
 #include <utilstrencodings.h>
 
 #include <univalue.h>

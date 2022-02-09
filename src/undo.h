@@ -6,8 +6,8 @@
  */
 
 
-#ifndef PAICOIN_UNDO_H
-#define PAICOIN_UNDO_H
+#ifndef BWSCOIN_UNDO_H
+#define BWSCOIN_UNDO_H
 
 #include "compressor.h" 
 #include "consensus/consensus.h"
@@ -117,4 +117,4 @@ public:
     }
 };
 
-#endif // PAICOIN_UNDO_H
+#endif // BWSCOIN_UNDO_H
