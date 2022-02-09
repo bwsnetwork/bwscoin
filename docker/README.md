@@ -31,7 +31,7 @@ We need 3 docker images to be able to run the kubernetes deployment.
  3. the block-explorer. 
  
 We will build bwscoind and cpuminer images on the development machine (not inside Minikube) for performance reasons.
-At the moment the block-explorer only needs to be dowloaded from dreg-or.oben.me/projectpai/block-explorer:latest.
+At the moment the block-explorer only needs to be dowloaded from dreg-or.lanier.ai/valdilabs/block-explorer:latest.
 
 First, we'll build the bwscoind image:
 ```
@@ -48,7 +48,7 @@ feature/hybrid-consensus/kubernetes         0.16.1              6644577b93cc    
 bwscoin-build                               latest              1e7a9f358e42        10 days ago         771MB
 ```
 
-To build the cpuminer image, first clone https://github.com/projectpai/cpuminer and cd into cpuminer folder.
+To build the cpuminer image, first clone https://github.com/valdilabs/cpuminer and cd into cpuminer folder.
 ```
 $ docker build --rm -t cpuminer -f Dockerfile .
 ```
@@ -63,7 +63,7 @@ cpuminer                                    latest              a3a56f1d10c7    
 
 Lastly pull the block-explorer image:
 ```
-$ docker pull dreg-or.oben.me/projectpai/block-explorer
+$ docker pull dreg-or.valdi.ai/valdilabs/block-explorer
 ```
 
 ## Copy the images inside Minikube
@@ -72,7 +72,7 @@ In a fresh terminal, we will save the three images using the local installation 
 ```
 $ docker save feature/hybrid-consensus/kubernetes:0.16.1 > img_bwscoind 
 $ docker save cpuminer > img_cpuminer 
-$ docker save dreg-or.oben.me/projectpai/block-explorer > img_block_explorer 
+$ docker save dreg-or.lanier.ai/valdilabs/block-explorer > img_block_explorer 
 ```
 
 We need the Docker internal to MiniKube. To point your shell to minikube's docker-daemon, run:
@@ -127,7 +127,7 @@ k8s.gcr.io/pause                            3.2                 80d28bedfe5d    
 k8s.gcr.io/coredns                          1.6.7               67da37a9a360        5 months ago        43.8MB
 k8s.gcr.io/etcd                             3.4.3-0             303ce5db0e90        8 months ago        288MB
 kubernetesui/metrics-scraper                v1.0.2              3b08661dc379        8 months ago        40.1MB
-dreg-or.oben.me/projectpai/block-explorer   latest              91ed8a427f0f        12 months ago       190MB
+dreg-or.lanier.ai/valdilabs/block-explorer   latest              91ed8a427f0f        12 months ago       190MB
 busybox                                     1.28                8c811b4aec35        2 years ago         1.15MB
 gcr.io/k8s-minikube/storage-provisioner     v1.8.1              4689081edb10        2 years ago         80.8MB
 ```

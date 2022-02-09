@@ -323,7 +323,7 @@ spec:
           - containerPort: 6379
         imagePullPolicy: Never
       - name: explorer
-        image: dreg-or.oben.me/projectpai/block-explorer:latest
+        image: dreg-or.valdi.ai/valdilabs/block-explorer:latest
         imagePullPolicy: Never
         ports:
           - containerPort: 8079
