@@ -97,6 +97,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "createrawtransaction", 1, "outputs" },
     { "createrawtransaction", 2, "locktime" },
     { "createrawtransaction", 3, "replaceable" },
+    { "createrawtransaction", 4, "expiry" },
     { "signrawtransaction", 1, "prevtxs" },
     { "signrawtransaction", 2, "privkeys" },
     { "searchrawtransactions", 1, "verbose"},
@@ -207,6 +208,16 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "echojson", 9, "arg9" },
     { "rescanblockchain", 0, "start_height"},
     { "rescanblockchain", 1, "stop_height"},
+    { "createbuytickettransaction", 0, "inputs"},
+    { "createbuytickettransaction", 1, "ticket_data"},
+    { "createbuytickettransaction", 2, "locktime"},
+    { "createbuytickettransaction", 3, "replaceable"},
+    { "createbuytickettransaction", 4, "expiry"},
+    { "createpayfortasktransaction", 0, "inputs"},
+    { "createpayfortasktransaction", 1, "task_data"},
+    { "createpayfortasktransaction", 2, "locktime"},
+    { "createpayfortasktransaction", 3, "replaceable"},
+    { "createpayfortasktransaction", 4, "expiry"},
 };
 
 class CRPCConvertTable

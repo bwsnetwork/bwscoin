@@ -181,6 +181,12 @@ struct Params {
     TokenPayoutVector vBlockOneLedger;
 
     int TotalSubsidyProportions() const { return nWorkSubsidyProportion + nStakeSubsidyProportion; }
+
+    /** Proof of Useful Work parameters */
+
+    // Number of blocks required before a ticket stake can be spent on a
+    // task or revocation.
+    uint16_t nMlTicketMaturity;
 };
 } // namespace Consensus
 

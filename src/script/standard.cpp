@@ -93,14 +93,18 @@ bool ParseOpReturn(const CScript& scriptPubKey, std::vector<std::vector<unsigned
         if (vSolutionsRet.size() < 2)
             return false;
 
-        // currently supported version is 1; all it implies is the existence of classifier
-        int version = CScriptNum(vSolutionsRet[0], false).getint();
-        if (version != 1)
-            return false;
+        // deprecated
 
-        // interpret the classifier and check that it is listed in the global enum
-        int cl = CScriptNum(vSolutionsRet[1], false).getint();
-        return cl >= 0 && cl < (int)NUM_DATA_CLASSES;
+        //// currently supported version is 1; all it implies is the existence of classifier
+        //int version = CScriptNum(vSolutionsRet[0], false).getint();
+        //if (version != 1)
+        //    return false;
+
+        //// interpret the classifier and check that it is listed in the global enum
+        //int cl = CScriptNum(vSolutionsRet[1], false).getint();
+        //return cl >= 0 && cl < (int)NUM_DATA_CLASSES;
+
+        return true;
     }
     else
     {

@@ -26,6 +26,8 @@ void RegisterRawTransactionRPCCommands(CRPCTable &tableRPC);
 void RegisterStakeAPIRPCCommands(CRPCTable &tableRPC);
 /** Register task info transaction RPC commands */
 void RegisterTaskInfoRPCCommands(CRPCTable &t);
+/** Register Machine Learning related RPC commands */
+void RegisterMLRPCCommands(CRPCTable &t);
 
 static inline void RegisterAllCoreRPCCommands(CRPCTable &t)
 {
@@ -36,6 +38,7 @@ static inline void RegisterAllCoreRPCCommands(CRPCTable &t)
     RegisterRawTransactionRPCCommands(t);
     RegisterStakeAPIRPCCommands(t);
     RegisterTaskInfoRPCCommands(t);
+    RegisterMLRPCCommands(t);
 }
 
 #endif

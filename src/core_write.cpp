@@ -20,6 +20,10 @@
 #include <utilmoneystr.h>
 #include <utilstrencodings.h>
 #include <stake/staketx.h>
+#include <ml/transactions/ml_tx_helpers.h>
+#include <ml/transactions/ml_tx_type.h>
+#include <ml/transactions/buy_ticket_tx.h>
+#include <ml/transactions/pay_for_task_tx.h>
 
 UniValue ValueFromAmount(const CAmount& amount)
 {
@@ -82,8 +86,11 @@ const std::map<unsigned char, std::string> mapSigHashTypes = {
  *                                     of a signature. Only pass true for scripts you believe could contain signatures. For example,
  *                                     pass false, or omit the this argument (defaults to false), for scriptPubKeys.
  */
-std::string ScriptToAsmStr(const CScript& script, const bool fAttemptSighashDecode)
+std::string ScriptToAsmStr(const CScript& script, const bool fAttemptSighashDecode, const bool fAttemptNullDataOnlyDecode)
 {
+    if (!fAttemptNullDataOnlyDecode && script[0] == OP_RETURN && script[1] != OP_STRUCT)
+        return std::string(GetOpName(OP_RETURN)) + " " + HexStr(script.begin() + 1, script.end());
+
     std::string str;
     opcodetype opcode;
     std::vector<unsigned char> vch;
@@ -214,14 +221,163 @@ void StakeInfoToUniv(const CTransaction& tx, UniValue& entry, const std::map<uin
     }
 }
 
-void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry, bool include_stake, bool include_hex, int serialize_flags
+void MlTxToUniv(BuyTicketTx& btx, UniValue& entry)
+{
+    if (!btx.valid()) {
+        entry.pushKV("status", "INVALID!");
+        return;
+    }
+
+    entry.pushKV("version", static_cast<uint64_t>(btx.version()));
+    entry.pushKV("actor", at_to_string(btx.actor()));
+    entry.pushKV("reward address", EncodeDestination(btx.reward_address()));
+
+    UniValue stake{UniValue::VOBJ};
+    stake.pushKV("address", EncodeDestination(btx.stake_address()));
+    stake.pushKV("amount", btx.stake_amount());
+    entry.pushKV("stake", stake);
+
+    if (!btx.change_txout().IsNull()) {
+        UniValue change{UniValue::VOBJ};
+        change.pushKV("address", EncodeDestination(btx.change_address()));
+        change.pushKV("amount", btx.change_amount());
+        entry.pushKV("change", change);
+    }
+}
+
+void MlTxToUniv(PayForTaskTx& ptx, UniValue& entry)
+{
+    if (!ptx.valid()) {
+        entry.pushKV("status", "INVALID!");
+        return;
+    }
+
+    entry.pushKV("version", static_cast<uint64_t>(ptx.version()));
+    std::string task_str;
+    if (pft_task_string(ptx.task(), task_str))
+        entry.pushKV("task", task_str);
+    else
+        entry.pushKV("task", "invalid");
+
+    UniValue ticket{UniValue::VOBJ};
+    const auto& ticket_out = ptx.ticket_txin().prevout;
+    ticket.pushKV("tx", ticket_out.hash.GetHex());
+    ticket.pushKV("n", static_cast<uint64_t>(ticket_out.n));
+    entry.pushKV("ticket", ticket);
+
+    UniValue stake{UniValue::VOBJ};
+    stake.pushKV("amount", ptx.stake_amount());
+    entry.pushKV("stake", stake);
+
+    if (!ptx.change_txout().IsNull()) {
+        UniValue change{UniValue::VOBJ};
+        change.pushKV("address", EncodeDestination(ptx.change_address()));
+        change.pushKV("amount", ptx.change_amount());
+        entry.pushKV("change", change);
+    }
+}
+
+void MlTxToUniv(const CTransaction& tx, UniValue& entry)
+{
+    // quick checks
+    if (tx.vout.size() < 1 || tx.vout[0].scriptPubKey[0] != OP_RETURN || tx.vout[0].scriptPubKey[1] != OP_STRUCT)
+        return;
+
+    UniValue ml(UniValue::VOBJ);
+
+    switch (mltx_type(tx)) {
+    case MLTX_BuyTicket: {
+        BuyTicketTx btx = BuyTicketTx::from_tx(tx);
+        MlTxToUniv(btx, ml);
+        entry.pushKV("type", BuyTicketTx::name());
+        entry.pushKV("ml", ml);
+    } break;
+    case MLTX_RevokeTicket:
+        // TODO
+        break;
+    case MLTX_PayForTask: {
+        PayForTaskTx ptx = PayForTaskTx::from_tx(tx);
+        MlTxToUniv(ptx, ml);
+        entry.pushKV("type", PayForTaskTx::name());
+        entry.pushKV("ml", ml);
+    } break;
+    case MLTX_Regular: {
+        entry.pushKV("type", mltx_name(MLTX_Regular));
+    } break;
+    default:
+        break;
+    }
+}
+
+void TxInToUniv(const CTxIn& txin, const bool coinbase, const std::map<uint256,std::shared_ptr<const CTransaction>>* const prevHashToTxMap, UniValue& entry)
+{
+    if (coinbase)
+        entry.pushKV("coinbase", HexStr(txin.scriptSig.begin(), txin.scriptSig.end()));
+    else {
+        entry.pushKV("txid", txin.prevout.hash.GetHex());
+        entry.pushKV("vout", static_cast<int64_t>(txin.prevout.n));
+        UniValue o(UniValue::VOBJ);
+        o.pushKV("asm", ScriptToAsmStr(txin.scriptSig, true));
+        o.pushKV("hex", HexStr(txin.scriptSig.begin(), txin.scriptSig.end()));
+        entry.pushKV("scriptSig", o);
+        if (!txin.scriptWitness.IsNull()) {
+            UniValue txinwitness(UniValue::VARR);
+            for (const auto& item : txin.scriptWitness.stack) {
+                txinwitness.push_back(HexStr(item.begin(), item.end()));
+            }
+            entry.pushKV("txinwitness", txinwitness);
+        }
+        if( prevHashToTxMap != nullptr) {
+            const auto& it = prevHashToTxMap->find(txin.prevout.hash);
+            if (it != std::end(*prevHashToTxMap) ){
+                UniValue prevOut(UniValue::VARR);
+                const auto& prevTx = it->second;
+                for (const auto& txOut : prevTx->vout) {
+                    txnouttype type;
+                    std::vector<CTxDestination> addresses;
+                    int nRequired;
+                    if (ExtractDestinations(txOut.scriptPubKey, type, addresses, nRequired)) {
+                        UniValue a(UniValue::VARR);
+                        for (const CTxDestination& addr : addresses) {
+                            a.push_back(EncodeDestination(addr));
+                        }
+
+                        UniValue vout(UniValue::VOBJ);
+                        vout.pushKV("addresses", a);
+                        vout.pushKV("value", ValueFromAmount(txOut.nValue));
+                        prevOut.push_back(vout);
+                    }
+                }
+                entry.pushKV("prevOut", prevOut);
+            }
+        }
+    }
+    entry.pushKV("sequence", static_cast<int64_t>(txin.nSequence));
+}
+
+void TxOutToUniv(const CTxOut& txout, const unsigned int idx, UniValue& entry, bool include_hex)
+{
+    assert(entry.isObject());
+
+    entry.pushKV("value", ValueFromAmount(txout.nValue));
+    entry.pushKV("n", static_cast<int64_t>(idx));
+
+    UniValue o(UniValue::VOBJ);
+    ScriptPubKeyToUniv(txout.scriptPubKey, o, include_hex);
+    entry.pushKV("scriptPubKey", o);
+}
+
+void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry, bool include_stake, bool include_ml, bool include_hex, int serialize_flags
             , const std::map<uint256,std::shared_ptr<const CTransaction>>* const prevHashToTxMap)
 {
     entry.pushKV("txid", tx.GetHash().GetHex());
     if (tx.IsCoinBase())
         entry.pushKV("type",  "coinbase");
-    else if (include_stake) {
-        StakeInfoToUniv(tx, entry, prevHashToTxMap);
+    else {
+        if (include_stake)
+            StakeInfoToUniv(tx, entry, prevHashToTxMap);
+        if (include_ml)
+            MlTxToUniv(tx, entry);
     }
 
     entry.pushKV("hash", tx.GetWitnessHash().GetHex());
@@ -235,48 +391,7 @@ void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry,
     for (unsigned int i = 0; i < tx.vin.size(); i++) {
         const CTxIn& txin = tx.vin[i];
         UniValue in(UniValue::VOBJ);
-        if (tx.IsCoinBase())
-            in.pushKV("coinbase", HexStr(txin.scriptSig.begin(), txin.scriptSig.end()));
-        else {
-            in.pushKV("txid", txin.prevout.hash.GetHex());
-            in.pushKV("vout", (int64_t)txin.prevout.n);
-            UniValue o(UniValue::VOBJ);
-            o.pushKV("asm", ScriptToAsmStr(txin.scriptSig, true));
-            o.pushKV("hex", HexStr(txin.scriptSig.begin(), txin.scriptSig.end()));
-            in.pushKV("scriptSig", o);
-            if (!txin.scriptWitness.IsNull()) {
-                UniValue txinwitness(UniValue::VARR);
-                for (const auto& item : txin.scriptWitness.stack) {
-                    txinwitness.push_back(HexStr(item.begin(), item.end()));
-                }
-                in.pushKV("txinwitness", txinwitness);
-            }
-            if( prevHashToTxMap != nullptr) {
-                const auto& it = prevHashToTxMap->find(txin.prevout.hash);
-                if (it != std::end(*prevHashToTxMap) ){
-                    UniValue prevOut(UniValue::VARR);
-                    const auto& prevTx = it->second;
-                    for (const auto& txOut : prevTx->vout) {
-                        txnouttype type;
-                        std::vector<CTxDestination> addresses;
-                        int nRequired;
-                        if (ExtractDestinations(txOut.scriptPubKey, type, addresses, nRequired)) {
-                            UniValue a(UniValue::VARR);
-                            for (const CTxDestination& addr : addresses) {
-                                a.push_back(EncodeDestination(addr));
-                            }
-
-                            UniValue vout(UniValue::VOBJ);
-                            vout.pushKV("addresses", a);
-                            vout.pushKV("value", ValueFromAmount(txOut.nValue));
-                            prevOut.push_back(vout);
-                        }
-                    }
-                    in.pushKV("prevOut", prevOut);
-                }
-            }
-        }
-        in.pushKV("sequence", (int64_t)txin.nSequence);
+        TxInToUniv(txin, tx.IsCoinBase(), prevHashToTxMap, in);
         vin.push_back(in);
     }
     entry.pushKV("vin", vin);
@@ -286,13 +401,7 @@ void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry,
         const CTxOut& txout = tx.vout[i];
 
         UniValue out(UniValue::VOBJ);
-
-        out.pushKV("value", ValueFromAmount(txout.nValue));
-        out.pushKV("n", (int64_t)i);
-
-        UniValue o(UniValue::VOBJ);
-        ScriptPubKeyToUniv(txout.scriptPubKey, o, true);
-        out.pushKV("scriptPubKey", o);
+        TxOutToUniv(txout, i, out);
         vout.push_back(out);
     }
     entry.pushKV("vout", vout);

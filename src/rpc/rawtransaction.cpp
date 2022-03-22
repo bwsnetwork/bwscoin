@@ -115,14 +115,14 @@ bool CheckFilterAgainstVoutTxs(const CTransaction& tx, const lt_DestinationSet& 
 }
 
 
-void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry, bool includeStake, const lt_HashToTransactionMap * const pHashToTransactionMap = nullptr)
+void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry, bool includeStake, bool includeMl, const lt_HashToTransactionMap * const pHashToTransactionMap = nullptr)
 {
     // Call into TxToUniv() in bwscoin-common to decode the transaction hex.
     //
     // Blockchain contextual information (confirmations and blocktime) is not
     // available to code in bwscoin-common, so we query them here and push the
     // data into the returned UniValue.
-    TxToUniv(tx, uint256(), entry, includeStake, true, RPCSerializationFlags(), pHashToTransactionMap);
+    TxToUniv(tx, uint256(), entry, includeStake, includeMl, true, RPCSerializationFlags(), pHashToTransactionMap);
 
     if (!hashBlock.IsNull()) {
         entry.push_back(Pair("blockhash", hashBlock.GetHex()));
@@ -260,6 +260,7 @@ UniValue getrawtransaction(const JSONRPCRequest& request)
     UniValue result(UniValue::VOBJ);
 
     bool includeStake = (!gArgs.GetBoolArg("-testnet", false)) || IsBlockAfterHybridConsensusFork(hashBlock);
+    bool includeMl = includeStake;
 
     lt_HashToTransactionMap prevOutMap;
     if (includeStake && ETxClass::TX_RevokeTicket == ParseTxClass(*tx)) {
@@ -268,7 +269,7 @@ UniValue getrawtransaction(const JSONRPCRequest& request)
         prevOutMap[ticketHash] = GetTicket(ticketHash);
     }
 
-    TxToJSON(*tx, hashBlock, result, includeStake, &prevOutMap);
+    TxToJSON(*tx, hashBlock, result, includeStake, includeMl, &prevOutMap);
     return result;
 }
 
@@ -375,7 +376,9 @@ UniValue searchrawtransactions(const JSONRPCRequest& request)
             if (! ( CheckFilterAgainstVinTxs(*tx, fVinExtra, setFilterAddrs, prevOutMap) || CheckFilterAgainstVoutTxs(*tx, setFilterAddrs)) )
                 continue;
             UniValue object(UniValue::VOBJ);
-            TxToJSON(*tx, hashBlock, object, (!isTestnet) || IsBlockAfterHybridConsensusFork(hashBlock), &prevOutMap);
+            bool includeStake = (!isTestnet) || IsBlockAfterHybridConsensusFork(hashBlock);
+            bool includeMl = includeStake;
+            TxToJSON(*tx, hashBlock, object, includeStake, includeMl, &prevOutMap);
             object.push_back(Pair("hex", strHex));
             result.push_back(object);
         } else {
@@ -517,7 +520,7 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() < 2 || request.params.size() > 4)
         throw std::runtime_error(
-            "createrawtransaction [{\"txid\":\"id\",\"vout\":n},...] {\"address\":amount,\"data\":\"hex\",...} ( locktime ) ( replaceable )\n"
+            "createrawtransaction [{\"txid\":\"id\",\"vout\":n},...] {\"address\":amount,\"data\":\"hex\",...} ( locktime ) ( replaceable ) ( expiry )\n"
             "\nCreate a transaction spending the given inputs and creating new outputs.\n"
             "Outputs can be addresses, data (OP_RETURN) or structured data (OP_RETURN OP_STRUCT).\n"
             "Returns hex-encoded raw transaction.\n"
@@ -750,7 +753,7 @@ UniValue decoderawtransaction(const JSONRPCRequest& request)
         throw JSONRPCError(RPCErrorCode::DESERIALIZATION_ERROR, "TX decode failed");
 
     UniValue result(UniValue::VOBJ);
-    TxToUniv(CTransaction(std::move(mtx)), uint256(), result, true, false);
+    TxToUniv(CTransaction(std::move(mtx)), uint256(), result, true, true, false);
 
     return result;
 }
@@ -1233,7 +1236,7 @@ static const CRPCCommand commands[] =
   //  --------------------- ------------------------  -----------------------  ----------
     { "rawtransactions",    "getrawtransaction",      &getrawtransaction,      {"txid","verbose"} },
     { "rawtransactions",    "searchrawtransactions",  &searchrawtransactions,  {"address","verbose","skip","count","vinextra","reverse","filteraddrs"} },
-    { "rawtransactions",    "createrawtransaction",   &createrawtransaction,   {"inputs","outputs","locktime","replaceable"} },
+    { "rawtransactions",    "createrawtransaction",   &createrawtransaction,   {"inputs","outputs","locktime","replaceable","expiry"} },
     { "rawtransactions",    "decoderawtransaction",   &decoderawtransaction,   {"hexstring"} },
     { "rawtransactions",    "decodescript",           &decodescript,           {"hexstring"} },
     { "rawtransactions",    "sendrawtransaction",     &sendrawtransaction,     {"hexstring","allowhighfees"} },

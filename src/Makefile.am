@@ -111,6 +111,12 @@ BWSCOIN_CORE_H = \
   miner.h \
   ml/verification_client.h \
   ml/taskinfo_client.h \
+  ml/transactions/actor_type.h \
+  ml/transactions/buy_ticket_tx.h \
+  ml/transactions/ml_tx_helpers.h \
+  ml/transactions/ml_tx_size.h \
+  ml/transactions/ml_tx_type.h \
+  ml/transactions/pay_for_task_tx.h \
   net.h \
   net_processing.h \
   netaddress.h \
@@ -197,6 +203,7 @@ libbwscoin_server_a_SOURCES = \
   httprpc.cpp \
   httpserver.cpp \
   init.cpp \
+  json/nlohmann/json.hpp \
   dbwrapper.cpp \
   merkleblock.cpp \
   miner.cpp \
@@ -213,6 +220,7 @@ libbwscoin_server_a_SOURCES = \
   rpc/blockchain.cpp \
   rpc/mining.cpp \
   rpc/misc.cpp \
+  rpc/ml.cpp \
   rpc/net.cpp \
   rpc/rawtransaction.cpp \
   rpc/safemode.cpp \
@@ -325,6 +333,12 @@ libbwscoin_consensus_a_SOURCES = \
   script/script_error.cpp \
   script/script_error.h \
   script/standard.cpp \
+  script/structured_data/structured_data.cpp \
+  script/structured_data/structured_data.h \
+  script/structured_data/structured_data_class.cpp \
+  script/structured_data/structured_data_class.h \
+  script/structured_data/structured_data_version.cpp \
+  script/structured_data/structured_data_version.h \
   serialize.h \
   stake/extendedvotebits.cpp \
   stake/extendedvotebits.h \
@@ -373,6 +387,12 @@ libbwscoin_common_a_SOURCES = \
   script/standard.cpp \
   stake/stakepoolfee.cpp \
   warnings.cpp \
+  ml/transactions/actor_type.cpp \
+  ml/transactions/buy_ticket_tx.cpp \
+  ml/transactions/ml_tx_helpers.cpp \
+  ml/transactions/ml_tx_size.cpp \
+  ml/transactions/ml_tx_type.cpp \
+  ml/transactions/pay_for_task_tx.cpp \
   $(BWSCOIN_CORE_H)
 
 # util: shared between all executables.

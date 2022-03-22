@@ -712,10 +712,10 @@ static void MutateTx(CMutableTransaction& tx, const std::string& command,
         throw std::runtime_error("unknown command");
 }
 
-static void OutputTxJSON(const CTransaction& tx, bool includeStake)
+static void OutputTxJSON(const CTransaction& tx, bool includeStake, bool includeMl)
 {
     UniValue entry(UniValue::VOBJ);
-    TxToUniv(tx, uint256(), entry, includeStake);
+    TxToUniv(tx, uint256(), entry, includeStake, includeMl);
 
     std::string jsonOutput = entry.write(4);
     fprintf(stdout, "%s\n", jsonOutput.c_str());
@@ -737,9 +737,11 @@ static void OutputTxHex(const CTransaction& tx)
 
 static void OutputTx(const CTransaction& tx)
 {
-    if (gArgs.GetBoolArg("-json", false))
-        OutputTxJSON(tx, gArgs.GetBoolArg("-stake", false));
-    else if (gArgs.GetBoolArg("-txid", false))
+    if (gArgs.GetBoolArg("-json", false)) {
+        bool includeStake = gArgs.GetBoolArg("-stake", false);
+        bool includeMl = includeStake;
+        OutputTxJSON(tx, includeStake, includeMl);
+    } else if (gArgs.GetBoolArg("-txid", false))
         OutputTxHash(tx);
     else
         OutputTxHex(tx);

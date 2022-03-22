@@ -210,6 +210,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.push_back(Pair("merkleroot", block.hashMerkleRoot.GetHex()));
 
     bool includeStake = (!gArgs.GetBoolArg("-testnet", false)) || IsHybridConsensusForkEnabled(blockindex, Params().GetConsensus());
+    bool includeMl = includeStake;
 
     UniValue txs{UniValue::VARR};
     for(const auto& tx : block.vtx)
@@ -223,7 +224,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
                 const auto& ticketHash = tx->vin[revocationStakeInputIndex].prevout.hash;
                 prevOutMap[ticketHash] = GetTicket(ticketHash);
             }
-            TxToUniv(*tx, uint256(), objTx, includeStake, true, RPCSerializationFlags(), &prevOutMap);
+            TxToUniv(*tx, uint256(), objTx, includeStake, includeMl, true, RPCSerializationFlags(), &prevOutMap);
             txs.push_back(objTx);
         }
         else
