@@ -23,6 +23,10 @@
 #include "coins.h"
 #include "utilmoneystr.h"
 
+#include <ml/transactions/ml_tx_type.h>
+#include <ml/transactions/buy_ticket_tx.h>
+#include <ml/transactions/pay_for_task_tx.h>
+
 bool IsExpiredTx(const CTransaction &tx, int nBlockHeight)
 {
     return tx.nExpiry != 0 && (uint32_t)nBlockHeight >= tx.nExpiry;
@@ -208,6 +212,30 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
                 return state.DoS(100, false, REJECT_INVALID, "bad-txns-inputs-duplicate");
         }
     }
+
+    MLTxType type = mltx_type(tx);
+    if (type == MLTX_Regular && tx.IsCoinBase()) {
+        // Check length of coinbase scriptSig.
+        if (tx.vin[0].scriptSig.size() < 2 || tx.vin[0].scriptSig.size() > 100)
+            return state.DoS(100, false, REJECT_INVALID, "bad-cb-length");
+    } else if (type == MLTX_BuyTicket) {
+        if (!byt_basic_input_checks(tx, state))
+            return false;
+    } else if (type == MLTX_RevokeTicket) {
+        // TODO
+    } else if (type == MLTX_PayForTask) {
+        if (!pft_basic_input_checks(tx, state))
+            return false;
+    }
+
+    // Previous transaction outputs referenced by the inputs to this transaction must not be null.
+    for (const auto& txin : tx.vin)
+        if (txin.prevout.IsNull())
+            return state.DoS(10, false, REJECT_INVALID, "bad-txns-prevout-null");
+
+    return true;
+
+    // TODO: remove obsolete
 
     ETxClass txClass = ParseTxClass(tx);
     if (txClass == TX_Regular && tx.IsCoinBase())

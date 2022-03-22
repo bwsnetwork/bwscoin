@@ -5,6 +5,7 @@
 
 #include "buy_ticket_tx.h"
 
+#include <consensus/validation.h>
 #include <ml/transactions/ml_tx_helpers.h>
 #include <ml/transactions/ml_tx_size.h>
 #include <ml/transactions/ml_tx_type.h>
@@ -223,6 +224,14 @@ CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate)
         return 0;
 
     return fee;
+}
+
+bool byt_basic_input_checks(const CTransaction& tx, CValidationState &state)
+{
+    if (tx.vin.size() < 1)
+        return state.DoS(100, false, REJECT_INVALID, "bad-ticket-input-count");
+
+    return true;
 }
 
 BuyTicketTx BuyTicketTx::from_script(const CScript& script)

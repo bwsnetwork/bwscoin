@@ -19,6 +19,7 @@
 #include <json/nlohmann/json.hpp>
 
 class CFeeRate;
+class CValidationState;
 
 extern const unsigned int pft_current_version;   // should be monotonic
 
@@ -83,6 +84,9 @@ bool pft_task_json(const std::string& str, nlohmann::json& task);
 // calculate the fee for the transaction (assumes that
 // the change output is also present)
 CAmount pft_fee(const unsigned int extra_funding_count, const nlohmann::json& task, const CFeeRate& fee_rate);
+
+// check basic input sizes and correspondences
+bool pft_basic_input_checks(const CTransaction& tx, CValidationState &state);
 
 // Wrapper class for Pay for Task transactions
 

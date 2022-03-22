@@ -18,6 +18,7 @@
 #include <script/standard.h>
 
 class CFeeRate;
+class CValidationState;
 
 extern const unsigned int byt_current_version;   // should be monotonic
 
@@ -66,6 +67,9 @@ bool byt_tx(CMutableTransaction& tx,
 // calculate the fee for the transaction (assumes that
 // the change output is also present)
 CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate);
+
+// check basic input sizes and correspondences
+bool byt_basic_input_checks(const CTransaction& tx, CValidationState &state);
 
 // Wrapper class for Buy Ticket transactions
 

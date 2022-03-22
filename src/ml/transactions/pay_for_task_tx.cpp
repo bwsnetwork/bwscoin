@@ -5,6 +5,7 @@
 
 #include "pay_for_task_tx.h"
 
+#include <consensus/validation.h>
 #include <ml/transactions/ml_tx_helpers.h>
 #include <ml/transactions/ml_tx_size.h>
 #include <ml/transactions/ml_tx_type.h>
@@ -266,6 +267,17 @@ CAmount pft_fee(const unsigned int extra_funding_count, const nlohmann::json& ta
         return 0;
 
     return fee;
+}
+
+bool pft_basic_input_checks(const CTransaction& tx, CValidationState &state)
+{
+    if (tx.vin.size() < mltx_ticket_txin_index + 1)
+        return state.DoS(100, false, REJECT_INVALID, "bad-payfortask-input-count");
+
+    if (tx.vin[mltx_ticket_txin_index].prevout.n != mltx_stake_txout_index)
+        return state.DoS(100, false, REJECT_INVALID, "bad-stake-input-reference");
+
+    return true;
 }
 
 static PayForTaskTx invalid_pay_for_task_tx = PayForTaskTx();
