@@ -40,7 +40,8 @@ bool mltx_is_regular(const int type)
 
 MLTxType mltx_type(const CTransaction& tx)
 {
-    const auto& script = sds_from_tx(tx);
+    std::string reason;
+    const auto& script = sds_from_tx(tx, reason);
     if (script.size() <= 0)
         return MLTX_Regular;
 

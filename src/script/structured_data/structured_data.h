@@ -44,12 +44,12 @@ StructuredDataClass sds_class(const std::vector<std::vector<unsigned char>>& scr
 CScript sds_payload(const CScript& script);
 CScript sds_payload(const std::vector<std::vector<unsigned char>>& script_items);
 
-bool sds_valid(const CScript& script);
-bool sds_valid(const std::vector<std::vector<unsigned char>>& script_items);
+bool sds_valid(const CScript& script, std::string& reason);
+bool sds_valid(const std::vector<std::vector<unsigned char>>& script_items, std::string& reason);
 
 CScript sds_create(const StructuredDataClass cls, const StructuredDataVersion version = sdv_current_version);
 
-CScript sds_from_tx(const CTransaction& tx);
+CScript sds_from_tx(const CTransaction& tx, std::string& reason);
 
 std::vector<CTxOut> sds_tx_outputs(const CScript& script);
 

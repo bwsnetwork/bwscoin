@@ -34,15 +34,17 @@ bool byt_script(CScript& script,
 
 // validate the script
 // (validation is based on parsing)
-bool byt_script_valid(const CScript& script);
-bool byt_script_valid(const std::vector<std::vector<unsigned char>> items);
+bool byt_script_valid(const CScript& script, std::string& reason);
+bool byt_script_valid(const std::vector<std::vector<unsigned char>> items, std::string& reason);
 
 // parse and validate the data
 // (use the output values only if the function returns true)
 bool byt_parse_script(const CScript& script,
-                      unsigned int& version, ActorType& actor, CTxDestination& reward_address);
+                      unsigned int& version, ActorType& actor, CTxDestination& reward_address,
+                      std::string& reason);
 bool byt_parse_script(const std::vector<std::vector<unsigned char>> items,
-                      unsigned int& version, ActorType& actor, CTxDestination& reward_address);
+                      unsigned int& version, ActorType& actor, CTxDestination& reward_address,
+                      std::string& reason);
 
 // parse and validate the transaction
 // (use the output values only if the function returns true)
@@ -50,7 +52,8 @@ bool byt_parse_tx(const CTransaction& tx,
                   CTxOut& stake_txout, CTxOut& change_txout,
                   CScript& script,
                   std::vector<std::vector<unsigned char>> items,
-                  unsigned int& version, ActorType& actor, CTxDestination& reward_address);
+                  unsigned int& version, ActorType& actor, CTxDestination& reward_address,
+                  std::string& reason);
 
 // generate the transaction
 // (use the output tx only if the function returns true)

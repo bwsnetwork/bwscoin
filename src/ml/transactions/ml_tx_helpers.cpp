@@ -26,5 +26,6 @@ bool mltx_is_data_txout(const CTxOut& txout)
 
 bool mltx_is_structured_data_txout(const CTxOut& txout)
 {
-    return sds_valid(txout.scriptPubKey);
+    std::string reason;
+    return sds_valid(txout.scriptPubKey, reason);
 }

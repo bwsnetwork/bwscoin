@@ -35,44 +35,54 @@ bool pft_script(CScript& script,
     return pft_script(script, j, version);
 }
 
-bool pft_script_valid(const CScript& script)
+bool pft_script_valid(const CScript& script, std::string& reason)
 {
-    return pft_script_valid(sds_script_items(script));
+    return pft_script_valid(sds_script_items(script), reason);
 }
 
-bool pft_script_valid(const std::vector<std::vector<unsigned char>> items)
+bool pft_script_valid(const std::vector<std::vector<unsigned char>> items, std::string& reason)
 {
     unsigned int version;
     nlohmann::json task;
-    return pft_parse_script(items, version, task);
+    return pft_parse_script(items, version, task, reason);
 }
 
 bool pft_parse_script(const CScript& script,
-                      unsigned int& version, nlohmann::json& task)
+                      unsigned int& version, nlohmann::json& task,
+                      std::string& reason)
 {
-    return pft_parse_script(sds_script_items(script), version, task);
+    return pft_parse_script(sds_script_items(script), version, task, reason);
 }
 
 bool pft_parse_script(const std::vector<std::vector<unsigned char>> items,
-                      unsigned int& version, nlohmann::json& task)
+                      unsigned int& version, nlohmann::json& task,
+                      std::string& reason)
 {
-    if (items.size() < 5)
+    if (items.size() < 5) {
+        reason = "invalid-script-size";
         return false;
+    }
 
-    if (!sds_valid(items))
+    if (!sds_valid(items, reason))
         return false;
 
     auto cls = sds_class(items);
-    if (cls != SDC_PoUW)
+    if (cls != SDC_PoUW) {
+        reason = "not-pouw-class";
         return false;
+    }
 
     int mltx_int = CScriptNum(items[2], false).getint();
-    if (!mltx_valid(mltx_int) || static_cast<MLTxType>(mltx_int) != MLTX_PayForTask)
+    if (!mltx_valid(mltx_int) || static_cast<MLTxType>(mltx_int) != MLTX_PayForTask) {
+        reason = "not-pft-tx";
         return false;
+    }
 
     int version_int = CScriptNum(items[3], false).getint();
-    if (version_int < 0 || version_int > static_cast<int>(pft_current_version))
+    if (version_int < 0 || version_int > static_cast<int>(pft_current_version)) {
+        reason = "invalid-pft-version";
         return false;
+    }
 
     try {
         task = nlohmann::json::from_msgpack(items[4]);
@@ -81,6 +91,7 @@ bool pft_parse_script(const std::vector<std::vector<unsigned char>> items,
     }  catch (...) {
     }
 
+    reason = "invalid-task";
     return false;
 }
 
@@ -89,16 +100,21 @@ bool pft_parse_tx(const CTransaction& tx,
                   CAmount& stake, CTxOut& change_txout,
                   CScript& script,
                   std::vector<std::vector<unsigned char>> items,
-                  unsigned int& version, nlohmann::json& task)
+                  unsigned int& version, nlohmann::json& task,
+                  std::string& reason)
 {
     // sizes
-    if (tx.vin.size() <= mltx_ticket_txin_index || tx.vout.size() <= mltx_stake_txout_index)
+    if (tx.vin.size() <= mltx_ticket_txin_index || tx.vout.size() <= mltx_stake_txout_index) {
+        reason = "invalid-input-count";
         return false;
+    }
 
     // inputs
     for (auto txin: tx.vin)
-        if (txin.prevout.IsNull())
+        if (txin.prevout.IsNull()) {
+            reason = "null-input";
             return false;
+        }
     ticket_txin = tx.vin[mltx_ticket_txin_index];
     extra_funding_txins.clear();
     // (assumes mltx_ticket_txin_index=0)
@@ -109,8 +125,10 @@ bool pft_parse_tx(const CTransaction& tx,
     auto& stake_txout = tx.vout[mltx_stake_txout_index];
     if (stake_txout.nValue == 0 ||
             !MoneyRange(stake_txout.nValue) ||
-            stake_txout.scriptPubKey.size() > 0)
+            stake_txout.scriptPubKey.size() > 0) {
+        reason = "invalid-stake-output";
         return false;
+    }
 
     // change output (optional)
     CTxDestination change_destination;
@@ -118,16 +136,20 @@ bool pft_parse_tx(const CTransaction& tx,
         change_txout = tx.vout[mltx_change_txout_index];
         bool change_destination_ok = ExtractDestination(change_txout.scriptPubKey, change_destination) && IsValidDestination(change_destination);
         bool change_value_ok = change_txout.nValue != 0 && MoneyRange(change_txout.nValue);
-        if (change_destination_ok != change_value_ok)
+        if (change_destination_ok != change_value_ok) {
+            reason = "invalid-change-count";
             return false;
+        }
         else if (!change_destination_ok && !change_value_ok)
             change_txout = CTxOut();
     }
 
     // structured script
-    script = sds_from_tx(tx);
+    script = sds_from_tx(tx, reason);
+    if (script.size() == 0)
+        return false;
     items = sds_script_items(script);
-    if (!pft_parse_script(items, version, task))
+    if (!pft_parse_script(items, version, task, reason))
         return false;
 
     stake = stake_txout.nValue;
@@ -203,7 +225,7 @@ bool pft_tx(CMutableTransaction& tx,
                   task, version);
 }
 
-bool pft_tx_valid(const CTransaction& tx)
+bool pft_tx_valid(const CTransaction& tx, std::string& reason)
 {
     CTxIn ticket_txin;
     std::vector<CTxIn> extra_funding_txins;
@@ -214,14 +236,18 @@ bool pft_tx_valid(const CTransaction& tx)
     unsigned int version;
     nlohmann::json task;
 
-    if (!pft_parse_tx(tx, ticket_txin, extra_funding_txins, stake, change_txout, script, items, version, task))
+    if (!pft_parse_tx(tx, ticket_txin, extra_funding_txins, stake, change_txout, script, items, version, task, reason))
         return false;
 
-    if (version > pft_current_version)
+    if (version > pft_current_version) {
+        reason = "invalid-pft-version";
         return false;
+    }
 
-    if (!pft_task_valid(task))
+    if (!pft_task_valid(task)) {
+        reason = "invalid-task";
         return false;
+    }
 
     return true;
 }
@@ -288,7 +314,8 @@ PayForTaskTx PayForTaskTx::from_script(const CScript& script)
 
     unsigned int version;
     nlohmann::json task;
-    if (!pft_parse_script(script, version, task))
+    std::string reason;
+    if (!pft_parse_script(script, version, task, reason))
         return ptx;
 
     ptx.set_version(version);
@@ -309,8 +336,9 @@ PayForTaskTx PayForTaskTx::from_tx(const CTransaction& tx)
     std::vector<std::vector<unsigned char>> items;
     unsigned int version;
     nlohmann::json task;
+    std::string reason;
 
-    if (!pft_parse_tx(tx, ticket_txin, extra_funding_txins, stake, change_txout, script, items, version, task))
+    if (!pft_parse_tx(tx, ticket_txin, extra_funding_txins, stake, change_txout, script, items, version, task, reason))
         return ptx;
 
     ptx.set_version(version);

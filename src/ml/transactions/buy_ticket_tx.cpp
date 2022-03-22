@@ -38,57 +38,73 @@ bool byt_script(CScript& script,
     return true;
 }
 
-bool byt_script_valid(const CScript& script)
+bool byt_script_valid(const CScript& script, std::string& reason)
 {
-    return byt_script_valid(sds_script_items(script));
+    return byt_script_valid(sds_script_items(script), reason);
 }
 
-bool byt_script_valid(const std::vector<std::vector<unsigned char>> items)
+bool byt_script_valid(const std::vector<std::vector<unsigned char>> items, std::string& reason)
 {
     unsigned int version;
     ActorType actor;
     CTxDestination reward_address;
-    return byt_parse_script(items, version, actor, reward_address);
+    return byt_parse_script(items, version, actor, reward_address, reason);
 }
 
 bool byt_parse_script(const CScript& script,
-                      unsigned int& version, ActorType& actor, CTxDestination& reward_address)
+                      unsigned int& version, ActorType& actor, CTxDestination& reward_address,
+                      std::string& reason)
 {
-    return byt_parse_script(sds_script_items(script), version, actor, reward_address);
+    return byt_parse_script(sds_script_items(script), version, actor, reward_address, reason);
 }
 
 bool byt_parse_script(const std::vector<std::vector<unsigned char>> items,
-                      unsigned int& version, ActorType& actor, CTxDestination& reward_address)
+                      unsigned int& version, ActorType& actor, CTxDestination& reward_address,
+                      std::string& reason)
 {
-    if (items.size() != 7)
+    if (items.size() != 7) {
+        reason = "invalid-script-size";
         return false;
+    }
 
-    if (!sds_valid(items))
+    if (!sds_valid(items, reason))
         return false;
 
     auto cls = sds_class(items);
-    if (cls != SDC_PoUW)
+    if (cls != SDC_PoUW) {
+        reason = "not-pouw-class";
         return false;
+    }
 
     int mltx_int = CScriptNum(items[2], false).getint();
-    if (!mltx_valid(mltx_int) || static_cast<MLTxType>(mltx_int) != MLTX_BuyTicket)
+    if (!mltx_valid(mltx_int) || static_cast<MLTxType>(mltx_int) != MLTX_BuyTicket) {
+        reason = "not-byt-tx";
         return false;
+    }
 
     int version_int = CScriptNum(items[3], false).getint();
-    if (version_int < 0 || version_int > static_cast<int>(byt_current_version))
+    if (version_int < 0 || version_int > static_cast<int>(byt_current_version)) {
+        reason = "invalid-byt-version";
         return false;
+    }
 
     int actor_int = CScriptNum(items[4], false).getint();
-    if (!at_valid(actor_int))
+    if (!at_valid(actor_int)) {
+        reason = "invalid-actor-type";
         return false;
+    }
 
     uint160 address(items[5]);
-    if (address.IsNull())
+    if (address.IsNull()) {
+        reason = "invalid-reward-address";
         return false;
+    }
 
     int address_type = CScriptNum(items[6], false).getint();
-    if (address_type != 1 && address_type != 2)
+    if (address_type != 1 && address_type != 2) {
+        reason = "invalid-reward-address-type";
         return false;
+    }
 
     version = static_cast<unsigned int>(version_int);
     actor = static_cast<ActorType>(actor_int);
@@ -104,16 +120,21 @@ bool byt_parse_tx(const CTransaction& tx,
                   CTxOut& stake_txout, CTxOut& change_txout,
                   CScript& script,
                   std::vector<std::vector<unsigned char>> items,
-                  unsigned int& version, ActorType& actor, CTxDestination& reward_address)
+                  unsigned int& version, ActorType& actor, CTxDestination& reward_address,
+                  std::string& reason)
 {
     // sizes
-    if (tx.vin.size() < 1 || tx.vout.size() <= mltx_stake_txout_index)
+    if (tx.vin.size() < 1 || tx.vout.size() <= mltx_stake_txout_index) {
+        reason = "invalid-input-count";
         return false;
+    }
 
     // inputs
     for (auto& txin: tx.vin)
-        if (txin.prevout.hash.IsNull())
+        if (txin.prevout.hash.IsNull()) {
+            reason = "null-input";
             return false;
+        }
 
     // stake output
     CTxDestination stake_destination;
@@ -122,8 +143,10 @@ bool byt_parse_tx(const CTransaction& tx,
             !MoneyRange(stake_txout.nValue) ||
             stake_txout.scriptPubKey.size() <= 0 ||
             !ExtractDestination(stake_txout.scriptPubKey, stake_destination) ||
-            !IsValidDestination(stake_destination))
+            !IsValidDestination(stake_destination)) {
+        reason = "invalid-stake-output";
         return false;
+    }
 
     // change output (optional)
     CTxDestination change_destination;
@@ -132,17 +155,22 @@ bool byt_parse_tx(const CTransaction& tx,
         change_txout = tx.vout[mltx_change_txout_index];
         bool change_destination_ok = ExtractDestination(change_txout.scriptPubKey, change_destination) && IsValidDestination(change_destination);
         bool change_value_ok = change_txout.nValue != 0 && MoneyRange(change_txout.nValue);
-        if (change_destination_ok != change_value_ok)
+        if (change_destination_ok != change_value_ok) {
+            reason = "invalid-change-count";
             return false;
+        }
         else if (!change_destination_ok && !change_value_ok)
             change_txout = CTxOut();
 
     }
 
     // structured script
-    script = sds_from_tx(tx);
+    script = sds_from_tx(tx, reason);
+    if (script.size() == 0)
+        return false;
+
     items = sds_script_items(script);
-    if (!byt_parse_script(items, version, actor, reward_address))
+    if (!byt_parse_script(items, version, actor, reward_address, reason))
         return false;
 
     return true;
@@ -241,7 +269,8 @@ BuyTicketTx BuyTicketTx::from_script(const CScript& script)
     unsigned int version;
     ActorType actor;
     CTxDestination reward_address;
-    if (!byt_parse_script(script, version, actor, reward_address))
+    std::string reason;
+    if (!byt_parse_script(script, version, actor, reward_address, reason))
         return btx;
 
     btx.set_version(version);
@@ -261,8 +290,9 @@ BuyTicketTx BuyTicketTx::from_tx(const CTransaction& tx)
     unsigned int version;
     ActorType actor;
     CTxDestination reward_address;
+    std::string reason;
 
-    if (!byt_parse_tx(tx, stake_txout, change_txout, script, items, version, actor, reward_address))
+    if (!byt_parse_tx(tx, stake_txout, change_txout, script, items, version, actor, reward_address, reason))
         return btx;
 
     btx.set_version(version);

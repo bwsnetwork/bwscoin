@@ -37,15 +37,17 @@ bool pft_script(CScript& script,
 
 // validate the script
 // (validation is based on parsing)
-bool pft_script_valid(const CScript& script);
-bool pft_script_valid(const std::vector<std::vector<unsigned char>> items);
+bool pft_script_valid(const CScript& script, std::string& reason);
+bool pft_script_valid(const std::vector<std::vector<unsigned char>> items, std::string& reason);
 
 // parse and validate the data
 // (validation is based on parsing)
 bool pft_parse_script(const CScript& script,
-                      unsigned int& version, nlohmann::json& task);
+                      unsigned int& version, nlohmann::json& task,
+                      std::string& reason);
 bool pft_parse_script(const std::vector<std::vector<unsigned char>> items,
-                      unsigned int& version, nlohmann::json& task);
+                      unsigned int& version, nlohmann::json& task,
+                      std::string& reason);
 
 // parse and validate the transaction
 // (use the output values only if the function returns true)
@@ -54,7 +56,8 @@ bool pft_parse_tx(const CTransaction& tx,
                   CAmount& stake, CTxOut& change_txout,
                   CScript& script,
                   std::vector<std::vector<unsigned char>> items,
-                  unsigned int& version, nlohmann::json& task);
+                  unsigned int& version, nlohmann::json& task,
+                  std::string& reason);
 
 // generate the transaction
 // (use the output tx only if the function returns true)
@@ -71,7 +74,7 @@ bool pft_tx(CMutableTransaction& tx,
             const nlohmann::json& task, const unsigned int version = pft_current_version);
 
 // validate the transaction
-bool pft_tx_valid(const CTransaction& tx);
+bool pft_tx_valid(const CTransaction& tx, std::string& reason);
 
 // validate the task
 bool pft_task_valid(const nlohmann::json& task);

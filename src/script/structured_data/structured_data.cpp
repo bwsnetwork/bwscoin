@@ -66,23 +66,29 @@ CScript sds_payload(const std::vector<std::vector<unsigned char>>& script_items)
     return payload;
 }
 
-bool sds_valid(const CScript& script)
+bool sds_valid(const CScript& script, std::string& reason)
 {
-    return sds_valid(sds_script_items(script));
+    return sds_valid(sds_script_items(script), reason);
 }
 
-bool sds_valid(const std::vector<std::vector<unsigned char>>& script_items)
+bool sds_valid(const std::vector<std::vector<unsigned char>>& script_items, std::string& reason)
 {
-    if (script_items.size() < 2)
+    if (script_items.size() < 2) {
+        reason = "invalid-script-size";
         return false;
+    }
 
     auto version = static_cast<StructuredDataVersion>(CScriptNum(script_items[0], false).getint());
-    if (!sdv_valid(version))
+    if (!sdv_valid(version)) {
+        reason = "invalid-script-version";
         return false;
+    }
 
     int data_class_int = CScriptNum(script_items[1], false).getint();
-    if (!sdc_valid(data_class_int))
+    if (!sdc_valid(data_class_int)) {
+        reason = "invalid-script-class";
         return false;
+    }
 
     return true;
 }
@@ -92,17 +98,21 @@ CScript sds_create(const StructuredDataClass cls, const StructuredDataVersion ve
     return CScript() << OP_RETURN << OP_STRUCT << version << cls;
 }
 
-CScript sds_from_tx(const CTransaction& tx)
+CScript sds_from_tx(const CTransaction& tx, std::string& reason)
 {
     // validation
 
-    if (tx.vout.size() < sd_first_output_index + 1)
+    if (tx.vout.size() < sd_first_output_index + 1) {
+        reason = "invalid-input-count";
         return CScript();
+    }
 
     const auto& s = tx.vout[sd_first_output_index].scriptPubKey;
 
-    if (s.size() < 2 || s[0] != OP_RETURN || s[1] != OP_STRUCT)
+    if (s.size() < 2 || s[0] != OP_RETURN || s[1] != OP_STRUCT) {
+        reason = "invalid-script-header";
         return CScript();
+    }
 
     // script concatenation
 
@@ -118,7 +128,7 @@ CScript sds_from_tx(const CTransaction& tx)
 
     // validation
 
-    if (!sds_valid(script))
+    if (!sds_valid(script, reason))
         return CScript();
 
     return script;
@@ -153,7 +163,8 @@ static StructuredData invalid_structured_data = StructuredData(SDC_COUNT);
 
 StructuredData StructuredData::parse_tx(const CTransaction& tx)
 {
-    auto script = sds_from_tx(tx);
+    std::string reason;
+    auto script = sds_from_tx(tx, reason);
 
     return StructuredData::from_script(script);
 }
