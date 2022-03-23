@@ -11,6 +11,7 @@
 
 #include "primitives/transaction.h"
 #include "stake/staketx.h"
+#include "ml/transactions/ml_tx_type.h"
 #include "compressor.h"
 #include "core_memusage.h"
 #include "hash.h"
@@ -42,15 +43,19 @@ public:
     //! at which height this containing transaction was included in the active block chain
     uint32_t nHeight : 31;
 
+    // TODO: remove obsolete
     // type of containing transaction
     ETxClass txClass;
 
+    //! type of the containing transaction
+    MLTxType txType;
+
     //! construct a Coin from a CTxOut and height/coinbase information.
-    Coin(CTxOut&& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn) : out(std::move(outIn)), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn) 
+    Coin(CTxOut&& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn, MLTxType txTypeIn) : out(std::move(outIn)), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn), txType(txTypeIn)
     {
         ;
     }
-    Coin(const CTxOut& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn) : out(outIn), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn) 
+    Coin(const CTxOut& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn, MLTxType txTypeIn) : out(outIn), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn), txType(txTypeIn)
     {
         ;
     }
@@ -60,10 +65,11 @@ public:
         fCoinBase = false;
         nHeight = 0;
         txClass = ETxClass::TX_Regular;
+        txType = MLTX_Regular;
     }
 
     //! empty constructor
-    Coin() : fCoinBase(false), nHeight(0), txClass(ETxClass::TX_Regular) 
+    Coin() : fCoinBase(false), nHeight(0), txClass(ETxClass::TX_Regular), txType(MLTX_Regular)
     { 
         ;
     }
@@ -80,6 +86,8 @@ public:
         ::Serialize(s, CTxOutCompressor(REF(out)));
         uint32_t txClassInt = (uint32_t) txClass;
         ::Serialize(s, VARINT(txClassInt));
+        uint32_t txTypeInt = static_cast<uint32_t>(txType);
+        ::Serialize(s, VARINT(txTypeInt));
     }
 
     template<typename Stream>
@@ -94,6 +102,12 @@ public:
             uint32_t txClassInt;
             ::Unserialize(s, VARINT(txClassInt));
             txClass = (ETxClass) txClassInt;
+        }
+        txType = MLTX_Regular;
+        if (!s.empty()) {
+            uint32_t txTypeInt;
+            ::Unserialize(s, VARINT(txTypeInt));
+            txType = static_cast<MLTxType>(txTypeInt);
         }
     }
 

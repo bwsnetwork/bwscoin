@@ -804,8 +804,8 @@ BOOST_AUTO_TEST_CASE(MempoolPersistenceTest)
     COutPoint out1(uint256S("1"), 0);
     COutPoint out2(uint256S("2"), 0);
 
-    Coin coin1(CTxOut(contribution1, scriptPubKey1), 0, false, TX_Regular);
-    Coin coin2(CTxOut(contribution2, scriptPubKey2), 0, false, TX_Regular);
+    Coin coin1(CTxOut(contribution1, scriptPubKey1), 0, false, TX_Regular, MLTX_Regular);
+    Coin coin2(CTxOut(contribution2, scriptPubKey2), 0, false, TX_Regular, MLTX_Regular);
 
     LOCK(cs_main);
 
@@ -884,7 +884,7 @@ BOOST_AUTO_TEST_CASE(MempoolMalleabilityTest)
 
     COutPoint out(uint256S("1"), 0);
 
-    Coin coin1(CTxOut(contribution, scriptPubKey), 0, false, TX_Regular);
+    Coin coin1(CTxOut(contribution, scriptPubKey), 0, false, TX_Regular, MLTX_Regular);
 
     LOCK(cs_main);
 
