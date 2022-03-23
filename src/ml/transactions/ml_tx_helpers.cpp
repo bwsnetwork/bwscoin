@@ -7,8 +7,8 @@
 
 #include <script/structured_data/structured_data.h>
 
-const uint32_t mltx_stake_txout_index = 1;
-const uint32_t mltx_change_txout_index = 2;
+const uint32_t mltx_stake_txout_index = sds_first_output_index + 1;
+const uint32_t mltx_change_txout_index = mltx_stake_txout_index + 2;
 const uint32_t mltx_ticket_txin_index = 0;
 
 bool mltx_is_payment_txout(const CTxOut& txout)

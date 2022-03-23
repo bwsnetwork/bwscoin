@@ -88,8 +88,9 @@ bool pft_task_json(const std::string& str, nlohmann::json& task);
 // the change output is also present)
 CAmount pft_fee(const unsigned int extra_funding_count, const nlohmann::json& task, const CFeeRate& fee_rate);
 
-// check basic input sizes and correspondences
-bool pft_basic_input_checks(const CTransaction& tx, CValidationState &state);
+// non-contextual input and output tests
+bool pft_check_inputs_nc(const CTransaction& tx, CValidationState &state);
+bool pft_check_outputs_nc(const CTransaction& tx, CValidationState &state);
 
 // Wrapper class for Pay for Task transactions
 

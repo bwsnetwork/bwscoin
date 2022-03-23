@@ -7,7 +7,7 @@
 
 #include <script/standard.h>
 
-const size_t sd_first_output_index = 0;
+const uint32_t sds_first_output_index = 0;
 
 std::vector<std::vector<unsigned char>> sds_script_items(const CScript& script)
 {
@@ -93,6 +93,22 @@ bool sds_valid(const std::vector<std::vector<unsigned char>>& script_items, std:
     return true;
 }
 
+bool sds_is_first_output(const CTxOut& txout)
+{
+    return txout.nValue == 0 &&
+            txout.scriptPubKey.size() > 1 &&
+            txout.scriptPubKey[0] == OP_RETURN &&
+            txout.scriptPubKey[1] == OP_STRUCT;
+}
+
+bool sds_is_subsequent_output(const CTxOut& txout)
+{
+    return txout.nValue == 0 &&
+            txout.scriptPubKey.size() > 0 &&
+            txout.scriptPubKey[0] == OP_RETURN &&
+            (txout.scriptPubKey.size() == 1 || txout.scriptPubKey[1] != OP_STRUCT);
+}
+
 CScript sds_create(const StructuredDataClass cls, const StructuredDataVersion version)
 {
     return CScript() << OP_RETURN << OP_STRUCT << version << cls;
@@ -102,12 +118,12 @@ CScript sds_from_tx(const CTransaction& tx, std::string& reason)
 {
     // validation
 
-    if (tx.vout.size() < sd_first_output_index + 1) {
+    if (tx.vout.size() < sds_first_output_index + 1) {
         reason = "invalid-input-count";
         return CScript();
     }
 
-    const auto& s = tx.vout[sd_first_output_index].scriptPubKey;
+    const auto& s = tx.vout[sds_first_output_index].scriptPubKey;
 
     if (s.size() < 2 || s[0] != OP_RETURN || s[1] != OP_STRUCT) {
         reason = "invalid-script-header";
@@ -117,9 +133,9 @@ CScript sds_from_tx(const CTransaction& tx, std::string& reason)
     // script concatenation
 
     CScript script;
-    script += tx.vout[sd_first_output_index].scriptPubKey;
+    script += tx.vout[sds_first_output_index].scriptPubKey;
 
-    for (size_t i = sd_first_output_index + 1; i < tx.vout.size(); ++i)
+    for (size_t i = sds_first_output_index + 1; i < tx.vout.size(); ++i)
     {
         const CScript& second_script = tx.vout[i].scriptPubKey;
         if (second_script.size() > 1 && second_script[0] == OP_RETURN)

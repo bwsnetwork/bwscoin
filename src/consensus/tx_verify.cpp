@@ -219,12 +219,12 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
         if (tx.vin[0].scriptSig.size() < 2 || tx.vin[0].scriptSig.size() > 100)
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-length");
     } else if (type == MLTX_BuyTicket) {
-        if (!byt_basic_input_checks(tx, state))
+        if (!byt_check_inputs_nc(tx, state))
             return false;
     } else if (type == MLTX_RevokeTicket) {
         // TODO
     } else if (type == MLTX_PayForTask) {
-        if (!pft_basic_input_checks(tx, state))
+        if (!pft_check_inputs_nc(tx, state))
             return false;
     }
 

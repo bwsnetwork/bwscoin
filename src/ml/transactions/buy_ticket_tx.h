@@ -71,8 +71,9 @@ bool byt_tx(CMutableTransaction& tx,
 // the change output is also present)
 CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate);
 
-// check basic input sizes and correspondences
-bool byt_basic_input_checks(const CTransaction& tx, CValidationState &state);
+// non-contextual input and output tests
+bool byt_check_inputs_nc(const CTransaction& tx, CValidationState &state);
+bool byt_check_outputs_nc(const CTransaction& tx, CValidationState &state);
 
 // Wrapper class for Buy Ticket transactions
 

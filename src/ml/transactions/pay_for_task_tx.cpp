@@ -196,7 +196,7 @@ bool pft_tx(CMutableTransaction& tx,
         return false;
 
     // tx construction
-    // (assumes mltx_ticket_txin_index=0, mltx_stake_txout_index=1, mltx_change_txout_index=2, sd_first_output_index=0)
+    // (assumes mltx_ticket_txin_index=0, mltx_stake_txout_index=1, mltx_change_txout_index=2, sds_first_output_index=0)
     tx.vin.clear();
     tx.vin.push_back(ticket_txin);
     tx.vin.insert(tx.vin.end(), extra_funding_txins.begin(), extra_funding_txins.end());
@@ -295,13 +295,42 @@ CAmount pft_fee(const unsigned int extra_funding_count, const nlohmann::json& ta
     return fee;
 }
 
-bool pft_basic_input_checks(const CTransaction& tx, CValidationState &state)
+bool pft_check_inputs_nc(const CTransaction& tx, CValidationState &state)
 {
     if (tx.vin.size() < mltx_ticket_txin_index + 1)
         return state.DoS(100, false, REJECT_INVALID, "bad-payfortask-input-count");
 
     if (tx.vin[mltx_ticket_txin_index].prevout.n != mltx_stake_txout_index)
-        return state.DoS(100, false, REJECT_INVALID, "bad-stake-input-reference");
+        return state.DoS(100, false, REJECT_INVALID, "bad-ticket-reference");
+
+    return true;
+}
+
+bool pft_check_outputs_nc(const CTransaction& tx, CValidationState &state)
+{
+    if (tx.vout.size() < mltx_stake_txout_index + 1)
+        return state.DoS(100, false, REJECT_INVALID, "bad-payfortask-output-count");
+
+    if (!sds_is_first_output(tx.vout[sds_first_output_index]))
+        return state.DoS(100, false, REJECT_INVALID, "invalid-sds-first-output");
+
+    if (tx.vout[mltx_stake_txout_index].nValue == 0 || !MoneyRange(tx.vout[mltx_stake_txout_index].nValue))
+        return state.DoS(100, false, REJECT_INVALID, "bad-stake-amount");
+
+    if (tx.vout[mltx_stake_txout_index].scriptPubKey.size() != 0)
+        return state.DoS(100, false, REJECT_INVALID, "bad-stake-address");
+
+    bool has_change = (tx.vout.size() >= mltx_change_txout_index + 1 &&
+                       tx.vout[mltx_change_txout_index].nValue != 0 &&
+            tx.vout[mltx_change_txout_index].scriptPubKey.size() > 0 &&
+            tx.vout[mltx_change_txout_index].scriptPubKey[0] != OP_RETURN);
+
+    if (has_change && !MoneyRange(tx.vout[mltx_stake_txout_index].nValue))
+        return state.DoS(100, false, REJECT_INVALID, "bad-change-amount");
+
+    for (uint32_t i = (has_change ? mltx_change_txout_index + 1 : mltx_stake_txout_index + 1); i < tx.vout.size(); ++i)
+        if (!sds_is_subsequent_output(tx.vout[i]))
+            return state.DoS(100, false, REJECT_INVALID, "nonzero-sds-subsequent-output");
 
     return true;
 }
@@ -506,7 +535,7 @@ bool PayForTaskTx::regenerate_if_needed()
         return false;
 
     // transaction
-    // (assumes mltx_ticket_txin_index=0, mltx_stake_txout_index=1, mltx_change_txout_index=2, sd_first_output_index=0)
+    // (assumes mltx_ticket_txin_index=0, mltx_stake_txout_index=1, mltx_change_txout_index=2, sds_first_output_index=0)
     _tx.vin.clear();
     _tx.vin.push_back(_ticket_txin);
     _tx.vin.insert(_tx.vin.end(), _extra_funding_txins.begin(), _extra_funding_txins.end());

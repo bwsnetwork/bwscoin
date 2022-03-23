@@ -5,7 +5,7 @@
 
 // Structured data scripts (SDSs) can span multiple outputs.
 // Unlike simple data outputs, first output of an SDS must
-// always be at index sd_first_output_index and starts with
+// always be at index sds_first_output_index and starts with
 // OP_RETURN + OP_STRUCT + version + data class.
 // The other outputs of an SDS can be at any index, but
 // they will be concatenated in the order of their indexes
@@ -21,7 +21,7 @@
 #include <script/structured_data/structured_data_version.h>
 
 // the index of the transaction's output where the script starts
-extern const size_t sd_first_output_index;
+extern const uint32_t sds_first_output_index;
 
 // The following functions help manipulating the SDSs.
 // They provide smaller footprint implementations of features
@@ -46,6 +46,9 @@ CScript sds_payload(const std::vector<std::vector<unsigned char>>& script_items)
 
 bool sds_valid(const CScript& script, std::string& reason);
 bool sds_valid(const std::vector<std::vector<unsigned char>>& script_items, std::string& reason);
+
+bool sds_is_first_output(const CTxOut& txout);
+bool sds_is_subsequent_output(const CTxOut& txout);
 
 CScript sds_create(const StructuredDataClass cls, const StructuredDataVersion version = sdv_current_version);
 
