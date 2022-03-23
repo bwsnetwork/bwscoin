@@ -227,12 +227,12 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
     } else if (type == MLTX_PayForTask) {
         if (!pft_check_inputs_nc(tx, state) || !pft_check_outputs_nc(tx, state))
             return false;
+    } else {
+        // Previous transaction outputs referenced by the inputs to this transaction must not be null.
+        for (const auto& txin : tx.vin)
+            if (txin.prevout.IsNull())
+                return state.DoS(10, false, REJECT_INVALID, "bad-txns-prevout-null");
     }
-
-    // Previous transaction outputs referenced by the inputs to this transaction must not be null.
-    for (const auto& txin : tx.vin)
-        if (txin.prevout.IsNull())
-            return state.DoS(10, false, REJECT_INVALID, "bad-txns-prevout-null");
 
     return true;
 

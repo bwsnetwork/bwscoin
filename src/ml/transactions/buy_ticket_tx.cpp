@@ -260,6 +260,10 @@ bool byt_check_inputs_nc(const CTransaction& tx, CValidationState &state)
     if (tx.vin.size() < 1)
         return state.DoS(100, false, REJECT_INVALID, "bad-ticket-input-count");
 
+    for (const auto& txin : tx.vin)
+        if (txin.prevout.IsNull())
+            return state.DoS(10, false, REJECT_INVALID, "bad-txns-prevout-null");
+
     return true;
 }
 

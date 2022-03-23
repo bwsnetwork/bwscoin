@@ -305,6 +305,10 @@ bool pft_check_inputs_nc(const CTransaction& tx, CValidationState &state)
     if (tx.vin[mltx_ticket_txin_index].prevout.n != mltx_stake_txout_index)
         return state.DoS(100, false, REJECT_INVALID, "bad-ticket-reference");
 
+    for (const auto& txin : tx.vin)
+        if (txin.prevout.IsNull())
+            return state.DoS(10, false, REJECT_INVALID, "bad-txns-prevout-null");
+
     return true;
 }
 
