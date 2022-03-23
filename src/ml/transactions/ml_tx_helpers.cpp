@@ -5,6 +5,7 @@
 
 #include "ml/transactions/ml_tx_helpers.h"
 
+#include <script/standard.h>
 #include <script/structured_data/structured_data.h>
 
 const uint32_t mltx_stake_txout_index = sds_first_output_index + 1;
@@ -17,6 +18,18 @@ bool mltx_is_payment_txout(const CTxOut& txout)
         return false;
 
     return !txout.scriptPubKey.IsUnspendable();
+}
+
+bool mltx_is_legal_stake_txout(const CTxOut& txout)
+{
+    if (!mltx_is_payment_txout(txout))
+        return false;
+
+    txnouttype type;
+    std::vector<std::vector<unsigned char> > solutions;
+    if (!Solver(txout.scriptPubKey, type, solutions))
+        return false;
+    return type == TX_PUBKEYHASH || type == TX_SCRIPTHASH;
 }
 
 bool mltx_is_data_txout(const CTxOut& txout)

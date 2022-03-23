@@ -11,6 +11,7 @@
 
 #include "primitives/transaction.h"
 #include "stake/staketx.h"
+#include "ml/transactions/actor_type.h"
 #include "ml/transactions/ml_tx_type.h"
 #include "compressor.h"
 #include "core_memusage.h"
@@ -50,12 +51,15 @@ public:
     //! type of the containing transaction
     MLTxType txType;
 
+    //! type of the actor (only used for ML transactions)
+    ActorType actor;
+
     //! construct a Coin from a CTxOut and height/coinbase information.
-    Coin(CTxOut&& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn, MLTxType txTypeIn) : out(std::move(outIn)), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn), txType(txTypeIn)
+    Coin(CTxOut&& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn, MLTxType txTypeIn) : out(std::move(outIn)), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn), txType(txTypeIn), actor(AT_COUNT)
     {
         ;
     }
-    Coin(const CTxOut& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn, MLTxType txTypeIn) : out(outIn), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn), txType(txTypeIn)
+    Coin(const CTxOut& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn, MLTxType txTypeIn) : out(outIn), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn), txType(txTypeIn), actor(AT_COUNT)
     {
         ;
     }
@@ -66,10 +70,11 @@ public:
         nHeight = 0;
         txClass = ETxClass::TX_Regular;
         txType = MLTX_Regular;
+        actor = AT_COUNT;
     }
 
     //! empty constructor
-    Coin() : fCoinBase(false), nHeight(0), txClass(ETxClass::TX_Regular), txType(MLTX_Regular)
+    Coin() : fCoinBase(false), nHeight(0), txClass(ETxClass::TX_Regular), txType(MLTX_Regular), actor(AT_COUNT)
     { 
         ;
     }
@@ -88,6 +93,8 @@ public:
         ::Serialize(s, VARINT(txClassInt));
         uint32_t txTypeInt = static_cast<uint32_t>(txType);
         ::Serialize(s, VARINT(txTypeInt));
+        uint32_t actorInt = static_cast<uint32_t>(actor);
+        ::Serialize(s, VARINT(actorInt));
     }
 
     template<typename Stream>
@@ -107,7 +114,15 @@ public:
         if (!s.empty()) {
             uint32_t txTypeInt;
             ::Unserialize(s, VARINT(txTypeInt));
-            txType = static_cast<MLTxType>(txTypeInt);
+            if (mltx_valid(txTypeInt))
+                txType = static_cast<MLTxType>(txTypeInt);
+        }
+        actor = AT_COUNT;
+        if (!s.empty()) {
+            uint32_t actorInt;
+            ::Unserialize(s, VARINT(actorInt));
+            if (at_valid(actorInt))
+                actor = static_cast<ActorType>(actorInt);
         }
     }
 

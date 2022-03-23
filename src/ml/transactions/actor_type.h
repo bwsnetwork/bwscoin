@@ -23,6 +23,7 @@ enum ActorType : unsigned int
 
 bool at_valid(const ActorType& actor);
 bool at_valid(const int actor);
+bool at_valid(const unsigned int actor);
 
 ActorType at_from_string(const std::string& str);
 std::string at_to_string(const ActorType& at);

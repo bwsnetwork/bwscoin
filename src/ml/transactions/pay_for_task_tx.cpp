@@ -5,6 +5,8 @@
 
 #include "pay_for_task_tx.h"
 
+#include <chainparams.h>
+#include <coins.h>
 #include <consensus/validation.h>
 #include <ml/transactions/ml_tx_helpers.h>
 #include <ml/transactions/ml_tx_size.h>
@@ -331,6 +333,53 @@ bool pft_check_outputs_nc(const CTransaction& tx, CValidationState &state)
     for (uint32_t i = (has_change ? mltx_change_txout_index + 1 : mltx_stake_txout_index + 1); i < tx.vout.size(); ++i)
         if (!sds_is_subsequent_output(tx.vout[i]))
             return state.DoS(100, false, REJECT_INVALID, "nonzero-sds-subsequent-output");
+
+    return true;
+}
+
+bool pft_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, const CChainParams& chain_params, const int spend_height, CValidationState &state)
+{
+    if (!pft_check_inputs_nc(tx, state))
+        return false;
+
+    auto legal_input = [](const Coin& coin, const uint32_t index) -> bool {
+        if (coin.IsCoinBase())
+            return true;
+
+        bool legal_coin_tx =
+                coin.txType == MLTX_Regular ||
+                (coin.txType == MLTX_BuyTicket && index == mltx_change_txout_index) ||
+                (coin.txType == MLTX_PayForTask && index == mltx_change_txout_index);
+        if (!legal_coin_tx)
+            return false;
+
+        return mltx_is_payment_txout(coin.out);
+    };
+
+    for (uint32_t i = 0; i < tx.vin.size(); ++i) {
+        const auto& txin = tx.vin[i];
+        const auto& coin = inputs.AccessCoin(txin.prevout);
+
+        if (coin.IsSpent())
+            return state.DoS(100, false, REJECT_INVALID, "bad-txin-missingorspent");
+
+        if (i == mltx_ticket_txin_index) {
+            if (coin.txType != MLTX_BuyTicket)
+                return state.DoS(100, false, REJECT_INVALID, "bad-ticket-input");
+
+            if (coin.actor != AT_Client)
+                return state.DoS(100, false, REJECT_INVALID, "bad-actor-for-task-submission");
+
+            if (spend_height - coin.nHeight < chain_params.GetConsensus().nMlTicketMaturity)
+                return state.DoS(100, false, REJECT_INVALID, "immature-ticket");
+
+            if (!mltx_is_legal_stake_txout(coin.out))
+                return state.DoS(100, false, REJECT_INVALID, "illegal-stake-output");
+        } else {
+            if (!legal_input(coin, txin.prevout.n))
+                return state.DoS(100, false, REJECT_INVALID, "illegal-txin");
+        }
+    }
 
     return true;
 }

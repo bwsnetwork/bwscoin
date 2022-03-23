@@ -292,6 +292,9 @@ public:
         consensus.nOrganizationPkScriptVersion      = 0;
         consensus.vBlockOneLedger                   = {}; //TODO update with smtg resembling BlockOneLedgerMainNet in premine.go
 
+        // ML parameters
+        consensus.nMlTicketMaturity = 100;
+
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
@@ -497,6 +500,9 @@ public:
         consensus.nOrganizationPkScriptVersion      = 0;
         consensus.vBlockOneLedger                   = {}; //TODO update with smtg resembling BlockOneLedgerTestNet3 in premine.go
 
+        // ML parameters
+        consensus.nMlTicketMaturity = 100;
+
         pchMessageStart[0] = 0xd8;
         pchMessageStart[1] = 0xf0;
         pchMessageStart[2] = 0xfe;
@@ -694,6 +700,9 @@ public:
         consensus.organizationPkScript            = CScript(); //uint256S("TODO add some predef")
         consensus.nOrganizationPkScriptVersion    = 0;
         consensus.vBlockOneLedger                 = {}; //TODO update with smtg resembling BlockOneLedgerRegNet in premine.go
+
+        // ML parameters
+        consensus.nMlTicketMaturity = 100;
 
         pchMessageStart[0] = 0xfe;
         pchMessageStart[1] = 0xf0;

@@ -17,6 +17,8 @@
 #include <script/script.h>
 #include <script/standard.h>
 
+class CCoinsViewCache;
+class CChainParams;
 class CFeeRate;
 class CValidationState;
 
@@ -74,6 +76,9 @@ CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate);
 // non-contextual input and output tests
 bool byt_check_inputs_nc(const CTransaction& tx, CValidationState &state);
 bool byt_check_outputs_nc(const CTransaction& tx, CValidationState &state);
+
+// contextual input and output tests
+bool byt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CValidationState &state);
 
 // Wrapper class for Buy Ticket transactions
 

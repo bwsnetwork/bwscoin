@@ -25,12 +25,15 @@ enum MLTxType : unsigned int
 
 bool mltx_valid(const MLTxType& type);
 bool mltx_valid(const int type);
+bool mltx_valid(const unsigned int type);
 
 bool mltx_is_ml(const MLTxType& type);
 bool mltx_is_ml(const int type);
+bool mltx_is_ml(const unsigned int type);
 
 bool mltx_is_regular(const MLTxType& type);
-bool mltx_is_regulat(const int type);
+bool mltx_is_regular(const int type);
+bool mltx_is_regular(const unsigned int type);
 
 MLTxType mltx_type(const CTransaction& tx);
 

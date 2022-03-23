@@ -15,6 +15,11 @@ bool at_valid(const int actor)
     return actor >= 0 && actor < static_cast<int>(AT_COUNT);
 }
 
+bool at_valid(const unsigned int actor)
+{
+    return actor < static_cast<int>(AT_COUNT);
+}
+
 ActorType at_from_string(const std::string& str)
 {
     std::string lstr;

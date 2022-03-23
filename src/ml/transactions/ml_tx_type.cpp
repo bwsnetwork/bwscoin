@@ -18,6 +18,11 @@ bool mltx_valid(const int type)
     return type >= 0 && type < static_cast<int>(MLTX_COUNT);
 }
 
+bool mltx_valid(const unsigned int type)
+{
+    return type < static_cast<int>(MLTX_COUNT);
+}
+
 bool mltx_is_ml(const MLTxType& type)
 {
     return type < MLTX_Regular;
@@ -28,12 +33,22 @@ bool mltx_is_ml(const int type)
     return type >= 0 && type < static_cast<int>(MLTX_Regular);
 }
 
+bool mltx_is_ml(const unsigned int type)
+{
+    return type < static_cast<int>(MLTX_Regular);
+}
+
 bool mltx_is_regular(const MLTxType& type)
 {
     return type == MLTX_Regular;
 }
 
 bool mltx_is_regular(const int type)
+{
+    return type == static_cast<int>(MLTX_Regular);
+}
+
+bool mltx_is_regular(const unsigned int type)
 {
     return type == static_cast<int>(MLTX_Regular);
 }

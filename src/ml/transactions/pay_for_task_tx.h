@@ -18,6 +18,8 @@
 #include <script/structured_data/structured_data.h>
 #include <json/nlohmann/json.hpp>
 
+class CChainParams;
+class CCoinsViewCache;
 class CFeeRate;
 class CValidationState;
 
@@ -91,6 +93,9 @@ CAmount pft_fee(const unsigned int extra_funding_count, const nlohmann::json& ta
 // non-contextual input and output tests
 bool pft_check_inputs_nc(const CTransaction& tx, CValidationState &state);
 bool pft_check_outputs_nc(const CTransaction& tx, CValidationState &state);
+
+// contextual input tests
+bool pft_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, const CChainParams& chain_params, const int spend_height, CValidationState &state);
 
 // Wrapper class for Pay for Task transactions
 

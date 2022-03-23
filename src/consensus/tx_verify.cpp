@@ -24,6 +24,7 @@
 #include "utilmoneystr.h"
 
 #include <ml/transactions/ml_tx_type.h>
+#include <ml/transactions/ml_tx_helpers.h>
 #include <ml/transactions/buy_ticket_tx.h>
 #include <ml/transactions/pay_for_task_tx.h>
 
@@ -219,12 +220,12 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
         if (tx.vin[0].scriptSig.size() < 2 || tx.vin[0].scriptSig.size() > 100)
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-length");
     } else if (type == MLTX_BuyTicket) {
-        if (!byt_check_inputs_nc(tx, state))
+        if (!byt_check_inputs_nc(tx, state) || !byt_check_outputs_nc(tx, state))
             return false;
     } else if (type == MLTX_RevokeTicket) {
         // TODO
     } else if (type == MLTX_PayForTask) {
-        if (!pft_check_inputs_nc(tx, state))
+        if (!pft_check_inputs_nc(tx, state) || !pft_check_outputs_nc(tx, state))
             return false;
     }
 
@@ -499,35 +500,50 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
                          strprintf("%s: inputs missing/spent", __func__));
     }
 
+    // TODO: remove obsolete
     // do not check test transactions on the testnet chain that are before the hybrid consensus fork
-    bool fCheckStake = (!gArgs.GetBoolArg("-testnet", false)) || IsHybridConsensusForkEnabled(nSpendHeight, chainparams.GetConsensus());
+    //bool fCheckStake = false; //(!gArgs.GetBoolArg("-testnet", false)) || IsHybridConsensusForkEnabled(nSpendHeight, chainparams.GetConsensus());
 
+    bool check_ml = true;
+
+    MLTxType tx_type = check_ml ? mltx_type(tx) : MLTX_Regular;
+
+    // check inputs of ML transactions
+    if (check_ml) {
+        if (tx_type == MLTX_BuyTicket && !byt_check_inputs(tx, inputs, state))
+            return false;
+        if (tx_type == MLTX_PayForTask && !pft_check_inputs(tx, inputs, chainparams, nSpendHeight, state))
+            return false;
+    }
+
+    // TODO: remove obsolete
     // parse tx
-    ETxClass txClass = fCheckStake ? ParseTxClass(tx) : TX_Regular;
-    VoteData voteData;
-    if (fCheckStake && txClass == TX_Vote && !ParseVote(tx, voteData))
-        return state.DoS(100, false, REJECT_INVALID, "could-not-parse-vote-tx", false);
-
+    //ETxClass txClass = fCheckStake ? ParseTxClass(tx) : TX_Regular;
+    //VoteData voteData;
+    //if (fCheckStake && txClass == TX_Vote && !ParseVote(tx, voteData))
+    //    return state.DoS(100, false, REJECT_INVALID, "could-not-parse-vote-tx", false);
+    //
     // check inputs of stake transactions
-    if (fCheckStake && txClass == TX_BuyTicket && !checkBuyTicketInputs(tx, state, inputs, nSpendHeight, chainparams))
-        return false;
-    if (fCheckStake && txClass == TX_Vote && !checkVoteOrRevokeTicketInputs(tx, true, state, inputs, static_cast<int>(voteData.blockHeight + 1), chainparams))
-        return false;
-    if (fCheckStake && txClass == TX_RevokeTicket && !checkVoteOrRevokeTicketInputs(tx, false, state, inputs, nSpendHeight, chainparams))
-        return false;
+    //if (fCheckStake && txClass == TX_BuyTicket && !checkBuyTicketInputs(tx, state, inputs, nSpendHeight, chainparams))
+    //    return false;
+    //if (fCheckStake && txClass == TX_Vote && !checkVoteOrRevokeTicketInputs(tx, true, state, inputs, static_cast<int>(voteData.blockHeight + 1), chainparams))
+    //    return false;
+    //if (fCheckStake && txClass == TX_RevokeTicket && !checkVoteOrRevokeTicketInputs(tx, false, state, inputs, nSpendHeight, chainparams))
+    //    return false;
 
     // general inputs check and summation of input amounts
     CAmount nValueIn = 0;
     for (unsigned int i = 0; i < tx.vin.size(); ++i)
     {
+        // TODO: remove obsolete
         // vote reward input doesn't reference existing coins
         // (instead, like with coinbase, coins are generated out of thin air)
         // so we'll skip the checks
-        if (fCheckStake && txClass == TX_Vote && i == voteSubsidyInputIndex)
-        {
-            nValueIn += GetVoterSubsidy(static_cast<int>(voteData.blockHeight + 1), chainparams.GetConsensus());
-            continue;
-        }
+        //if (fCheckStake && txClass == TX_Vote && i == voteSubsidyInputIndex)
+        //{
+        //    nValueIn += GetVoterSubsidy(static_cast<int>(voteData.blockHeight + 1), chainparams.GetConsensus());
+        //    continue;
+        //}
 
         const COutPoint &prevout = tx.vin[i].prevout;
         const Coin& coin = inputs.AccessCoin(prevout);
@@ -542,16 +558,18 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
           }
         }
 
+        // TODO: remove obsolete
         // Unless the tx is a vote or a revocation, it is forbidden to spend ticket stake
-        if (fCheckStake
-                && txClass != TX_Vote && txClass != TX_RevokeTicket && isBuyTicketStake(coin, prevout.n))
-            return state.DoS(100, false, REJECT_INVALID, "bad-txns-illegal-spend-of-ticket-stake");
+        //if (fCheckStake
+        //        && txClass != TX_Vote && txClass != TX_RevokeTicket && isBuyTicketStake(coin, prevout.n))
+        //    return state.DoS(100, false, REJECT_INVALID, "bad-txns-illegal-spend-of-ticket-stake");
 
+        // TODO: remove obsolete
         // Vote reward and revocation refund payments can only be spent after coinbase maturity many blocks.
-        if (fCheckStake
-                && (isVoteReward(coin, prevout.n) || isRevokeTicketRefund(coin, prevout.n))
-                && nSpendHeight - coin.nHeight < COINBASE_MATURITY)
-            return state.DoS(100, false, REJECT_INVALID, "bad-txns-reward-or-refund-immature");
+        //if (fCheckStake
+        //        && (isVoteReward(coin, prevout.n) || isRevokeTicketRefund(coin, prevout.n))
+        //        && nSpendHeight - coin.nHeight < COINBASE_MATURITY)
+        //    return state.DoS(100, false, REJECT_INVALID, "bad-txns-reward-or-refund-immature");
 
         // Check for negative or overflow input values
         nValueIn += coin.out.nValue;

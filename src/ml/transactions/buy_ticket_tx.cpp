@@ -5,6 +5,7 @@
 
 #include "buy_ticket_tx.h"
 
+#include <coins.h>
 #include <consensus/validation.h>
 #include <ml/transactions/ml_tx_helpers.h>
 #include <ml/transactions/ml_tx_size.h>
@@ -277,6 +278,9 @@ bool byt_check_outputs_nc(const CTransaction& tx, CValidationState &state)
             tx.vout[mltx_stake_txout_index].scriptPubKey[0] == OP_RETURN)
         return state.DoS(100, false, REJECT_INVALID, "bad-stake-address");
 
+    if (!mltx_is_legal_stake_txout(tx.vout[mltx_stake_txout_index]))
+        return state.DoS(100, false, REJECT_INVALID, "illegal-stake-output");
+
     bool has_change = (tx.vout.size() >= mltx_change_txout_index + 1 &&
                        tx.vout[mltx_change_txout_index].nValue != 0 &&
             tx.vout[mltx_change_txout_index].scriptPubKey.size() > 0 &&
@@ -288,6 +292,41 @@ bool byt_check_outputs_nc(const CTransaction& tx, CValidationState &state)
     for (uint32_t i = (has_change ? mltx_change_txout_index + 1 : mltx_stake_txout_index + 1); i < tx.vout.size(); ++i)
         if (!sds_is_subsequent_output(tx.vout[i]))
             return state.DoS(100, false, REJECT_INVALID, "nonzero-sds-subsequent-output");
+
+    return true;
+}
+
+bool byt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CValidationState &state)
+{
+    if (!byt_check_inputs_nc(tx, state))
+        return false;
+
+    auto legal_input = [](const Coin& coin, const uint32_t index) -> bool {
+        if (coin.IsCoinBase())
+            return true;
+
+        bool legal_coin_tx =
+                coin.txType == MLTX_Regular ||
+                (coin.txType == MLTX_BuyTicket && index == mltx_change_txout_index) ||
+                (coin.txType == MLTX_PayForTask && index == mltx_change_txout_index);
+        if (!legal_coin_tx)
+            return false;
+
+        return mltx_is_payment_txout(coin.out);
+    };
+
+    for (uint32_t i = 0; i < tx.vin.size(); ++i) {
+        const auto& txin = tx.vin[i];
+        const auto& coin = inputs.AccessCoin(txin.prevout);
+
+        if (coin.IsSpent())
+            return state.DoS(100, false, REJECT_INVALID, "bad-txin-missingorspent");
+
+        if (!legal_input(coin, txin.prevout.n))
+            return state.DoS(100, false, REJECT_INVALID, "illegal-txin");
+    }
+
+    return true;
 }
 
 BuyTicketTx BuyTicketTx::from_script(const CScript& script)

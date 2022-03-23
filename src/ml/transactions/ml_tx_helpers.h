@@ -16,6 +16,7 @@ extern const uint32_t mltx_change_txout_index;
 extern const uint32_t mltx_ticket_txin_index;
 
 bool mltx_is_payment_txout(const CTxOut& txout);
+bool mltx_is_legal_stake_txout(const CTxOut& txout);
 bool mltx_is_data_txout(const CTxOut& txout);
 bool mltx_is_structured_data_txout(const CTxOut& txout);
 
