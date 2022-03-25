@@ -79,6 +79,9 @@ Makefile
 bwscoin-qt
 BWScoin-Qt.app
 
+# Qt Creator
+.qtc_clangd
+
 # Unit-tests
 Makefile.test
 bwscoin-qt_test
