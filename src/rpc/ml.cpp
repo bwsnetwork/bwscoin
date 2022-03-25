@@ -343,7 +343,7 @@ UniValue createpayfortasktransaction(const JSONRPCRequest& request)
             version = static_cast<unsigned int>(version_int);
         } else if (key == "task") {
             const auto& task_string = task_data["task"].get_str();
-            if (!pft_task_json(task_string, task))
+            if (!pft_task_json(task_string, task) || !pft_task_valid(task))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, task is not valid");
         } else if (key == "stake_amount") {
             int64_t stake_amount_int = task_data["stake_amount"].get_int64();
