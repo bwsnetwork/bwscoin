@@ -1063,6 +1063,8 @@ UniValue signrawtransaction(const JSONRPCRequest& request)
                 Coin newcoin;
                 newcoin.out.scriptPubKey = scriptPubKey;
                 newcoin.out.nValue = 0;
+                newcoin.txType = coin.txType;
+                newcoin.actor = coin.actor;
                 if (prevOut.exists("amount")) {
                     newcoin.out.nValue = AmountFromValue(find_value(prevOut, "amount"));
                 }

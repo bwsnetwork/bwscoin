@@ -14,6 +14,8 @@
 #include "test/test_bwscoin.h"
 #include "validation.h"
 #include "consensus/validation.h"
+#include <ml/transactions/actor_type.h>
+#include <ml/transactions/ml_tx_type.h>
 
 #include <vector>
 #include <map>
@@ -166,6 +168,8 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
                 Coin newcoin;
                 newcoin.out.nValue = InsecureRand32();
                 newcoin.nHeight = 1;
+                newcoin.txType = coin.txType;
+                newcoin.actor = coin.actor;
                 if (InsecureRandRange(16) == 0 && coin.IsSpent()) {
                     newcoin.out.scriptPubKey.assign(1 + InsecureRandBits(6), OP_RETURN);
                     BOOST_CHECK(newcoin.out.scriptPubKey.IsUnspendable());
@@ -376,7 +380,7 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
             // Update the expected result to know about the new output coins
             assert(tx.vout.size() == 1);
             const COutPoint outpoint(tx.GetHash(), 0);
-            result[outpoint] = Coin(tx.vout[0], height, CTransaction(tx).IsCoinBase(), ParseTxClass(tx), mltx_type(tx));
+            result[outpoint] = Coin(tx.vout[0], height, CTransaction(tx).IsCoinBase(), ParseTxClass(tx), mltx_type(tx), at_actor(tx));
 
             // Call UpdateCoins on the top cache
             CTxUndo undo;
@@ -720,7 +724,7 @@ void CheckAddCoinBase(CAmount base_value, CAmount cache_value, CAmount modify_va
     try {
         CTxOut output;
         output.nValue = modify_value;
-        test.cache.AddCoin(OUTPOINT, Coin(std::move(output), 1, coinbase, TX_Regular, MLTX_Regular), coinbase);
+        test.cache.AddCoin(OUTPOINT, Coin(std::move(output), 1, coinbase, TX_Regular, MLTX_Regular, AT_COUNT), coinbase);
         test.cache.SelfTest();
         GetCoinsMapEntry(test.cache.map(), result_value, result_flags);
     } catch (std::logic_error& e) {

@@ -595,6 +595,8 @@ static void MutateTxSign(CMutableTransaction& tx, const std::string& flagStr)
                 Coin newcoin;
                 newcoin.out.scriptPubKey = scriptPubKey;
                 newcoin.out.nValue = 0;
+                newcoin.txType = coin.txType;
+                newcoin.actor = coin.actor;
                 if (prevOut.exists("amount")) {
                     newcoin.out.nValue = AmountFromValue(prevOut["amount"]);
                 }

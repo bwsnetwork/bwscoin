@@ -55,11 +55,11 @@ public:
     ActorType actor;
 
     //! construct a Coin from a CTxOut and height/coinbase information.
-    Coin(CTxOut&& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn, MLTxType txTypeIn) : out(std::move(outIn)), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn), txType(txTypeIn), actor(AT_COUNT)
+    Coin(CTxOut&& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn, MLTxType txTypeIn, ActorType actorIn) : out(std::move(outIn)), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn), txType(txTypeIn), actor(actorIn)
     {
         ;
     }
-    Coin(const CTxOut& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn, MLTxType txTypeIn) : out(outIn), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn), txType(txTypeIn), actor(AT_COUNT)
+    Coin(const CTxOut& outIn, int nHeightIn, bool fCoinBaseIn, ETxClass txClassIn, MLTxType txTypeIn, ActorType actorIn) : out(outIn), fCoinBase(fCoinBaseIn), nHeight(nHeightIn), txClass(txClassIn), txType(txTypeIn), actor(actorIn)
     {
         ;
     }
