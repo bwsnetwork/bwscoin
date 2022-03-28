@@ -125,8 +125,13 @@ bool byt_parse_tx(const CTransaction& tx,
                   std::string& reason)
 {
     // sizes
-    if (tx.vin.size() < 1 || tx.vout.size() <= mltx_stake_txout_index) {
+    if (tx.vin.size() < 1) {
         reason = "invalid-input-count";
+        return false;
+    }
+
+    if (tx.vout.size() <= mltx_stake_txout_index || tx.vout.size() > mltx_change_txout_index + 1) {
+        reason = "invalid-output-count";
         return false;
     }
 

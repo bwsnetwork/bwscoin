@@ -106,8 +106,13 @@ bool pft_parse_tx(const CTransaction& tx,
                   std::string& reason)
 {
     // sizes
-    if (tx.vin.size() <= mltx_ticket_txin_index || tx.vout.size() <= mltx_stake_txout_index) {
+    if (tx.vin.size() <= mltx_ticket_txin_index) {
         reason = "invalid-input-count";
+        return false;
+    }
+
+    if (tx.vout.size() <= mltx_stake_txout_index) {
+        reason = "invalid-output-count";
         return false;
     }
 
