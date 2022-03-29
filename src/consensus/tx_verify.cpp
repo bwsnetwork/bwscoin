@@ -515,7 +515,7 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
         if (tx_type == MLTX_BuyTicket && !byt_check_inputs(tx, inputs, state))
             return false;
         if (tx_type == MLTX_RevokeTicket && (!rvt_check_inputs(tx, inputs, chainparams, nSpendHeight, state) ||
-                                             !rvt_check_outputs(tx, inputs, state)))
+                                             !rvt_check_outputs(tx, state)))
             return false;
         if (tx_type == MLTX_PayForTask && !pft_check_inputs(tx, inputs, chainparams, nSpendHeight, state))
             return false;

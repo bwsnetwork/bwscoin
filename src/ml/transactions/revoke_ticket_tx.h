@@ -69,7 +69,7 @@ bool rvt_check_outputs_nc(const CTransaction& tx, CValidationState &state);
 
 // contextual input tests
 bool rvt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, const CChainParams& chain_params, const int spend_height, CValidationState &state);
-bool rvt_check_outputs(const CTransaction& tx, const CCoinsViewCache& inputs, CValidationState &state);
+bool rvt_check_outputs(const CTransaction& tx, CValidationState &state);
 
 // Wrapper class for Revoke Ticket transactions
 

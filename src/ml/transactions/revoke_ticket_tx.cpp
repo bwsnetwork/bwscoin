@@ -294,7 +294,7 @@ bool rvt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, con
     return true;
 }
 
-bool rvt_check_outputs(const CTransaction& tx, const CCoinsViewCache& inputs, CValidationState &state)
+bool rvt_check_outputs(const CTransaction& tx, CValidationState &state)
 {
     if (!rvt_check_outputs_nc(tx, state))
         return false;

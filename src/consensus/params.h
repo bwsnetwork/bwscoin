@@ -184,9 +184,10 @@ struct Params {
 
     /** Proof of Useful Work parameters */
 
-    // Number of blocks required before a ticket stake can be spent on a
-    // task or revocation.
+    // Number of blocks required before a ticket stake can be spent on a ML operation.
     uint16_t nMlTicketMaturity;
+    // Number of blocks for tickets to expire after they have matured.
+    uint16_t nMlTicketExpiry;
 };
 } // namespace Consensus
 
