@@ -117,6 +117,7 @@ BWSCOIN_CORE_H = \
   ml/transactions/ml_tx_size.h \
   ml/transactions/ml_tx_type.h \
   ml/transactions/pay_for_task_tx.h \
+  ml/transactions/revoke_ticket_tx.h \
   net.h \
   net_processing.h \
   netaddress.h \
@@ -393,6 +394,7 @@ libbwscoin_common_a_SOURCES = \
   ml/transactions/ml_tx_size.cpp \
   ml/transactions/ml_tx_type.cpp \
   ml/transactions/pay_for_task_tx.cpp \
+  ml/transactions/revoke_ticket_tx.cpp \
   $(BWSCOIN_CORE_H)
 
 # util: shared between all executables.

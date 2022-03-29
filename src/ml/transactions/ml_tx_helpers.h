@@ -12,6 +12,7 @@
 #include <primitives/transaction.h>
 
 extern const uint32_t mltx_stake_txout_index;
+extern const uint32_t mltx_refund_txout_index;
 extern const uint32_t mltx_change_txout_index;
 extern const uint32_t mltx_ticket_txin_index;
 

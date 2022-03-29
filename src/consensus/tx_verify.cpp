@@ -26,6 +26,7 @@
 #include <ml/transactions/ml_tx_type.h>
 #include <ml/transactions/ml_tx_helpers.h>
 #include <ml/transactions/buy_ticket_tx.h>
+#include <ml/transactions/revoke_ticket_tx.h>
 #include <ml/transactions/pay_for_task_tx.h>
 
 bool IsExpiredTx(const CTransaction &tx, int nBlockHeight)
@@ -223,7 +224,8 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
         if (!byt_check_inputs_nc(tx, state) || !byt_check_outputs_nc(tx, state))
             return false;
     } else if (type == MLTX_RevokeTicket) {
-        // TODO
+        if (!rvt_check_inputs_nc(tx, state) || !rvt_check_outputs_nc(tx, state))
+            return false;
     } else if (type == MLTX_PayForTask) {
         if (!pft_check_inputs_nc(tx, state) || !pft_check_outputs_nc(tx, state))
             return false;
@@ -511,6 +513,9 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
     // check inputs of ML transactions
     if (check_ml) {
         if (tx_type == MLTX_BuyTicket && !byt_check_inputs(tx, inputs, state))
+            return false;
+        if (tx_type == MLTX_RevokeTicket && (!rvt_check_inputs(tx, inputs, chainparams, nSpendHeight, state) ||
+                                             !rvt_check_outputs(tx, inputs, state)))
             return false;
         if (tx_type == MLTX_PayForTask && !pft_check_inputs(tx, inputs, chainparams, nSpendHeight, state))
             return false;
