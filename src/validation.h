@@ -293,6 +293,8 @@ bool IsInitialBlockDownload();
 bool GetTransaction(const uint256 &hash, CTransactionRef &tx, const Consensus::Params& params, uint256 &hashBlock, bool fAllowSlow = false, bool fAllowMempool = true);
 /** Retrieve a ticket transaction */
 CTransactionRef GetTicket(const uint256 &ticketTxHash);
+/** Retrieve a ML ticket transaction */
+CTransactionRef GetMlTicket(const uint256 &ticketTxHash);
 /** Find the best known block, and make it the tip of the block chain */
 bool ActivateBestChain(CValidationState& state, const CChainParams& chainparams, std::shared_ptr<const CBlock> pblock = std::shared_ptr<const CBlock>());
 /** Select the desired chain tip */

@@ -162,7 +162,7 @@ bool byt_parse_tx(const CTransaction& tx,
         bool change_destination_ok = ExtractDestination(change_txout.scriptPubKey, change_destination) && IsValidDestination(change_destination);
         bool change_value_ok = change_txout.nValue != 0 && MoneyRange(change_txout.nValue);
         if (change_destination_ok != change_value_ok) {
-            reason = "invalid-change-count";
+            reason = "invalid-change";
             return false;
         }
         else if (!change_destination_ok && !change_value_ok)
@@ -295,7 +295,7 @@ bool byt_check_outputs_nc(const CTransaction& tx, CValidationState &state)
             tx.vout[mltx_change_txout_index].scriptPubKey.size() > 0 &&
             tx.vout[mltx_change_txout_index].scriptPubKey[0] != OP_RETURN);
 
-    if (has_change && !MoneyRange(tx.vout[mltx_stake_txout_index].nValue))
+    if (has_change && !MoneyRange(tx.vout[mltx_change_txout_index].nValue))
         return state.DoS(100, false, REJECT_INVALID, "bad-change-amount");
 
     for (uint32_t i = (has_change ? mltx_change_txout_index + 1 : mltx_stake_txout_index + 1); i < tx.vout.size(); ++i)
@@ -525,7 +525,7 @@ bool BuyTicketTx::regenerate_if_needed()
         return false;
 
     // transaction
-    // (assumes mltx_stake_txout_index=1, mltx_change_txout_index=2)
+    // (assumes mltx_stake_txout_index=1, mltx_change_txout_index=2, sds_first_output_index=0)
     _tx.vout.clear();
     _tx.vout.push_back(CTxOut(0, _script));
     _tx.vout.push_back(_stake_txout);

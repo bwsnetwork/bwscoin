@@ -1124,6 +1124,16 @@ CTransactionRef GetTicket(const uint256& txHash)
         return nullptr;
 }
 
+CTransactionRef GetMlTicket(const uint256 &ticketTxHash)
+{
+    CTransactionRef ticketTxPtr;
+    uint256 ticketBlockHash;
+    if (GetTransaction(ticketTxHash, ticketTxPtr, Params().GetConsensus(), ticketBlockHash, true
+                      ,false /*mempool search not allowed as it may cause deadlock when called  through ProcessNewBlock*/))
+        return ticketTxPtr;
+    else
+        return nullptr;
+}
 
 
 
