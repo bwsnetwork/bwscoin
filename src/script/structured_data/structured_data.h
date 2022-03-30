@@ -52,7 +52,8 @@ bool sds_is_subsequent_output(const CTxOut& txout);
 
 CScript sds_create(const StructuredDataClass cls, const StructuredDataVersion version = sdv_current_version);
 
-CScript sds_from_tx(const CTransaction& tx, std::string& reason);
+bool sds_from_tx(const CTransaction& tx, CScript& script, std::string& reason);
+bool sds_from_txouts(const std::vector<CTxOut>& txouts, CScript& script, std::string& reason);
 
 std::vector<CTxOut> sds_tx_outputs(const CScript& script);
 

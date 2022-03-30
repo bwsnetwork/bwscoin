@@ -31,8 +31,8 @@ bool at_valid(const unsigned int actor)
 ActorType at_actor(const CTransaction& tx)
 {
     std::string reason;
-    const auto& script = sds_from_tx(tx, reason);
-    if (script.size() <= 0)
+    CScript script;
+    if (!sds_from_tx(tx, script, reason))
         return AT_COUNT;
 
     const auto& items = sds_script_items(script);

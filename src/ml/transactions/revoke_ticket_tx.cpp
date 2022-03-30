@@ -97,8 +97,7 @@ bool rvt_parse_tx(const CTransaction& tx,
 
     refund_txout = tx.vout[mltx_refund_txout_index];
 
-    script = sds_from_tx(tx, reason);
-    if (script.size() == 0)
+    if (!sds_from_tx(tx, script, reason))
         return false;
 
     items = sds_script_items(script);

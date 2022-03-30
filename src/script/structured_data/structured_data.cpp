@@ -114,30 +114,35 @@ CScript sds_create(const StructuredDataClass cls, const StructuredDataVersion ve
     return CScript() << OP_RETURN << OP_STRUCT << version << cls;
 }
 
-CScript sds_from_tx(const CTransaction& tx, std::string& reason)
+bool sds_from_tx(const CTransaction& tx, CScript& script, std::string& reason)
+{
+    return sds_from_txouts(tx.vout, script, reason);
+}
+
+bool sds_from_txouts(const std::vector<CTxOut>& txouts, CScript& script, std::string& reason)
 {
     // validation
 
-    if (tx.vout.size() < sds_first_output_index + 1) {
+    if (txouts.size() < sds_first_output_index + 1) {
         reason = "invalid-input-count";
-        return CScript();
+        return false;
     }
 
-    const auto& s = tx.vout[sds_first_output_index].scriptPubKey;
+    const auto& s = txouts[sds_first_output_index].scriptPubKey;
 
     if (s.size() < 2 || s[0] != OP_RETURN || s[1] != OP_STRUCT) {
         reason = "invalid-script-header";
-        return CScript();
+        return false;
     }
 
     // script concatenation
 
-    CScript script;
-    script += tx.vout[sds_first_output_index].scriptPubKey;
+    script.clear();
+    script += txouts[sds_first_output_index].scriptPubKey;
 
-    for (size_t i = sds_first_output_index + 1; i < tx.vout.size(); ++i)
+    for (size_t i = sds_first_output_index + 1; i < txouts.size(); ++i)
     {
-        const CScript& second_script = tx.vout[i].scriptPubKey;
+        const CScript& second_script = txouts[i].scriptPubKey;
         if (second_script.size() > 1 && second_script[0] == OP_RETURN)
             script.insert(script.end(), second_script.begin() + 1, second_script.end());
     }
@@ -145,9 +150,9 @@ CScript sds_from_tx(const CTransaction& tx, std::string& reason)
     // validation
 
     if (!sds_valid(script, reason))
-        return CScript();
+        return false;
 
-    return script;
+    return true;
 }
 
 std::vector<CTxOut> sds_tx_outputs(const CScript& script)
@@ -180,7 +185,8 @@ static StructuredData invalid_structured_data = StructuredData(SDC_COUNT);
 StructuredData StructuredData::parse_tx(const CTransaction& tx)
 {
     std::string reason;
-    auto script = sds_from_tx(tx, reason);
+    CScript script;
+    sds_from_tx(tx, script, reason);
 
     return StructuredData::from_script(script);
 }

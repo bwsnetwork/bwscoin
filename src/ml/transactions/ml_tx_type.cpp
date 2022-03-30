@@ -56,8 +56,8 @@ bool mltx_is_regular(const unsigned int type)
 MLTxType mltx_type(const CTransaction& tx)
 {
     std::string reason;
-    const auto& script = sds_from_tx(tx, reason);
-    if (script.size() <= 0)
+    CScript script;
+    if (!sds_from_tx(tx, script, reason))
         return MLTX_Regular;
 
     const auto& items = sds_script_items(script);
