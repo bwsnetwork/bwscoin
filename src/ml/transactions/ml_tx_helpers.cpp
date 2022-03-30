@@ -15,6 +15,9 @@ const uint32_t mltx_ticket_txin_index = 0;
 
 bool mltx_is_payment_txout(const CTxOut& txout)
 {
+    if (txout.scriptPubKey.size() <= 0)
+        return false;
+
     if (mltx_is_data_txout(txout))
         return false;
 

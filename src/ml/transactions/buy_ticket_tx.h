@@ -73,9 +73,14 @@ bool byt_tx(CMutableTransaction& tx,
 // the change output is also present)
 CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate);
 
+// validate the transaction
+bool byt_tx_valid(const CTransaction& tx, std::string& reason);
+
 // non-contextual input and output tests
 bool byt_check_inputs_nc(const CTransaction& tx, CValidationState &state);
+bool byt_check_inputs_nc(const std::vector<CTxIn>& txins, CValidationState &state);
 bool byt_check_outputs_nc(const CTransaction& tx, CValidationState &state);
+bool byt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &state);
 
 // contextual input and output tests
 bool byt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CValidationState &state);

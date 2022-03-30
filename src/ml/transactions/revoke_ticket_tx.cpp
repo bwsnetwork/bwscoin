@@ -113,13 +113,6 @@ bool rvt_tx(CMutableTransaction& tx,
             const CTxOut& refund_txout,
             const unsigned int version)
 {
-    // validations
-
-    CValidationState state;
-    if (!rvt_check_inputs_nc({ticket_txin}, state) &&
-            !rvt_check_outputs_nc({refund_txout}, state))
-        return false;
-
     // script
 
     CScript script;
@@ -138,6 +131,15 @@ bool rvt_tx(CMutableTransaction& tx,
     tx.vout.clear();
     tx.vout.push_back(script_txouts[0]);
     tx.vout.push_back(refund_txout);
+
+    // validations
+
+    std::string reason;
+    if (!rvt_tx_valid(tx, reason)) {
+        tx.vin.clear();
+        tx.vout.clear();
+        return false;
+    }
 
     return true;
 }
@@ -205,9 +207,7 @@ bool rvt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &s
     if (refund_txout.nValue == 0 || !MoneyRange(refund_txout.nValue))
         return state.DoS(100, false, REJECT_INVALID, "bad-refund-amount");
 
-    CTxDestination refund_destination;
-    if (!ExtractDestination(refund_txout.scriptPubKey, refund_destination) ||
-            !IsValidDestination(refund_destination))
+    if (!mltx_is_payment_txout(refund_txout))
         return state.DoS(100, false, REJECT_INVALID, "bad-refund-address");
 
     return true;
@@ -407,16 +407,20 @@ bool RevokeTicketTx::regenerate_if_needed()
         return true;
 
     // script
+
     if (!rvt_script(_script, _version))
         return false;
 
     // transaction
     // (assumes mltx_ticket_txin_index=0, mltx_refund_txout_index=1, sds_first_output_index=0)
+
     _tx.vin.clear();
     _tx.vin.push_back(_ticket_txin);
     _tx.vout.clear();
     _tx.vout.push_back(CTxOut(0, _script));
     _tx.vout.push_back(_refund_txout);
+
+    // validation
 
     CValidationState state;
     if (!rvt_check_inputs_nc(_tx, state) || !rvt_check_outputs_nc(_tx, state))

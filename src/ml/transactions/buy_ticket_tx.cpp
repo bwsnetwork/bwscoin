@@ -24,7 +24,7 @@ bool byt_script(CScript& script,
     if (!at_valid(actor))
         return false;
 
-    if (reward_address.which() == 0)
+    if (!IsValidDestination(reward_address))
         return false;
 
     int address_type = reward_address.which();
@@ -124,53 +124,24 @@ bool byt_parse_tx(const CTransaction& tx,
                   unsigned int& version, ActorType& actor, CTxDestination& reward_address,
                   std::string& reason)
 {
-    // sizes
-    if (tx.vin.size() < 1) {
-        reason = "invalid-input-count";
+    // non-contextual validations
+
+    CValidationState state;
+    if (!byt_check_inputs_nc(tx, state) || !byt_check_outputs_nc(tx, state)) {
+        reason = state.GetRejectReason();
         return false;
     }
 
-    if (tx.vout.size() <= mltx_stake_txout_index || tx.vout.size() > mltx_change_txout_index + 1) {
-        reason = "invalid-output-count";
-        return false;
-    }
+    // parsed values
 
-    // inputs
-    for (auto& txin: tx.vin)
-        if (txin.prevout.hash.IsNull()) {
-            reason = "null-input";
-            return false;
-        }
-
-    // stake output
-    CTxDestination stake_destination;
     stake_txout = tx.vout[mltx_stake_txout_index];
-    if (stake_txout.nValue == 0 ||
-            !MoneyRange(stake_txout.nValue) ||
-            stake_txout.scriptPubKey.size() <= 0 ||
-            !ExtractDestination(stake_txout.scriptPubKey, stake_destination) ||
-            !IsValidDestination(stake_destination)) {
-        reason = "invalid-stake-output";
-        return false;
-    }
 
-    // change output (optional)
     CTxDestination change_destination;
-    if (tx.vout.size() > mltx_change_txout_index)
-    {
+    if (tx.vout.size() > mltx_change_txout_index && tx.vout[mltx_change_txout_index].nValue != 0)
         change_txout = tx.vout[mltx_change_txout_index];
-        bool change_destination_ok = ExtractDestination(change_txout.scriptPubKey, change_destination) && IsValidDestination(change_destination);
-        bool change_value_ok = change_txout.nValue != 0 && MoneyRange(change_txout.nValue);
-        if (change_destination_ok != change_value_ok) {
-            reason = "invalid-change";
-            return false;
-        }
-        else if (!change_destination_ok && !change_value_ok)
-            change_txout = CTxOut();
+    else
+        change_txout = CTxOut();
 
-    }
-
-    // structured script
     script = sds_from_tx(tx, reason);
     if (script.size() == 0)
         return false;
@@ -187,42 +158,25 @@ bool byt_tx(CMutableTransaction& tx,
             const CTxOut& stake_txout, const CTxOut& change_txout,
             const ActorType& actor, const CTxDestination& reward_address, const unsigned int version)
 {
-    // sizes
-    if (txins.size() <= 0)
-        return false;
-
-    // script values
-    if (version > byt_current_version ||
-            !at_valid(actor) ||
-            !IsValidDestination(reward_address))
-        return false;
-
-    // inputs
-    for (auto& txin: txins)
-        if (txin.prevout.IsNull())
-            return false;
-
-    // stake
-    if (stake_txout.nValue == 0 ||
-            !MoneyRange(stake_txout.nValue) ||
-            !mltx_is_payment_txout(stake_txout))
-        return false;
-
     // change (optional)
+
     CTxDestination change_destination;
-    bool change_destination_ok = mltx_is_payment_txout(change_txout) && ExtractDestination(change_txout.scriptPubKey, change_destination) && IsValidDestination(change_destination);
+    bool change_destination_ok = ExtractDestination(change_txout.scriptPubKey, change_destination) &&
+            IsValidDestination(change_destination);
     bool change_value_ok = change_txout.nValue != 0 && MoneyRange(change_txout.nValue);
     if (change_destination_ok != change_value_ok)
         return false;   // inconsistent settings
     bool has_change = change_destination_ok && change_value_ok;
 
     // script
+
     CScript script;
     if (!byt_script(script, actor, reward_address, version))
         return false;
 
     // tx construction
     // (assumes mltx_stake_txout_index=1, mltx_change_txout_index=2)
+
     tx.vin.clear();
     tx.vin.insert(tx.vin.end(), txins.begin(), txins.end());
     tx.vout.clear();
@@ -230,6 +184,15 @@ bool byt_tx(CMutableTransaction& tx,
     tx.vout.push_back(stake_txout);
     if (has_change)
         tx.vout.push_back(change_txout);
+
+    // validations
+
+    std::string reason;
+    if (!byt_tx_valid(tx, reason)) {
+        tx.vin.clear();
+        tx.vout.clear();
+        return false;
+    }
 
     return true;
 }
@@ -260,12 +223,32 @@ CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate)
     return fee;
 }
 
+bool byt_tx_valid(const CTransaction& tx, std::string& reason)
+{
+    CTxOut stake_txout, change_txout;
+    CScript script;
+    std::vector<std::vector<unsigned char>> items;
+    unsigned int version;
+    ActorType actor;
+    CTxDestination reward_address;
+
+    if (!byt_parse_tx(tx, stake_txout, change_txout, script, items, version, actor, reward_address, reason))
+        return false;
+
+    return true;
+}
+
 bool byt_check_inputs_nc(const CTransaction& tx, CValidationState &state)
 {
-    if (tx.vin.size() < 1)
+    return byt_check_inputs_nc(tx.vin, state);
+}
+
+bool byt_check_inputs_nc(const std::vector<CTxIn>& txins, CValidationState &state)
+{
+    if (txins.size() < 1)
         return state.DoS(100, false, REJECT_INVALID, "bad-ticket-input-count");
 
-    for (const auto& txin : tx.vin)
+    for (const auto& txin : txins)
         if (txin.prevout.IsNull())
             return state.DoS(10, false, REJECT_INVALID, "bad-txns-prevout-null");
 
@@ -274,32 +257,44 @@ bool byt_check_inputs_nc(const CTransaction& tx, CValidationState &state)
 
 bool byt_check_outputs_nc(const CTransaction& tx, CValidationState &state)
 {
-    if (tx.vout.size() < mltx_stake_txout_index + 1)
+    return byt_check_outputs_nc(tx.vout, state);
+}
+
+bool byt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &state)
+{
+    if (txouts.size() < mltx_stake_txout_index + 1)
         return state.DoS(100, false, REJECT_INVALID, "bad-ticket-output-count");
 
-    if (!sds_is_first_output(tx.vout[sds_first_output_index]))
+    if (!sds_is_first_output(txouts[sds_first_output_index]))
         return state.DoS(100, false, REJECT_INVALID, "invalid-sds-first-output");
 
-    if (tx.vout[mltx_stake_txout_index].nValue == 0 || !MoneyRange(tx.vout[mltx_stake_txout_index].nValue))
+    const auto& stake_txout = txouts[mltx_stake_txout_index];
+    if (stake_txout.nValue == 0 || !MoneyRange(stake_txout.nValue))
         return state.DoS(100, false, REJECT_INVALID, "bad-stake-amount");
 
-    if (tx.vout[mltx_stake_txout_index].scriptPubKey.size() <= 0 ||
-            tx.vout[mltx_stake_txout_index].scriptPubKey[0] == OP_RETURN)
-        return state.DoS(100, false, REJECT_INVALID, "bad-stake-address");
-
-    if (!mltx_is_legal_stake_txout(tx.vout[mltx_stake_txout_index]))
+    if (!mltx_is_legal_stake_txout(stake_txout))
         return state.DoS(100, false, REJECT_INVALID, "illegal-stake-output");
 
-    bool has_change = (tx.vout.size() >= mltx_change_txout_index + 1 &&
-                       tx.vout[mltx_change_txout_index].nValue != 0 &&
-            tx.vout[mltx_change_txout_index].scriptPubKey.size() > 0 &&
-            tx.vout[mltx_change_txout_index].scriptPubKey[0] != OP_RETURN);
+    bool has_change = false;
+    if (txouts.size() >= mltx_change_txout_index + 1) {
+        const auto& change_txout = txouts[mltx_change_txout_index];
+        has_change = (change_txout.nValue != 0 &&
+                change_txout.scriptPubKey.size() > 0 &&
+                change_txout.scriptPubKey[0] != OP_RETURN);
 
-    if (has_change && !MoneyRange(tx.vout[mltx_change_txout_index].nValue))
-        return state.DoS(100, false, REJECT_INVALID, "bad-change-amount");
+        if (has_change) {
+            if (!MoneyRange(change_txout.nValue))
+                return state.DoS(100, false, REJECT_INVALID, "bad-change-amount");
 
-    for (uint32_t i = (has_change ? mltx_change_txout_index + 1 : mltx_stake_txout_index + 1); i < tx.vout.size(); ++i)
-        if (!sds_is_subsequent_output(tx.vout[i]))
+            CTxDestination change_destination;
+            if (!ExtractDestination(change_txout.scriptPubKey, change_destination) ||
+                    !IsValidDestination(change_destination))
+                return state.DoS(100, false, REJECT_INVALID, "bad-change-address");
+        }
+    }
+
+    for (uint32_t i = (has_change ? mltx_change_txout_index + 1 : mltx_stake_txout_index + 1); i < txouts.size(); ++i)
+        if (!sds_is_subsequent_output(txouts[i]))
             return state.DoS(100, false, REJECT_INVALID, "nonzero-sds-subsequent-output");
 
     return true;
@@ -317,11 +312,13 @@ bool byt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CVa
         bool legal_coin_tx =
                 coin.txType == MLTX_Regular ||
                 (coin.txType == MLTX_BuyTicket && index == mltx_change_txout_index) ||
+                (coin.txType == MLTX_RevokeTicket && index == mltx_refund_txout_index) ||
                 (coin.txType == MLTX_PayForTask && index == mltx_change_txout_index);
         if (!legal_coin_tx)
             return false;
 
-        return mltx_is_payment_txout(coin.out);
+        CTxDestination destination;
+        return ExtractDestination(coin.out.scriptPubKey, destination) || IsValidDestination(destination);
     };
 
     for (uint32_t i = 0; i < tx.vin.size(); ++i) {
@@ -378,7 +375,12 @@ BuyTicketTx BuyTicketTx::from_tx(const CTransaction& tx)
     btx.set_funding_txins(tx.vin);
 
     btx.set_stake_txout(stake_txout);
-    if (mltx_is_payment_txout(change_txout))
+
+    CTxDestination change_destination;
+    if (change_txout.nValue != 0 &&
+            MoneyRange(change_txout.nValue) &&
+            ExtractDestination(change_txout.scriptPubKey, change_destination) &&
+            IsValidDestination(change_destination))
         btx.set_change_txout(change_txout);
 
     return btx;
@@ -500,37 +502,25 @@ bool BuyTicketTx::regenerate_if_needed()
     if (!_dirty)
         return true;
 
-    // inputs
-    if (_tx.vin.size() <= 0)
-        return false;
-
-    for (auto& txin: _tx.vin)
-        if (txin.prevout.IsNull())
-            return false;
-
     // script
+
     if (!byt_script(_script, _actor, _reward_address, _version))
-        return false;
-
-    // outputs
-    if (_stake_txout.nValue == 0 ||
-            !MoneyRange(_stake_txout.nValue) ||
-            !mltx_is_payment_txout(_stake_txout))
-        return false;
-
-    if (!_change_txout.IsNull() &&
-            (_change_txout.nValue == 0 ||
-             !MoneyRange(_change_txout.nValue) ||
-             !mltx_is_payment_txout(_change_txout)))
         return false;
 
     // transaction
     // (assumes mltx_stake_txout_index=1, mltx_change_txout_index=2, sds_first_output_index=0)
+
     _tx.vout.clear();
     _tx.vout.push_back(CTxOut(0, _script));
     _tx.vout.push_back(_stake_txout);
     if (_change_txout.nValue != 0)
         _tx.vout.push_back(_change_txout);
+
+    // validation
+
+    CValidationState state;
+    if (!byt_check_inputs_nc(_tx, state) || !byt_check_outputs_nc(_tx, state))
+        return false;
 
     _dirty = false;
 
