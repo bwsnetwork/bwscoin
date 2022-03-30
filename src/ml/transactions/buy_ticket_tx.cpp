@@ -136,14 +136,12 @@ bool byt_parse_tx(const CTransaction& tx,
 
     stake_txout = tx.vout[mltx_stake_txout_index];
 
-    CTxDestination change_destination;
     if (tx.vout.size() > mltx_change_txout_index && tx.vout[mltx_change_txout_index].nValue != 0)
         change_txout = tx.vout[mltx_change_txout_index];
     else
         change_txout = CTxOut();
 
-    script = sds_from_tx(tx, reason);
-    if (script.size() == 0)
+    if (!sds_from_tx(tx, script, reason))
         return false;
 
     items = sds_script_items(script);
@@ -158,16 +156,6 @@ bool byt_tx(CMutableTransaction& tx,
             const CTxOut& stake_txout, const CTxOut& change_txout,
             const ActorType& actor, const CTxDestination& reward_address, const unsigned int version)
 {
-    // change (optional)
-
-    CTxDestination change_destination;
-    bool change_destination_ok = ExtractDestination(change_txout.scriptPubKey, change_destination) &&
-            IsValidDestination(change_destination);
-    bool change_value_ok = change_txout.nValue != 0 && MoneyRange(change_txout.nValue);
-    if (change_destination_ok != change_value_ok)
-        return false;   // inconsistent settings
-    bool has_change = change_destination_ok && change_value_ok;
-
     // script
 
     CScript script;
@@ -182,7 +170,7 @@ bool byt_tx(CMutableTransaction& tx,
     tx.vout.clear();
     tx.vout.push_back(CTxOut(0, script));
     tx.vout.push_back(stake_txout);
-    if (has_change)
+    if (change_txout.nValue != 0)
         tx.vout.push_back(change_txout);
 
     // validations
@@ -296,6 +284,14 @@ bool byt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &s
     for (uint32_t i = (has_change ? mltx_change_txout_index + 1 : mltx_stake_txout_index + 1); i < txouts.size(); ++i)
         if (!sds_is_subsequent_output(txouts[i]))
             return state.DoS(100, false, REJECT_INVALID, "nonzero-sds-subsequent-output");
+
+    std::string reason;
+    CScript script;
+    if (!sds_from_txouts(txouts, script, reason))
+        return state.DoS(100, false, REJECT_INVALID, reason);
+
+    if (!byt_script_valid(script, reason))
+        return state.DoS(100, false, REJECT_INVALID, reason);
 
     return true;
 }

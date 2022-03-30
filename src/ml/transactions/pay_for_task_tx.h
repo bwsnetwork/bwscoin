@@ -92,7 +92,9 @@ CAmount pft_fee(const unsigned int extra_funding_count, const nlohmann::json& ta
 
 // non-contextual input and output tests
 bool pft_check_inputs_nc(const CTransaction& tx, CValidationState &state);
+bool pft_check_inputs_nc(const std::vector<CTxIn>& txins, CValidationState &state);
 bool pft_check_outputs_nc(const CTransaction& tx, CValidationState &state);
+bool pft_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &state);
 
 // contextual input tests
 bool pft_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, const CChainParams& chain_params, const int spend_height, CValidationState &state);
