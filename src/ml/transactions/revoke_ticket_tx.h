@@ -43,7 +43,7 @@ bool rvt_parse_script(const std::vector<std::vector<unsigned char>> items,
 // (use the output values only if the function returns true)
 bool rvt_parse_tx(const CTransaction& tx,
                   CTxIn& ticket_txin,
-                  CTxOut& refund_txout, CTxOut& change_txout,
+                  CTxOut& refund_txout,
                   CScript& script,
                   std::vector<std::vector<unsigned char>> items,
                   unsigned int& version, std::string& reason);
@@ -52,12 +52,11 @@ bool rvt_parse_tx(const CTransaction& tx,
 // (use the output tx only if the function returns true)
 bool rvt_tx(CMutableTransaction& tx,
             const CTxIn& ticket_txin,
-            const CTxOut& refund_txout, const CTxOut& change_txout,
+            const CTxOut& refund_txout,
             const unsigned int version = rvt_current_version);
 bool rvt_tx(CMutableTransaction& tx,
             const CTxIn& ticket_txin,
             const CTxDestination& refund_address, const CAmount& refund,
-            const CTxDestination& change_address, const CAmount& change,
             const unsigned int version = rvt_current_version);
 
 // validate the transaction
@@ -97,13 +96,6 @@ public:
     CAmount refund_amount() const { return _refund_amount; }
     void set_refund_amount(const CAmount amount);
 
-    const CTxOut change_txout() const { return _change_txout; }
-    void set_change_txout(const CTxOut& txout);
-    const CTxDestination change_address() const { return _change_address; }
-    void set_change_address(const CTxDestination& address);
-    CAmount change_amount() const { return _change_amount; }
-    void set_change_amount(const CAmount& amount);
-
     bool valid();
 
     const CScript structured_data_script();
@@ -124,10 +116,6 @@ private:
     CTxDestination _refund_address;
     CAmount _refund_amount;
     CTxOut _refund_txout;
-
-    CTxDestination _change_address;
-    CAmount _change_amount;
-    CTxOut _change_txout;
 
     bool _dirty;
 

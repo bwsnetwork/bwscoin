@@ -78,29 +78,24 @@ bool rvt_parse_script(const std::vector<std::vector<unsigned char>> items,
 
 bool rvt_parse_tx(const CTransaction& tx,
                   CTxIn& ticket_txin,
-                  CTxOut& refund_txout, CTxOut& change_txout,
+                  CTxOut& refund_txout,
                   CScript& script,
                   std::vector<std::vector<unsigned char>> items,
                   unsigned int& version, std::string& reason)
 {
-    // sizes
-    if (tx.vin.size() <= mltx_ticket_txin_index || tx.vin.size() > mltx_ticket_txin_index + 1) {
-        reason = "invalid-input-count";
+    // non-contextual validations
+    CValidationState state;
+    if (!rvt_check_inputs_nc(tx, state) || !rvt_check_outputs_nc(tx, state)) {
+        reason = state.GetRejectReason();
         return false;
     }
 
-    if (tx.vout.size() <= mltx_refund_txout_index) {
-        reason = "invalid-output-count";
-        return false;
-    }
-
-    // inputs
-    for (auto txin: tx.vin)
-        if (txin.prevout.IsNull()) {
-            reason = "null-input";
-            return false;
-        }
+    // ticket
     ticket_txin = tx.vin[mltx_ticket_txin_index];
+    if (ticket_txin.prevout.IsNull()) {
+        reason = "null-input";
+        return false;
+    }
 
     // refund output
     refund_txout = tx.vout[mltx_refund_txout_index];
@@ -110,20 +105,6 @@ bool rvt_parse_tx(const CTransaction& tx,
     if (!refund_destination_ok || !refund_value_ok) {
         reason = "invalid-refund";
         return false;
-    }
-
-    // change output (optional)
-    CTxDestination change_destination;
-    if (tx.vout.size() > mltx_change_txout_index) {
-        change_txout = tx.vout[mltx_change_txout_index];
-        bool change_destination_ok = ExtractDestination(change_txout.scriptPubKey, change_destination) && IsValidDestination(change_destination);
-        bool change_value_ok = change_txout.nValue != 0 && MoneyRange(change_txout.nValue);
-        if (change_destination_ok != change_value_ok) {
-            reason = "invalid-change";
-            return false;
-        }
-        else if (!change_destination_ok && !change_value_ok)
-            change_txout = CTxOut();
     }
 
     // structured script
@@ -139,7 +120,7 @@ bool rvt_parse_tx(const CTransaction& tx,
 
 bool rvt_tx(CMutableTransaction& tx,
             const CTxIn& ticket_txin,
-            const CTxOut& refund_txout, const CTxOut& change_txout,
+            const CTxOut& refund_txout,
             const unsigned int version)
 {
     // refund value
@@ -153,18 +134,10 @@ bool rvt_tx(CMutableTransaction& tx,
 
     // refund
     CTxDestination refund_destination;
-    bool refund_destination_ok = mltx_is_payment_txout(refund_txout) && ExtractDestination(refund_txout.scriptPubKey, refund_destination) && IsValidDestination(refund_destination);
-    bool refund_value_ok = refund_txout.nValue != 0 && MoneyRange(refund_txout.nValue);
-    if (!refund_destination_ok || !refund_value_ok)
+    if (!mltx_is_payment_txout(refund_txout) ||
+            !ExtractDestination(refund_txout.scriptPubKey, refund_destination) ||
+            !IsValidDestination(refund_destination))
         return false;
-
-    // change (optional)
-    CTxDestination change_destination;
-    bool change_destination_ok = mltx_is_payment_txout(change_txout) && ExtractDestination(change_txout.scriptPubKey, change_destination) && IsValidDestination(change_destination);
-    bool change_value_ok = change_txout.nValue != 0 && MoneyRange(change_txout.nValue);
-    if (change_destination_ok != change_value_ok)
-        return false;   // inconsistent settings
-    bool has_change = change_destination_ok && change_value_ok;
 
     // script
     CScript script;
@@ -177,14 +150,12 @@ bool rvt_tx(CMutableTransaction& tx,
         return false;
 
     // tx construction
-    // (assumes mltx_ticket_txin_index=0, mltx_refund_txout_index=1, mltx_change_txout_index=2, sds_first_output_index=0)
+    // (assumes mltx_ticket_txin_index=0, mltx_refund_txout_index=1, sds_first_output_index=0)
     tx.vin.clear();
     tx.vin.push_back(ticket_txin);
     tx.vout.clear();
     tx.vout.push_back(script_txouts[0]);
     tx.vout.push_back(refund_txout);
-    if (has_change)
-        tx.vout.push_back(change_txout);
 
     return true;
 }
@@ -192,13 +163,11 @@ bool rvt_tx(CMutableTransaction& tx,
 bool rvt_tx(CMutableTransaction& tx,
             const CTxIn& ticket_txin,
             const CTxDestination& refund_address, const CAmount& refund,
-            const CTxDestination& change_address, const CAmount& change,
             const unsigned int version)
 {
     return rvt_tx(tx,
                   ticket_txin,
                   CTxOut(refund, GetScriptForDestination(refund_address)),
-                  CTxOut(change, GetScriptForDestination(change_address)),
                   version);
 }
 
@@ -206,64 +175,48 @@ bool rvt_tx_valid(const CTransaction& tx, std::string& reason)
 {
     CTxIn ticket_txin;
     CTxOut refund_txout;
-    CTxOut change_txout;
     CScript script;
     std::vector<std::vector<unsigned char>> items;
     unsigned int version;
 
-    if (!rvt_parse_tx(tx, ticket_txin, refund_txout, change_txout, script, items, version, reason))
+    if (!rvt_parse_tx(tx, ticket_txin, refund_txout, script, items, version, reason))
         return false;
-
-    if (version > rvt_current_version) {
-        reason = "invalid-rvt-version";
-        return false;
-    }
 
     return true;
 }
 
 bool rvt_check_inputs_nc(const CTransaction& tx, CValidationState &state)
 {
-    if (tx.vin.size() < mltx_ticket_txin_index + 1 ||
-            tx.vin.size() > mltx_ticket_txin_index + 1)
+    if (tx.vin.size() != mltx_ticket_txin_index + 1)
         return state.DoS(100, false, REJECT_INVALID, "bad-revoketicket-input-count");
 
-    if (tx.vin[mltx_ticket_txin_index].prevout.n != mltx_stake_txout_index)
+    const auto& ticket = tx.vin[mltx_ticket_txin_index];
+    if (ticket.prevout.n != mltx_stake_txout_index)
         return state.DoS(100, false, REJECT_INVALID, "bad-ticket-reference");
 
-    for (const auto& txin : tx.vin)
-        if (txin.prevout.IsNull())
-            return state.DoS(10, false, REJECT_INVALID, "bad-txns-prevout-null");
+    if (ticket.prevout.IsNull())
+        return state.DoS(10, false, REJECT_INVALID, "bad-txns-prevout-null");
 
     return true;
 }
 
 bool rvt_check_outputs_nc(const CTransaction& tx, CValidationState &state)
 {
-    if (tx.vout.size() < mltx_refund_txout_index + 1)
+    if (tx.vout.size() != mltx_refund_txout_index + 1)
         return state.DoS(100, false, REJECT_INVALID, "bad-revoketicket-output-count");
 
-    if (!sds_is_first_output(tx.vout[sds_first_output_index]))
-        return state.DoS(100, false, REJECT_INVALID, "invalid-sds-first-output");
+    std::string reason;
+    if (!rvt_script_valid(tx.vout[sds_first_output_index].scriptPubKey, reason))
+        return state.DoS(100, false, REJECT_INVALID, reason);
 
-    if (tx.vout[mltx_refund_txout_index].nValue == 0 || !MoneyRange(tx.vout[mltx_refund_txout_index].nValue))
+    const auto& refund_txout = tx.vout[mltx_refund_txout_index];
+    if (refund_txout.nValue == 0 || !MoneyRange(refund_txout.nValue))
         return state.DoS(100, false, REJECT_INVALID, "bad-refund-amount");
 
     CTxDestination refund_destination;
-    if (!ExtractDestination(tx.vout[mltx_refund_txout_index].scriptPubKey, refund_destination) ||
+    if (!ExtractDestination(refund_txout.scriptPubKey, refund_destination) ||
             !IsValidDestination(refund_destination))
         return state.DoS(100, false, REJECT_INVALID, "bad-refund-address");
-
-    bool has_change = (tx.vout.size() >= mltx_change_txout_index + 1 &&
-                       tx.vout[mltx_change_txout_index].nValue != 0 &&
-            tx.vout[mltx_change_txout_index].scriptPubKey.size() > 0 &&
-            tx.vout[mltx_change_txout_index].scriptPubKey[0] != OP_RETURN);
-
-    if (has_change && !MoneyRange(tx.vout[mltx_change_txout_index].nValue))
-        return state.DoS(100, false, REJECT_INVALID, "bad-change-amount");
-
-    if (tx.vout.size() > (has_change ? mltx_change_txout_index + 1 : mltx_stake_txout_index + 1))
-        return state.DoS(100, false, REJECT_INVALID, "bad-revoketicket-output-count-too-large");
 
     return true;
 }
@@ -296,10 +249,10 @@ bool rvt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, con
 
 bool rvt_check_outputs(const CTransaction& tx, CValidationState &state)
 {
-    if (!rvt_check_outputs_nc(tx, state))
+    if (!rvt_check_inputs_nc(tx, state))
         return false;
 
-    if (!rvt_check_inputs_nc(tx, state))
+    if (!rvt_check_outputs_nc(tx, state))
         return false;
 
     CTxDestination refund_destination;
@@ -332,14 +285,6 @@ bool rvt_check_outputs(const CTransaction& tx, CValidationState &state)
     if (refund_addr != reward_addr)
         return state.DoS(100, false, REJECT_INVALID, "incorrect-refund-address");
 
-    if (tx.vout.size() > mltx_change_txout_index + 1) {
-        CTxDestination change_destination;
-        change_txout = tx.vout[mltx_change_txout_index];
-        bool change_destination_ok = mltx_is_payment_txout(change_txout) && ExtractDestination(change_txout.scriptPubKey, change_destination) && IsValidDestination(change_destination);
-        bool change_value_ok = change_txout.nValue != 0 && MoneyRange(change_txout.nValue);
-        if (!change_destination_ok || !change_value_ok)
-            return false;
-    }
     return true;
 }
 
@@ -363,13 +308,12 @@ RevokeTicketTx RevokeTicketTx::from_tx(const CTransaction& tx)
 
     CTxIn ticket_txin;
     CTxOut refund_txout;
-    CTxOut change_txout;
     CScript script;
     std::vector<std::vector<unsigned char>> items;
     unsigned int version;
     std::string reason;
 
-    if (!rvt_parse_tx(tx, ticket_txin, refund_txout, change_txout, script, items, version, reason))
+    if (!rvt_parse_tx(tx, ticket_txin, refund_txout, script, items, version, reason))
         return rtx;
 
     if (!mltx_is_payment_txout(refund_txout))
@@ -378,11 +322,6 @@ RevokeTicketTx RevokeTicketTx::from_tx(const CTransaction& tx)
     rtx.set_version(version);
 
     rtx.set_ticket_txin(ticket_txin);
-
-    rtx.set_change_txout(refund_txout);
-
-    if (mltx_is_payment_txout(change_txout))
-        rtx.set_change_txout(change_txout);
 
     return rtx;
 }
@@ -395,7 +334,6 @@ const std::string RevokeTicketTx::name()
 RevokeTicketTx::RevokeTicketTx()
     : _version(rvt_current_version),
       _refund_address(CNoDestination()), _refund_amount(0),
-      _change_address(CNoDestination()), _change_amount(0),
       _dirty(true)
 {
 }
@@ -431,28 +369,6 @@ void RevokeTicketTx::set_refund_amount(const CAmount amount)
 {
     _refund_txout.nValue = amount;
     _refund_amount = _refund_txout.nValue;
-    _dirty = true;
-}
-
-void RevokeTicketTx::set_change_txout(const CTxOut& txout)
-{
-    _change_txout = txout;
-    ExtractDestination(_change_txout.scriptPubKey, _change_address);
-    _change_amount = _change_txout.nValue;
-    _dirty = true;
-}
-
-void RevokeTicketTx::set_change_address(const CTxDestination& address)
-{
-    _change_txout.scriptPubKey = GetScriptForDestination(address);
-    _change_address = address;
-    _dirty = true;
-}
-
-void RevokeTicketTx::set_change_amount(const CAmount& amount)
-{
-    _change_txout.nValue = amount;
-    _change_amount = _change_txout.nValue;
     _dirty = true;
 }
 
@@ -498,37 +414,21 @@ bool RevokeTicketTx::regenerate_if_needed()
     if (!_dirty)
         return true;
 
-    // inputs
-    if (_ticket_txin.prevout.IsNull() ||
-            _ticket_txin.prevout.n != mltx_stake_txout_index)
-        return false;
-
     // script
     if (!rvt_script(_script, _version))
         return false;
 
-    // outputs
-    if (_refund_txout.IsNull() ||
-            _refund_txout.nValue == 0 ||
-            !MoneyRange(_refund_txout.nValue) ||
-            !mltx_is_payment_txout(_refund_txout))
-        return false;
-
-    if (!_change_txout.IsNull() &&
-            (_change_txout.nValue == 0 ||
-             !MoneyRange(_change_txout.nValue) ||
-             !mltx_is_payment_txout(_change_txout)))
-        return false;
-
     // transaction
-    // (assumes mltx_ticket_txin_index=0, mltx_refund_txout_index=1, mltx_change_txout_index=2, sds_first_output_index=0)
+    // (assumes mltx_ticket_txin_index=0, mltx_refund_txout_index=1, sds_first_output_index=0)
     _tx.vin.clear();
     _tx.vin.push_back(_ticket_txin);
     _tx.vout.clear();
     _tx.vout.push_back(CTxOut(0, _script));
     _tx.vout.push_back(_refund_txout);
-    if (_change_txout.nValue != 0)
-        _tx.vout.push_back(_change_txout);
+
+    CValidationState state;
+    if (!rvt_check_inputs_nc(_tx, state) || !rvt_check_outputs_nc(_tx, state))
+        return false;
 
     _dirty = false;
 
