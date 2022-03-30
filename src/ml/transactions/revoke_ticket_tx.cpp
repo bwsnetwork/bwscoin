@@ -84,33 +84,23 @@ bool rvt_parse_tx(const CTransaction& tx,
                   unsigned int& version, std::string& reason)
 {
     // non-contextual validations
+
     CValidationState state;
     if (!rvt_check_inputs_nc(tx, state) || !rvt_check_outputs_nc(tx, state)) {
         reason = state.GetRejectReason();
         return false;
     }
 
-    // ticket
+    // parsed values
+
     ticket_txin = tx.vin[mltx_ticket_txin_index];
-    if (ticket_txin.prevout.IsNull()) {
-        reason = "null-input";
-        return false;
-    }
 
-    // refund output
     refund_txout = tx.vout[mltx_refund_txout_index];
-    CTxDestination refund_destination;
-    bool refund_destination_ok = ExtractDestination(refund_txout.scriptPubKey, refund_destination) && IsValidDestination(refund_destination);
-    bool refund_value_ok = refund_txout.nValue != 0 && MoneyRange(refund_txout.nValue);
-    if (!refund_destination_ok || !refund_value_ok) {
-        reason = "invalid-refund";
-        return false;
-    }
 
-    // structured script
     script = sds_from_tx(tx, reason);
     if (script.size() == 0)
         return false;
+
     items = sds_script_items(script);
     if (!rvt_parse_script(items, version, reason))
         return false;
@@ -123,34 +113,26 @@ bool rvt_tx(CMutableTransaction& tx,
             const CTxOut& refund_txout,
             const unsigned int version)
 {
-    // refund value
-    if (refund_txout.nValue == 0 || !MoneyRange(refund_txout.nValue))
-        return false;
+    // validations
 
-    // ticket
-    if (ticket_txin.prevout.IsNull() ||
-            ticket_txin.prevout.n != mltx_refund_txout_index)
-        return false;
-
-    // refund
-    CTxDestination refund_destination;
-    if (!mltx_is_payment_txout(refund_txout) ||
-            !ExtractDestination(refund_txout.scriptPubKey, refund_destination) ||
-            !IsValidDestination(refund_destination))
+    CValidationState state;
+    if (!rvt_check_inputs_nc({ticket_txin}, state) &&
+            !rvt_check_outputs_nc({refund_txout}, state))
         return false;
 
     // script
+
     CScript script;
     if (!rvt_script(script, version))
         return false;
 
-    // structured data script transaction outputs
     auto script_txouts = sds_tx_outputs(script);
     if (script_txouts.size() != 1)
         return false;
 
     // tx construction
     // (assumes mltx_ticket_txin_index=0, mltx_refund_txout_index=1, sds_first_output_index=0)
+
     tx.vin.clear();
     tx.vin.push_back(ticket_txin);
     tx.vout.clear();
@@ -187,10 +169,15 @@ bool rvt_tx_valid(const CTransaction& tx, std::string& reason)
 
 bool rvt_check_inputs_nc(const CTransaction& tx, CValidationState &state)
 {
-    if (tx.vin.size() != mltx_ticket_txin_index + 1)
+    return rvt_check_inputs_nc(tx.vin, state);
+}
+
+bool rvt_check_inputs_nc(const std::vector<CTxIn>& txins, CValidationState &state)
+{
+    if (txins.size() != mltx_ticket_txin_index + 1)
         return state.DoS(100, false, REJECT_INVALID, "bad-revoketicket-input-count");
 
-    const auto& ticket = tx.vin[mltx_ticket_txin_index];
+    const auto& ticket = txins[mltx_ticket_txin_index];
     if (ticket.prevout.n != mltx_stake_txout_index)
         return state.DoS(100, false, REJECT_INVALID, "bad-ticket-reference");
 
@@ -202,14 +189,19 @@ bool rvt_check_inputs_nc(const CTransaction& tx, CValidationState &state)
 
 bool rvt_check_outputs_nc(const CTransaction& tx, CValidationState &state)
 {
-    if (tx.vout.size() != mltx_refund_txout_index + 1)
+    return rvt_check_outputs_nc(tx.vout, state);
+}
+
+bool rvt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &state)
+{
+    if (txouts.size() != mltx_refund_txout_index + 1)
         return state.DoS(100, false, REJECT_INVALID, "bad-revoketicket-output-count");
 
     std::string reason;
-    if (!rvt_script_valid(tx.vout[sds_first_output_index].scriptPubKey, reason))
+    if (!rvt_script_valid(txouts[sds_first_output_index].scriptPubKey, reason))
         return state.DoS(100, false, REJECT_INVALID, reason);
 
-    const auto& refund_txout = tx.vout[mltx_refund_txout_index];
+    const auto& refund_txout = txouts[mltx_refund_txout_index];
     if (refund_txout.nValue == 0 || !MoneyRange(refund_txout.nValue))
         return state.DoS(100, false, REJECT_INVALID, "bad-refund-amount");
 

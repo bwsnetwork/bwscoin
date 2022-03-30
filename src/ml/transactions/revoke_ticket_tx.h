@@ -64,7 +64,9 @@ bool rvt_tx_valid(const CTransaction& tx, std::string& reason);
 
 // non-contextual input and output tests
 bool rvt_check_inputs_nc(const CTransaction& tx, CValidationState &state);
+bool rvt_check_inputs_nc(const std::vector<CTxIn>& txins, CValidationState &state);
 bool rvt_check_outputs_nc(const CTransaction& tx, CValidationState &state);
+bool rvt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &state);
 
 // contextual input tests
 bool rvt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, const CChainParams& chain_params, const int spend_height, CValidationState &state);
