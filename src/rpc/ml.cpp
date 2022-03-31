@@ -20,7 +20,7 @@
 
 UniValue createbuytickettransaction(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() < 2 || request.params.size() > 4)
+    if (request.fHelp || request.params.size() < 2 || request.params.size() > 5)
         throw std::runtime_error(
             "createbuytickettransaction [{\"txid\":\"id\",\"vout\":n},...] {\"version\":version,\"actor\":actor,\"reward_address\":adress,\"stake_address\":address,\"stake_amount\":amount,\"change_address\":address,\"change_amount\":amount} ( locktime )  ( replaceable ) ( expiry )\n"
             "\nCreate a ticket purchase transaction spending the given inputs to stake funds for the intended operations.\n"
@@ -191,7 +191,7 @@ UniValue createbuytickettransaction(const JSONRPCRequest& request)
 
 UniValue createpayfortasktransaction(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() < 2 || request.params.size() > 4)
+    if (request.fHelp || request.params.size() < 2 || request.params.size() > 5)
         throw std::runtime_error(
             "createpayfortasktransaction {\"ticket\":{\"txid\":\"id\",\"vout\":n},\"extra_funding\":[{\"txid\":\"id\",\"vout\":n},...]} {\"version\":version,\"task\":task,\"stake_amount\":amount,\"change_address\":address,\"change_amount\":amount} ( locktime )  ( replaceable ) ( expiry )\n"
             "\nCreate a task submission transaction spending the given ticket and optional extra inputs to stake funds for the miners.\n"
@@ -380,7 +380,7 @@ UniValue createpayfortasktransaction(const JSONRPCRequest& request)
 
 UniValue createrevoketickettransaction(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() < 2 || request.params.size() > 4)
+    if (request.fHelp || request.params.size() < 1 || request.params.size() > 5)
         throw std::runtime_error(
             "createrevoketickettransaction \"ticket_id\" ( version ) ( locktime )  ( replaceable ) ( expiry )\n"
             "\nCreate a ticket revocation transaction refunding the given ticket to the address mentioned in the ticket data.\n"
