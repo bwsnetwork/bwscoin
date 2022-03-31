@@ -3,16 +3,19 @@
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.
  */
 
-#include "rpc/server.h"
-#include "util.h"
-#include "utilstrencodings.h"
-#include "policy/feerate.h"
-#include "policy/rbf.h"
-#include "primitives/transaction.h"
-#include "ml/transactions/buy_ticket_tx.h"
-#include "ml/transactions/pay_for_task_tx.h"
-#include "core_io.h"
-#include "key_io.h"
+#include <rpc/server.h>
+#include <util.h>
+#include <utilstrencodings.h>
+#include <policy/fees.h>
+#include <policy/feerate.h>
+#include <policy/rbf.h>
+#include <primitives/transaction.h>
+#include <ml/transactions/buy_ticket_tx.h>
+#include <ml/transactions/pay_for_task_tx.h>
+#include <ml/transactions/revoke_ticket_tx.h>
+#include <core_io.h>
+#include <key_io.h>
+#include <validation.h>
 #include <univalue.h>
 
 UniValue createbuytickettransaction(const JSONRPCRequest& request)
@@ -178,7 +181,7 @@ UniValue createbuytickettransaction(const JSONRPCRequest& request)
 
     CMutableTransaction mtx;
     if (!byt_tx(mtx, txins, stake_address, stake_amount, change_address, change_amount, actor, reward_address, version))
-        throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Could not create the transaction");
+        throw JSONRPCError(RPCErrorCode::INTERNAL_ERROR, "Could not create the transaction");
 
     mtx.nLockTime = lock_time;
     mtx.nExpiry = expiry;
@@ -367,7 +370,7 @@ UniValue createpayfortasktransaction(const JSONRPCRequest& request)
 
     CMutableTransaction mtx;
     if (!pft_tx(mtx, ticket, extra_funding, stake_amount, change_address, change_amount, task, version))
-        throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Could not create the transaction");
+        throw JSONRPCError(RPCErrorCode::INTERNAL_ERROR, "Could not create the transaction");
 
     mtx.nLockTime = lock_time;
     mtx.nExpiry = expiry;
@@ -375,11 +378,99 @@ UniValue createpayfortasktransaction(const JSONRPCRequest& request)
     return EncodeHexTx(mtx);
 }
 
+UniValue createrevoketickettransaction(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() < 2 || request.params.size() > 4)
+        throw std::runtime_error(
+            "createrevoketickettransaction \"ticket_id\" ( version ) ( locktime )  ( replaceable ) ( expiry )\n"
+            "\nCreate a ticket revocation transaction refunding the given ticket to the address mentioned in the ticket data.\n"
+            "Returns hex-encoded raw transaction.\n"
+            "Note that the transaction's input is not signed, and\n"
+            "it is not stored in the wallet or transmitted to the network.\n"
+
+            "\nArguments:\n"
+            "1. \"ticket_id\"                        (string, required) The ticket's transaction id\n"
+            "2. version                              (numeric, optional, default=" + std::to_string(rvt_current_version) + ") Revocation version\n"
+            "3. locktime                             (numeric, optional, default=0) Raw locktime. Non-0 value also locktime-activates inputs\n"
+            "4. replaceable                          (boolean, optional, default=false) Marks this transaction as BIP125 replaceable.\n"
+            "                                           Allows this transaction to be replaced by a transaction with higher fees. If provided, it is an error if explicit sequence numbers are incompatible.\n"
+            "5. expiry                               (numeric, optional, default=0) Expiration height. 0 value means no expiry."
+
+            "\nResult:\n"
+            "\"transaction\"                         (string) hex string of the transaction\n"
+
+            "\nExamples:\n"
+            + HelpExampleCli("createrevoketickettransaction", "\txid\" 0")
+            + HelpExampleRpc("createrevoketickettransaction", "\txid\" 0")
+        );
+
+    // structure validation
+
+    RPCTypeCheck(request.params, {UniValue::VSTR, UniValue::VNUM}, true);
+    if (request.params[0].isNull() || !request.params[0].isStr())
+        throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, argument 1 must be string");
+
+    uint256 ticket_id = ParseHashV(request.params[0], "parameter 1");
+
+    // optional values
+
+    uint32_t version = rvt_current_version;
+    if (!request.params[1].isNull()) {
+        int64_t version_int = request.params[1].get_int64();
+        if (version_int < 0 || version_int > rvt_current_version)
+            throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, version out of range");
+        version = static_cast<uint32_t>(version_int);
+    }
+
+    uint32_t lock_time = 0;
+    if (!request.params[2].isNull()) {
+        int64_t lock_time_int = request.params[2].get_int64();
+        if (lock_time_int < 0 || lock_time_int > std::numeric_limits<uint32_t>::max())
+            throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, locktime out of range");
+        lock_time = static_cast<uint32_t>(lock_time_int);
+    }
+
+    bool rbf_opt_in = request.params[3].isTrue();
+
+    uint32_t expiry = 0;
+    if (!request.params[4].isNull()) {
+        int64_t expiry_int = request.params[4].get_int64();
+        if (expiry_int < 0 || expiry_int > std::numeric_limits<uint32_t>::max())
+            throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, expiry out of range");
+        expiry = static_cast<uint32_t>(expiry_int);
+    }
+
+    // ticket
+    const auto& ticket = GetMlTicket(ticket_id);
+    if (ticket == nullptr)
+        throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, ticket not found");
+
+    // fee
+    FeeCalculation fee_calculation;
+    const auto fee_rate = ::feeEstimator.estimateSmartFee(1, &fee_calculation, true);
+    if (fee_rate == CFeeRate(0))
+        throw JSONRPCError(RPCErrorCode::INTERNAL_ERROR, "Could not calculate fee");
+
+    // transaction
+
+    CMutableTransaction mtx;
+    if (!rvt_tx(mtx, *ticket, fee_rate, version))
+        throw JSONRPCError(RPCErrorCode::INTERNAL_ERROR, "Could not create the transaction");
+
+    mtx.nLockTime = lock_time;
+    mtx.nExpiry = expiry;
+
+    return EncodeHexTx(mtx);
+
+    return NullUniValue;
+}
+
 static const CRPCCommand commands[] =
-{ //  category              name                           actor (function)              argNames
-  //  --------------------- ----------------------------   ----------------------------  ----------
-    { "ml",                 "createbuytickettransaction",  &createbuytickettransaction,  {"inputs","ticket_data","locktime","replaceable","expiry"} },
-    { "ml",                 "createpayfortasktransaction", &createpayfortasktransaction, {"inputs","task_data","locktime","replaceable","expiry"} }
+{ //  category              name                             actor (function)                argNames
+  //  --------------------- ----------------------------     ----------------------------    ----------
+    { "ml",                 "createbuytickettransaction",    &createbuytickettransaction,    {"inputs","ticket_data","locktime","replaceable","expiry"} },
+    { "ml",                 "createpayfortasktransaction",   &createpayfortasktransaction,   {"inputs","task_data","locktime","replaceable","expiry"} },
+    { "ml",                 "createrevoketickettransaction", &createrevoketickettransaction, {"ticket_id","version","locktime","replaceable","expiry"} }
 };
 
 void RegisterMLRPCCommands(CRPCTable &t)
