@@ -69,7 +69,7 @@ bool byt_tx(CMutableTransaction& tx,
             const CTxDestination& change_address, const CAmount& change,
             const ActorType& actor, const CTxDestination& reward_address, const unsigned int version = byt_current_version);
 
-// calculate the fee for the transaction (assumes that
+// estimate the fee for the transaction (assumes that
 // the change output is also present)
 CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate);
 

@@ -200,11 +200,11 @@ bool byt_tx(CMutableTransaction& tx,
 
 CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate)
 {
-    const auto size = byt_estimated_size(txin_count, true, true);
+    const auto& size = byt_estimated_size(txin_count, true, true);
     if (size <= 0)
         return 0;
 
-    const auto fee = fee_rate.GetFee(size);
+    const auto& fee = fee_rate.GetFee(size);
     if (fee <= 0)
         return 0;
 

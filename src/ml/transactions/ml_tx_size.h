@@ -18,10 +18,12 @@ size_t p2pkh_txout_estimated_size();
 
 // ml transactions special outputs
 size_t byt_txout_estimated_size();
+size_t rvt_txout_estimated_size();
 std::vector<size_t> pft_txout_estimated_sizes(const nlohmann::json& task);
 
 // ml transactions
 size_t byt_estimated_size(const unsigned long txin_count, const bool has_change = true, const bool include_expiry = true);
+size_t rvt_estimated_size(const bool include_expiry = true);
 size_t pft_estimated_size(const unsigned long extra_funding_count, const nlohmann::json& task, const bool has_change = true, const bool include_expiry = true);
 
 #endif // BWSCOIN_ML_TX_SIZE_H

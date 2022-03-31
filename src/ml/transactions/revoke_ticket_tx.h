@@ -51,6 +51,10 @@ bool rvt_parse_tx(const CTransaction& tx,
 // generate the transaction
 // (use the output tx only if the function returns true)
 bool rvt_tx(CMutableTransaction& tx,
+            const CTransaction& ticket,
+            const CFeeRate& fee_rate,
+            const unsigned int version = rvt_current_version);
+bool rvt_tx(CMutableTransaction& tx,
             const CTxIn& ticket_txin,
             const CTxOut& refund_txout,
             const unsigned int version = rvt_current_version);
@@ -58,6 +62,14 @@ bool rvt_tx(CMutableTransaction& tx,
             const CTxIn& ticket_txin,
             const CTxDestination& refund_address, const CAmount& refund,
             const unsigned int version = rvt_current_version);
+
+// generate the required refund output
+// (parses ticket internally)
+// (use the output only if the function returns true)
+bool rvt_refund_output(const CTransaction& ticket, const CFeeRate& fee_rate, CTxOut& txout);
+
+// estimate the fee for the transaction
+CAmount rvt_fee(const CFeeRate& fee_rate);
 
 // validate the transaction
 bool rvt_tx_valid(const CTransaction& tx, std::string& reason);

@@ -7,6 +7,7 @@
 
 #include <ml/transactions/buy_ticket_tx.h>
 #include <ml/transactions/pay_for_task_tx.h>
+#include <ml/transactions/revoke_ticket_tx.h>
 
 size_t p2pkh_txin_estimated_size(bool compressed)
 {
@@ -48,6 +49,17 @@ size_t byt_txout_estimated_size()
     return GetSerializeSize(txout, SER_NETWORK, PROTOCOL_VERSION);
 }
 
+size_t rvt_txout_estimated_size()
+{
+    CScript script;
+    if (!rvt_script(script))
+        return 0;
+
+    CTxOut txout{0, script};
+    return GetSerializeSize(txout, SER_NETWORK, PROTOCOL_VERSION);
+}
+
+
 std::vector<size_t> pft_txout_estimated_sizes(const nlohmann::json& task)
 {
     CScript script;
@@ -77,6 +89,23 @@ size_t byt_estimated_size(const unsigned long txin_count, const bool has_change,
             + byt_txout_estimated_size()
             + p2pkh_txout_estimated_size()
             + (has_change ? p2pkh_txout_estimated_size() : 0)
+            + 4
+            + (include_expiry ? 4 : 0);
+}
+
+size_t rvt_estimated_size(const bool include_expiry)
+{
+    // since the format of the revoke ticket transaction is fixed,
+    // its size can be estimated rather precisely.
+    // A revoke ticket transaction contains:
+    // version + in count (1) + (1) regular input + out count (2) + revoke ticket script output + refund address output + locktime + expiry (optional)
+
+    return 4
+            + 1
+            + p2pkh_txin_estimated_size()
+            + 1
+            + rvt_txout_estimated_size()
+            + p2pkh_txout_estimated_size()
             + 4
             + (include_expiry ? 4 : 0);
 }

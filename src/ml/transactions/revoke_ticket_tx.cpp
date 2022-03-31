@@ -108,6 +108,18 @@ bool rvt_parse_tx(const CTransaction& tx,
 }
 
 bool rvt_tx(CMutableTransaction& tx,
+            const CTransaction& ticket,
+            const CFeeRate& fee_rate,
+            const unsigned int version)
+{
+    CTxOut refund_txout;
+    if (!rvt_refund_output(ticket, fee_rate, refund_txout))
+        return false;
+
+    return rvt_tx(tx, CTxIn(ticket.GetHash(), mltx_stake_txout_index), refund_txout, version);
+}
+
+bool rvt_tx(CMutableTransaction& tx,
             const CTxIn& ticket_txin,
             const CTxOut& refund_txout,
             const unsigned int version)
@@ -152,6 +164,38 @@ bool rvt_tx(CMutableTransaction& tx,
                   ticket_txin,
                   CTxOut(refund, GetScriptForDestination(refund_address)),
                   version);
+}
+
+bool rvt_refund_output(const CTransaction& ticket, const CFeeRate& fee_rate, CTxOut& txout)
+{
+    CTxOut stake_txout, change_txout;
+    CScript script;
+    std::vector<std::vector<unsigned char>> items;
+    unsigned int version;
+    ActorType actor;
+    CTxDestination reward_address;
+    std::string reason;
+    if (!byt_parse_tx(ticket, stake_txout, change_txout, script, items, version, actor, reward_address, reason))
+        return false;
+
+    txout.scriptPubKey = GetScriptForDestination(reward_address);
+
+    txout.nValue = stake_txout.nValue - rvt_fee(fee_rate);
+
+    return true;
+}
+
+CAmount rvt_fee(const CFeeRate& fee_rate)
+{
+    const auto& size = rvt_estimated_size(true);
+    if (size <= 0)
+        return 0;
+
+    const auto& fee = fee_rate.GetFee(size);
+    if (fee <= 0)
+        return 0;
+
+    return fee;
 }
 
 bool rvt_tx_valid(const CTransaction& tx, std::string& reason)
