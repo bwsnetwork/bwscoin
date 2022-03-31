@@ -5,8 +5,8 @@
 
 #include "revoke_ticket_tx.h"
 
-#include <chainparams.h>
 #include <coins.h>
+#include <validation.h>
 #include <consensus/validation.h>
 #include <script/structured_data/structured_data.h>
 #include <ml/transactions/buy_ticket_tx.h>
@@ -282,7 +282,7 @@ bool rvt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, con
     return true;
 }
 
-bool rvt_check_outputs(const CTransaction& tx, CValidationState &state)
+bool rvt_check_outputs(const CTransaction& tx, const CTransaction& ticket, CValidationState &state)
 {
     if (!rvt_check_inputs_nc(tx, state))
         return false;
@@ -294,10 +294,6 @@ bool rvt_check_outputs(const CTransaction& tx, CValidationState &state)
     if (!ExtractDestination(tx.vout[mltx_refund_txout_index].scriptPubKey, refund_destination))
         return false;
 
-    const auto ticket = GetMlTicket(tx.vin[mltx_ticket_txin_index].prevout.hash);
-    if (ticket == nullptr)
-        return state.DoS(100, false, REJECT_INVALID, "bad-ticket-reference");
-
     CTxOut stake_txout, change_txout;
     CScript script;
     std::vector<std::vector<unsigned char>> items;
@@ -305,7 +301,7 @@ bool rvt_check_outputs(const CTransaction& tx, CValidationState &state)
     ActorType actor;
     CTxDestination reward_address;
     std::string reason;
-    if (!byt_parse_tx(*ticket, stake_txout, change_txout, script, items, version, actor, reward_address, reason))
+    if (!byt_parse_tx(ticket, stake_txout, change_txout, script, items, version, actor, reward_address, reason))
         return state.DoS(100, false, REJECT_INVALID, reason);
 
     if (refund_destination.which() != reward_address.which())

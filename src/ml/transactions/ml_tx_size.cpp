@@ -6,8 +6,8 @@
 #include "ml_tx_size.h"
 
 #include <ml/transactions/buy_ticket_tx.h>
-#include <ml/transactions/pay_for_task_tx.h>
 #include <ml/transactions/revoke_ticket_tx.h>
+#include <ml/transactions/pay_for_task_tx.h>
 
 size_t p2pkh_txin_estimated_size(bool compressed)
 {

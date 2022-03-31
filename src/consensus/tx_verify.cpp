@@ -514,9 +514,17 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
     if (check_ml) {
         if (tx_type == MLTX_BuyTicket && !byt_check_inputs(tx, inputs, state))
             return false;
-        if (tx_type == MLTX_RevokeTicket && (!rvt_check_inputs(tx, inputs, chainparams, nSpendHeight, state) ||
-                                             !rvt_check_outputs(tx, state)))
-            return false;
+
+        if (tx_type == MLTX_RevokeTicket) {
+            const auto ticket = GetMlTicket(tx.vin[mltx_ticket_txin_index].prevout.hash);
+            if (ticket == nullptr)
+                return state.DoS(100, false, REJECT_INVALID, "bad-ticket-reference");
+
+            if (!rvt_check_inputs(tx, inputs, chainparams, nSpendHeight, state) ||
+                    !rvt_check_outputs(tx, *ticket, state))
+                return false;
+        }
+
         if (tx_type == MLTX_PayForTask && !pft_check_inputs(tx, inputs, chainparams, nSpendHeight, state))
             return false;
     }

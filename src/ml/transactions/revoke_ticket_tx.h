@@ -10,11 +10,14 @@
 #ifndef BWSCOIN_REVOKE_TICKET_TX_H
 #define BWSCOIN_REVOKE_TICKET_TX_H
 
-#include <uint256.h>
-#include <validation.h>
+#include <pubkey.h>
 #include <script/script.h>
 #include <script/standard.h>
-#include <primitives/transaction.h>
+
+class CCoinsViewCache;
+class CChainParams;
+class CFeeRate;
+class CValidationState;
 
 extern const unsigned int rvt_current_version;   // should be monotonic
 
@@ -82,7 +85,7 @@ bool rvt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &s
 
 // contextual input tests
 bool rvt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, const CChainParams& chain_params, const int spend_height, CValidationState &state);
-bool rvt_check_outputs(const CTransaction& tx, CValidationState &state);
+bool rvt_check_outputs(const CTransaction& tx, const CTransaction& ticket, CValidationState &state);
 
 // Wrapper class for Revoke Ticket transactions
 
