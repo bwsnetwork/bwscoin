@@ -72,6 +72,7 @@ bool rvt_parse_script(const std::vector<std::vector<unsigned char>> items,
         reason = "invalid-revoketicket-version";
         return false;
     }
+    version = static_cast<unsigned int>(version_int);
 
     return true;
 }
@@ -353,6 +354,8 @@ RevokeTicketTx RevokeTicketTx::from_tx(const CTransaction& tx)
     rtx.set_version(version);
 
     rtx.set_ticket_txin(ticket_txin);
+
+    rtx.set_refund_txout(refund_txout);
 
     return rtx;
 }

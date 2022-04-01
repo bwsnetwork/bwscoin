@@ -24,6 +24,7 @@
 #include <ml/transactions/ml_tx_type.h>
 #include <ml/transactions/buy_ticket_tx.h>
 #include <ml/transactions/pay_for_task_tx.h>
+#include <ml/transactions/revoke_ticket_tx.h>
 
 UniValue ValueFromAmount(const CAmount& amount)
 {
@@ -277,6 +278,27 @@ void MlTxToUniv(PayForTaskTx& ptx, UniValue& entry)
     }
 }
 
+void MlTxToUniv(RevokeTicketTx& rtx, UniValue& entry)
+{
+    if (!rtx.valid()) {
+        entry.pushKV("status", "INVALID!");
+        return;
+    }
+
+    entry.pushKV("version", static_cast<uint64_t>(rtx.version()));
+
+    UniValue ticket{UniValue::VOBJ};
+    const auto& ticket_out = rtx.ticket_txin().prevout;
+    ticket.pushKV("tx", ticket_out.hash.GetHex());
+    ticket.pushKV("n", static_cast<uint64_t>(ticket_out.n));
+    entry.pushKV("ticket", ticket);
+
+    UniValue refund{UniValue::VOBJ};
+    refund.pushKV("address", EncodeDestination(rtx.refund_address()));
+    refund.pushKV("amount", rtx.refund_amount());
+    entry.pushKV("refund", refund);
+}
+
 void MlTxToUniv(const CTransaction& tx, UniValue& entry)
 {
     // quick checks
@@ -292,9 +314,12 @@ void MlTxToUniv(const CTransaction& tx, UniValue& entry)
         entry.pushKV("type", BuyTicketTx::name());
         entry.pushKV("ml", ml);
     } break;
-    case MLTX_RevokeTicket:
-        // TODO
-        break;
+    case MLTX_RevokeTicket: {
+        RevokeTicketTx rtx = RevokeTicketTx::from_tx(tx);
+        MlTxToUniv(rtx, ml);
+        entry.pushKV("type", RevokeTicketTx::name());
+        entry.pushKV("ml", ml);
+    } break;
     case MLTX_PayForTask: {
         PayForTaskTx ptx = PayForTaskTx::from_tx(tx);
         MlTxToUniv(ptx, ml);

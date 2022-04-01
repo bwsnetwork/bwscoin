@@ -25,6 +25,7 @@ class uint256;
 class UniValue;
 class BuyTicketTx;
 class PayForTaskTx;
+class RevokeTicketTx;
 
 // core_read.cpp
 CScript ParseScript(const std::string& s);
@@ -50,6 +51,7 @@ void StakeInfoToUniv(const CTransaction& tx, UniValue& entry
 
 void MlTxToUniv(BuyTicketTx& btx, UniValue& entry);
 void MlTxToUniv(PayForTaskTx& ptx, UniValue& entry);
+void MlTxToUniv(RevokeTicketTx& rtx, UniValue& entry);
 void MlTxToUniv(const CTransaction& tx, UniValue& entry);
 
 #endif // BWSCOIN_CORE_IO_H
