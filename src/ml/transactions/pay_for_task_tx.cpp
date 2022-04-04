@@ -366,6 +366,9 @@ bool pft_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, con
             if (spend_height - coin.nHeight < chain_params.GetConsensus().nMlTicketMaturity)
                 return state.DoS(100, false, REJECT_INVALID, "immature-ticket");
 
+            if (spend_height - coin.nHeight >= chain_params.GetConsensus().nMlTicketMaturity + chain_params.GetConsensus().nMlTicketExpiry)
+                return state.DoS(100, false, REJECT_INVALID, "expired-ticket");
+
             if (!mltx_is_legal_stake_txout(coin.out))
                 return state.DoS(100, false, REJECT_INVALID, "illegal-stake-output");
         } else {
