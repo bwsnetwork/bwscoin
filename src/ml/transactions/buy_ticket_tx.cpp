@@ -136,7 +136,7 @@ bool byt_parse_tx(const CTransaction& tx,
 
     stake_txout = tx.vout[mltx_stake_txout_index];
 
-    if (tx.vout.size() > mltx_change_txout_index && tx.vout[mltx_change_txout_index].nValue != 0)
+    if (tx.vout.size() > mltx_change_txout_index && tx.vout[mltx_change_txout_index].nValue > 0)
         change_txout = tx.vout[mltx_change_txout_index];
     else
         change_txout = CTxOut();
@@ -170,7 +170,7 @@ bool byt_tx(CMutableTransaction& tx,
     tx.vout.clear();
     tx.vout.push_back(CTxOut(0, script));
     tx.vout.push_back(stake_txout);
-    if (change_txout.nValue != 0)
+    if (change_txout.nValue > 0)
         tx.vout.push_back(change_txout);
 
     // validations
@@ -266,7 +266,7 @@ bool byt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &s
     bool has_change = false;
     if (txouts.size() >= mltx_change_txout_index + 1) {
         const auto& change_txout = txouts[mltx_change_txout_index];
-        has_change = (change_txout.nValue != 0 &&
+        has_change = (change_txout.nValue > 0 &&
                 change_txout.scriptPubKey.size() > 0 &&
                 change_txout.scriptPubKey[0] != OP_RETURN);
 
@@ -373,7 +373,7 @@ BuyTicketTx BuyTicketTx::from_tx(const CTransaction& tx)
     btx.set_stake_txout(stake_txout);
 
     CTxDestination change_destination;
-    if (change_txout.nValue != 0 &&
+    if (change_txout.nValue > 0 &&
             MoneyRange(change_txout.nValue) &&
             ExtractDestination(change_txout.scriptPubKey, change_destination) &&
             IsValidDestination(change_destination))
@@ -509,7 +509,7 @@ bool BuyTicketTx::regenerate_if_needed()
     _tx.vout.clear();
     _tx.vout.push_back(CTxOut(0, _script));
     _tx.vout.push_back(_stake_txout);
-    if (_change_txout.nValue != 0)
+    if (_change_txout.nValue > 0)
         _tx.vout.push_back(_change_txout);
 
     // validation

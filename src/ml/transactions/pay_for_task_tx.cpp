@@ -124,7 +124,7 @@ bool pft_parse_tx(const CTransaction& tx,
 
     stake = tx.vout[mltx_stake_txout_index].nValue;
 
-    if (tx.vout.size() > mltx_change_txout_index && tx.vout[mltx_change_txout_index].nValue != 0)
+    if (tx.vout.size() > mltx_change_txout_index && tx.vout[mltx_change_txout_index].nValue > 0)
         change_txout = tx.vout[mltx_change_txout_index];
     else
         change_txout = CTxOut();
@@ -164,7 +164,7 @@ bool pft_tx(CMutableTransaction& tx,
     tx.vout.clear();
     tx.vout.push_back(script_txouts[0]);
     tx.vout.push_back(CTxOut(stake, CScript()));
-    if (change_txout.nValue != 0)
+    if (!change_txout.IsNull())
         tx.vout.push_back(change_txout);
     for (uint32_t i = 1; i < script_txouts.size(); ++i)
         tx.vout.push_back(script_txouts[i]);
@@ -298,7 +298,7 @@ bool pft_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &s
     bool has_change = false;
     if (txouts.size() >= mltx_change_txout_index + 1) {
         const auto& change_txout = txouts[mltx_change_txout_index];
-        has_change = (change_txout.nValue != 0 &&
+        has_change = (change_txout.nValue > 0 &&
                 change_txout.scriptPubKey.size() > 0 &&
                 change_txout.scriptPubKey[0] != OP_RETURN);
 
@@ -422,7 +422,7 @@ PayForTaskTx PayForTaskTx::from_tx(const CTransaction& tx)
     ptx.set_stake_amount(stake);
 
     CTxDestination change_destination;
-    if (change_txout.nValue != 0 &&
+    if (change_txout.nValue > 0 &&
             MoneyRange(change_txout.nValue) &&
             ExtractDestination(change_txout.scriptPubKey, change_destination) &&
             IsValidDestination(change_destination))
@@ -571,7 +571,7 @@ bool PayForTaskTx::regenerate_if_needed()
     _tx.vout.clear();
     _tx.vout.push_back(script_txouts[0]);
     _tx.vout.push_back(_stake_txout);
-    if (_change_txout.nValue != 0)
+    if (_change_txout.nValue > 0)
         _tx.vout.push_back(_change_txout);
     for (size_t i = 1; i < script_txouts.size(); ++i)
         _tx.vout.push_back(script_txouts[i]);
