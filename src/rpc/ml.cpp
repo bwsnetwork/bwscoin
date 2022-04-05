@@ -47,7 +47,7 @@ UniValue createbuytickettransaction(const JSONRPCRequest& request)
             "       \"stake_address\": \"address\",  (string, required) The address where the staked funds are sent\n"
             "       \"stake_amount\": n,             (numeric, required) The amount of " + CURRENCY_UNIT + " to stake\n"
             "       \"change_address\": \"address\"  (string, optional) The address where the change for this transaction is sent\n"
-            "       \"change_amount\": n             (numeric, optional) The amount of change. Must be present if the change address is\n"
+            "       \"change_amount\": n             (numeric, optional) The amount of change (in" + CURRENCY_UNIT + "). Must be present if the change address is\n"
             "     }\n"
             "3. locktime                             (numeric, optional, default=0) Raw locktime. Non-0 value also locktime-activates inputs\n"
             "4. replaceable                          (boolean, optional, default=false) Marks this transaction as BIP125 replaceable.\n"
@@ -160,20 +160,18 @@ UniValue createbuytickettransaction(const JSONRPCRequest& request)
             if (!IsValidDestination(stake_address))
                 throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWS Coin address: ") + stake_address_string);
         } else if (key == "stake_amount") {
-            int64_t stake_amount_int = ticket_data["stake_amount"].get_int64();
-            if (stake_amount_int == 0 || !MoneyRange(stake_amount_int))
+            stake_amount = AmountFromValue(ticket_data["stake_amount"]);
+            if (stake_amount == 0 || !MoneyRange(stake_amount))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, staked amount is out of range");
-            stake_amount = static_cast<CAmount>(stake_amount_int);
         } else if (key == "change_address") {
             const auto& change_address_string = ticket_data["change_address"].get_str();
             change_address = DecodeDestination(change_address_string);
             if (!IsValidDestination(change_address))
                 throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWS Coin address: ") + change_address_string);
         } else if (key == "change_amount") {
-            int64_t change_amount_int = ticket_data["change_amount"].get_int64();
-            if (change_amount_int == 0 || !MoneyRange(change_amount_int))
+            change_amount = AmountFromValue(ticket_data["change_amount"]);
+            if (change_amount == 0 || !MoneyRange(change_amount))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, change amount is out of range");
-            change_amount = static_cast<CAmount>(change_amount_int);
         }
     }
 
@@ -225,7 +223,7 @@ UniValue createpayfortasktransaction(const JSONRPCRequest& request)
             "       \"task\": \"task\",              (string, required) The string representation of the task details\n"
             "       \"stake_amount\": n,             (numeric, required) The amount of " + CURRENCY_UNIT + " to stake for this task\n"
             "       \"change_address\": \"address\"  (string, optional) The address where the change for this transaction is sent\n"
-            "       \"change_amount\": n             (numeric, optional) The amount of change. Must be present if the change address is\n"
+            "       \"change_amount\": n             (numeric, optional) The amount of change (in" + CURRENCY_UNIT + "). Must be present if the change address is\n"
             "     }\n"
             "3. locktime                             (numeric, optional, default=0) Raw locktime. Non-0 value also locktime-activates inputs\n"
             "4. replaceable                          (boolean, optional, default=false) Marks this transaction as BIP125 replaceable.\n"
@@ -349,20 +347,18 @@ UniValue createpayfortasktransaction(const JSONRPCRequest& request)
             if (!pft_task_json(task_string, task) || !pft_task_valid(task))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, task is not valid");
         } else if (key == "stake_amount") {
-            int64_t stake_amount_int = task_data["stake_amount"].get_int64();
-            if (stake_amount_int == 0 || !MoneyRange(stake_amount_int))
+            stake_amount = AmountFromValue(task_data["stake_amount"]);
+            if (stake_amount == 0 || !MoneyRange(stake_amount))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, staked amount is out of range");
-            stake_amount = static_cast<CAmount>(stake_amount_int);
         } else if (key == "change_address") {
             const auto& change_address_string = task_data["change_address"].get_str();
             change_address = DecodeDestination(change_address_string);
             if (!IsValidDestination(change_address))
                 throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWS Coin address: ") + change_address_string);
         } else if (key == "change_amount") {
-            int64_t change_amount_int = task_data["change_amount"].get_int64();
-            if (change_amount_int == 0 || !MoneyRange(change_amount_int))
+            change_amount = AmountFromValue(task_data["change_amount"]);
+            if (change_amount == 0 || !MoneyRange(change_amount))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, change amount is out of range");
-            change_amount = static_cast<CAmount>(change_amount_int);
         }
     }
 

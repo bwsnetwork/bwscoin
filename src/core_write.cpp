@@ -235,13 +235,13 @@ void MlTxToUniv(BuyTicketTx& btx, UniValue& entry)
 
     UniValue stake{UniValue::VOBJ};
     stake.pushKV("address", EncodeDestination(btx.stake_address()));
-    stake.pushKV("amount", btx.stake_amount());
+    stake.pushKV("amount", ValueFromAmount(btx.stake_amount()));
     entry.pushKV("stake", stake);
 
     if (!btx.change_txout().IsNull()) {
         UniValue change{UniValue::VOBJ};
         change.pushKV("address", EncodeDestination(btx.change_address()));
-        change.pushKV("amount", btx.change_amount());
+        change.pushKV("amount", ValueFromAmount(btx.change_amount()));
         entry.pushKV("change", change);
     }
 }
@@ -267,13 +267,13 @@ void MlTxToUniv(PayForTaskTx& ptx, UniValue& entry)
     entry.pushKV("ticket", ticket);
 
     UniValue stake{UniValue::VOBJ};
-    stake.pushKV("amount", ptx.stake_amount());
+    stake.pushKV("amount", ValueFromAmount(ptx.stake_amount()));
     entry.pushKV("stake", stake);
 
     if (!ptx.change_txout().IsNull()) {
         UniValue change{UniValue::VOBJ};
         change.pushKV("address", EncodeDestination(ptx.change_address()));
-        change.pushKV("amount", ptx.change_amount());
+        change.pushKV("amount", ValueFromAmount(ptx.change_amount()));
         entry.pushKV("change", change);
     }
 }
@@ -295,7 +295,7 @@ void MlTxToUniv(RevokeTicketTx& rtx, UniValue& entry)
 
     UniValue refund{UniValue::VOBJ};
     refund.pushKV("address", EncodeDestination(rtx.refund_address()));
-    refund.pushKV("amount", rtx.refund_amount());
+    refund.pushKV("amount", ValueFromAmount(rtx.refund_amount()));
     entry.pushKV("refund", refund);
 }
 
