@@ -47,6 +47,7 @@ CScript sds_payload(const std::vector<std::vector<unsigned char>>& script_items)
 bool sds_valid(const CScript& script, std::string& reason);
 bool sds_valid(const std::vector<std::vector<unsigned char>>& script_items, std::string& reason);
 
+bool sds_is_structured_data_txout(const CTxOut& txout);
 bool sds_is_first_output(const CTxOut& txout);
 bool sds_is_subsequent_output(const CTxOut& txout);
 

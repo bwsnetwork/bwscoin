@@ -19,6 +19,7 @@
 
 class CCoinsViewCache;
 class CChainParams;
+class Coin;
 class CFeeRate;
 class CValidationState;
 
@@ -72,6 +73,9 @@ bool byt_tx(CMutableTransaction& tx,
 // estimate the fee for the transaction (assumes that
 // the change output is also present)
 CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate);
+
+// verify if certain elements can belong to ByT transactions
+bool byt_is_stake_output(const Coin& coin, const uint32_t txout_index);
 
 // validate the transaction
 bool byt_tx_valid(const CTransaction& tx, std::string& reason);

@@ -199,6 +199,11 @@ CAmount rvt_fee(const CFeeRate& fee_rate)
     return fee;
 }
 
+bool rvt_is_refund_output(const Coin& coin, const uint32_t txout_index)
+{
+    return coin.txType == MLTX_RevokeTicket && txout_index == mltx_refund_txout_index;
+}
+
 bool rvt_tx_valid(const CTransaction& tx, std::string& reason)
 {
     CTxIn ticket_txin;

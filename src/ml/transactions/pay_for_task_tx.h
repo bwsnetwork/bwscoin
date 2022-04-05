@@ -20,6 +20,7 @@
 
 class CChainParams;
 class CCoinsViewCache;
+class Coin;
 class CFeeRate;
 class CValidationState;
 
@@ -74,6 +75,9 @@ bool pft_tx(CMutableTransaction& tx,
             const CAmount& stake,
             const CTxDestination& change_address, const CAmount& change,
             const nlohmann::json& task, const unsigned int version = pft_current_version);
+
+// verify if certain elements can belong to PfT transactions
+bool pft_is_stake_output(const Coin& coin, const uint32_t txout_index);
 
 // validate the transaction
 bool pft_tx_valid(const CTransaction& tx, std::string& reason);

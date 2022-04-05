@@ -195,6 +195,11 @@ bool pft_tx(CMutableTransaction& tx,
                   task, version);
 }
 
+bool pft_is_stake_output(const Coin& coin, const uint32_t txout_index)
+{
+    return coin.txType == MLTX_PayForTask && txout_index == mltx_stake_txout_index;
+}
+
 bool pft_tx_valid(const CTransaction& tx, std::string& reason)
 {
     CTxIn ticket_txin;

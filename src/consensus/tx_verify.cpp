@@ -546,6 +546,8 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
     //if (fCheckStake && txClass == TX_RevokeTicket && !checkVoteOrRevokeTicketInputs(tx, false, state, inputs, nSpendHeight, chainparams))
     //    return false;
 
+    const auto& consensus = chainparams.GetConsensus();
+
     // general inputs check and summation of input amounts
     CAmount nValueIn = 0;
     for (unsigned int i = 0; i < tx.vin.size(); ++i)
@@ -573,6 +575,16 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
           }
         }
 
+        // only certain ML transactions can spend a ticket stake output
+        if (check_ml &&
+                tx_type != MLTX_PayForTask && tx_type != MLTX_RevokeTicket &&
+                byt_is_stake_output(coin, prevout.n))
+            return state.DoS(100, false, REJECT_INVALID, "bad-txns-illegal-spend-of-ticket-stake");
+
+        // a revocation refund can only be spend after the maturity period
+        if (check_ml && rvt_is_refund_output(coin, prevout.n) && nSpendHeight - coin.nHeight < consensus.nMlRewardMaturity)
+            return state.DoS(100, false, REJECT_INVALID, "bad-txns-refund-immature");
+
         // TODO: remove obsolete
         // Unless the tx is a vote or a revocation, it is forbidden to spend ticket stake
         //if (fCheckStake
@@ -596,7 +608,7 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
     // Output amount must not be greater than inputs
     const CAmount value_out = tx.GetValueOut();
     if (nValueIn < value_out) {
-        return state.DoS(100, false, REJECT_INVALID, "bad-txns-in-belowout", false,
+        return state.DoS(100, false, REJECT_INVALID, "bad-txns-in-below-out", false,
             strprintf("value in (%s) < value out (%s)", FormatMoney(nValueIn), FormatMoney(value_out)));
     }
 

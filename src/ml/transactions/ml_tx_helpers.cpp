@@ -40,9 +40,3 @@ bool mltx_is_data_txout(const CTxOut& txout)
 {
     return txout.scriptPubKey.size() > 0 && txout.scriptPubKey[0] == OP_RETURN;
 }
-
-bool mltx_is_structured_data_txout(const CTxOut& txout)
-{
-    std::string reason;
-    return sds_valid(txout.scriptPubKey, reason);
-}

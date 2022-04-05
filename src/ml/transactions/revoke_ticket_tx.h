@@ -16,6 +16,7 @@
 
 class CCoinsViewCache;
 class CChainParams;
+class Coin;
 class CFeeRate;
 class CValidationState;
 
@@ -73,6 +74,9 @@ bool rvt_refund_output(const CTransaction& ticket, const CFeeRate& fee_rate, CTx
 
 // estimate the fee for the transaction
 CAmount rvt_fee(const CFeeRate& fee_rate);
+
+// verify if certain elements can belong to RvT transactions
+bool rvt_is_refund_output(const Coin& coin, const uint32_t txout_index);
 
 // validate the transaction
 bool rvt_tx_valid(const CTransaction& tx, std::string& reason);

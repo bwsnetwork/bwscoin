@@ -93,6 +93,12 @@ bool sds_valid(const std::vector<std::vector<unsigned char>>& script_items, std:
     return true;
 }
 
+bool sds_is_structured_data_txout(const CTxOut& txout)
+{
+    std::string reason;
+    return sds_valid(txout.scriptPubKey, reason);
+}
+
 bool sds_is_first_output(const CTxOut& txout)
 {
     return txout.nValue == 0 &&

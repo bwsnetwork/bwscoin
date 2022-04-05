@@ -211,6 +211,11 @@ CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate)
     return fee;
 }
 
+bool byt_is_stake_output(const Coin& coin, const uint32_t txout_index)
+{
+    return coin.txType == MLTX_BuyTicket && txout_index == mltx_stake_txout_index;
+}
+
 bool byt_tx_valid(const CTransaction& tx, std::string& reason)
 {
     CTxOut stake_txout, change_txout;

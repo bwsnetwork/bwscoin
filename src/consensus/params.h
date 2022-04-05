@@ -188,6 +188,8 @@ struct Params {
     uint16_t nMlTicketMaturity;
     // Number of blocks for tickets to expire after they have matured.
     uint16_t nMlTicketExpiry;
+    // Number of blocks required before a reward or refund can be spent.
+    uint16_t nMlRewardMaturity;
 };
 } // namespace Consensus
 
