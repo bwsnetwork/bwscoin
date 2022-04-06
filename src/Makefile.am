@@ -113,6 +113,7 @@ BWSCOIN_CORE_H = \
   ml/taskinfo_client.h \
   ml/transactions/actor_type.h \
   ml/transactions/buy_ticket_tx.h \
+  ml/transactions/join_task_tx.h \
   ml/transactions/ml_tx_helpers.h \
   ml/transactions/ml_tx_size.h \
   ml/transactions/ml_tx_type.h \
@@ -390,6 +391,7 @@ libbwscoin_common_a_SOURCES = \
   warnings.cpp \
   ml/transactions/actor_type.cpp \
   ml/transactions/buy_ticket_tx.cpp \
+  ml/transactions/join_task_tx.cpp \
   ml/transactions/ml_tx_helpers.cpp \
   ml/transactions/ml_tx_size.cpp \
   ml/transactions/ml_tx_type.cpp \

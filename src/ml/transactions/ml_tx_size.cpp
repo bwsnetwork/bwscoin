@@ -6,6 +6,7 @@
 #include "ml_tx_size.h"
 
 #include <ml/transactions/buy_ticket_tx.h>
+#include <ml/transactions/join_task_tx.h>
 #include <ml/transactions/revoke_ticket_tx.h>
 #include <ml/transactions/pay_for_task_tx.h>
 
@@ -75,11 +76,19 @@ std::vector<size_t> pft_txout_estimated_sizes(const nlohmann::json& task)
     return sizes;
 }
 
+size_t jnt_txout_estimated_size()
+{
+    CScript script;
+    uint256 task_id = uint256S("12345678901234567890123456789012345678901234567890123456789012345678");
+    if (!jnt_script(script, task_id))
+        return 0;
+
+    CTxOut txout{0, script};
+    return GetSerializeSize(txout, SER_NETWORK, PROTOCOL_VERSION);
+}
+
 size_t byt_estimated_size(const unsigned long txin_count, const bool has_change, const bool include_expiry)
 {
-    // since the format of the buy ticket transaction is fixed,
-    // its size can be estimated rather precisely.
-    // A buy ticket transaction contains:
     // version + in count + (txin_count) regular inputs + out count (2|3) + buy ticket script output + stake address output + change output (optional) + locktime + expiry (optional)
 
     return 4
@@ -95,9 +104,6 @@ size_t byt_estimated_size(const unsigned long txin_count, const bool has_change,
 
 size_t rvt_estimated_size(const bool include_expiry)
 {
-    // since the format of the revoke ticket transaction is fixed,
-    // its size can be estimated rather precisely.
-    // A revoke ticket transaction contains:
     // version + in count (1) + (1) regular input + out count (2) + revoke ticket script output + refund address output + locktime + expiry (optional)
 
     return 4
@@ -112,10 +118,6 @@ size_t rvt_estimated_size(const bool include_expiry)
 
 size_t pft_estimated_size(const unsigned long extra_funding_count, const nlohmann::json& task, const bool has_change, const bool include_expiry)
 {
-    // since the format of the pay for task transaction is fixed,
-    // its size can be estimated. However, given the variable size
-    // of the tasks, the estimation might not be exact.
-    // A buy ticket transaction contains:
     // version + in count (funding_count+1) + (1+funding_count) regular inputs + out count (2+) + pay for task first script output + stake address output + change output (optional) + subsequent pay for task script output + locktime + expiry (optional)
 
     const auto& sizes = pft_txout_estimated_sizes(task);
@@ -130,6 +132,20 @@ size_t pft_estimated_size(const unsigned long extra_funding_count, const nlohman
             + p2pkh_txout_estimated_size()
             + (has_change ? p2pkh_txout_estimated_size() : 0)
             + std::accumulate(sizes.begin() + 1, sizes.end(), 0UL)
+            + 4
+            + (include_expiry ? 4 : 0);
+}
+
+size_t jnt_estimated_size(const bool include_expiry)
+{
+    // version + in count (1) + (1) regular input + out count (2) + join script output + stake address output + locktime + expiry (optional)
+
+    return 4
+            + 1
+            + p2pkh_txin_estimated_size()
+            + 1
+            + jnt_txout_estimated_size()
+            + p2pkh_txout_estimated_size()
             + 4
             + (include_expiry ? 4 : 0);
 }

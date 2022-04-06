@@ -18,6 +18,7 @@ enum MLTxType : unsigned int
     MLTX_BuyTicket = 0,
     MLTX_RevokeTicket,
     MLTX_PayForTask,
+    MLTX_JoinTask,
 
     MLTX_Regular,   // this should always immediately precede the count
     MLTX_COUNT

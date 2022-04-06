@@ -80,6 +80,7 @@ const std::string mltx_name(const MLTxType& type)
     case MLTX_BuyTicket: return "buy_ticket"; break;
     case MLTX_RevokeTicket: return "revoke_ticket"; break;
     case MLTX_PayForTask: return "pay_for_task"; break;
+    case MLTX_JoinTask: return "join_task"; break;
     case MLTX_Regular: return "regular"; break;
     default: return "invalid"; break;
     }
