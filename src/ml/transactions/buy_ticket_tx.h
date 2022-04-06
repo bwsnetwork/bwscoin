@@ -33,7 +33,7 @@ extern const unsigned int byt_current_version;   // should be monotonic
 // ticket script
 // (use the output script only if function returns true)
 bool byt_script(CScript& script,
-                const ActorType& actor, const CTxDestination& reward_address, unsigned int version = byt_current_version);
+                const ActorType& actor, const CTxDestination& reward_address, const unsigned int version = byt_current_version);
 
 // validate the script
 // (validation is based on parsing)

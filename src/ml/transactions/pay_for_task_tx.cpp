@@ -16,7 +16,7 @@
 const unsigned int pft_current_version = 0;
 
 bool pft_script(CScript& script,
-                const nlohmann::json& task, unsigned int version)
+                const nlohmann::json& task, const unsigned int version)
 {
     if (version > pft_current_version)
         return false;
@@ -31,7 +31,7 @@ bool pft_script(CScript& script,
 }
 
 bool pft_script(CScript& script,
-                const std::string& task, unsigned int version)
+                const std::string& task, const unsigned int version)
 {
     auto j = nlohmann::json::parse(task);
     return pft_script(script, j, version);

@@ -34,9 +34,9 @@ extern const unsigned int pft_current_version;   // should be monotonic
 // structured script
 // (use the output script only if function returns true)
 bool pft_script(CScript& script,
-                const nlohmann::json& task, unsigned int version = pft_current_version);
+                const nlohmann::json& task, const unsigned int version = pft_current_version);
 bool pft_script(CScript& script,
-                const std::string& task, unsigned int version = pft_current_version);
+                const std::string& task, const unsigned int version = pft_current_version);
 
 // validate the script
 // (validation is based on parsing)

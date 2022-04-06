@@ -17,7 +17,7 @@
 
 const unsigned int rvt_current_version = 0;
 
-bool rvt_script(CScript& script, unsigned int version)
+bool rvt_script(CScript& script, const unsigned int version)
 {
     if (version > rvt_current_version)
         return false;
@@ -47,7 +47,7 @@ bool rvt_parse_script(const CScript& script,
 bool rvt_parse_script(const std::vector<std::vector<unsigned char>> items,
                       unsigned int& version, std::string& reason)
 {
-    if (items.size() < 2) {
+    if (items.size() < 4) {
         reason = "invalid-script-size";
         return false;
     }

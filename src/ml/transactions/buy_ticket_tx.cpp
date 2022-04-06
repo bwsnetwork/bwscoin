@@ -16,7 +16,7 @@
 const unsigned int byt_current_version = 0;
 
 bool byt_script(CScript& script,
-                const ActorType& actor, const CTxDestination& reward_address, unsigned int version)
+                const ActorType& actor, const CTxDestination& reward_address, const unsigned int version)
 {
     if (version > byt_current_version)
         return false;

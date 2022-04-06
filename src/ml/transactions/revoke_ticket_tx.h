@@ -29,7 +29,7 @@ extern const unsigned int rvt_current_version;   // should be monotonic
 
 // structured script
 // (use the output script only if function returns true)
-bool rvt_script(CScript& script, unsigned int version = rvt_current_version);
+bool rvt_script(CScript& script, const unsigned int version = rvt_current_version);
 
 // validate the script
 // (validation is based on parsing)
