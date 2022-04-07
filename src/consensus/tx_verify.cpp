@@ -26,6 +26,7 @@
 #include <ml/transactions/ml_tx_type.h>
 #include <ml/transactions/ml_tx_helpers.h>
 #include <ml/transactions/buy_ticket_tx.h>
+#include <ml/transactions/join_task_tx.h>
 #include <ml/transactions/revoke_ticket_tx.h>
 #include <ml/transactions/pay_for_task_tx.h>
 
@@ -228,6 +229,9 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
             return false;
     } else if (type == MLTX_PayForTask) {
         if (!pft_check_inputs_nc(tx, state) || !pft_check_outputs_nc(tx, state))
+            return false;
+    } else if (type == MLTX_JoinTask) {
+        if (!jnt_check_inputs_nc(tx, state) || !jnt_check_outputs_nc(tx, state))
             return false;
     } else {
         // Previous transaction outputs referenced by the inputs to this transaction must not be null.
@@ -529,6 +533,15 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
 
         if (tx_type == MLTX_PayForTask && !pft_check_inputs(tx, inputs, chainparams, nSpendHeight, state))
             return false;
+
+        if (tx_type == MLTX_JoinTask) {
+            if (!jnt_check_inputs(tx, inputs, state))
+                return false;
+
+            const auto ticket = GetMlTicket(tx.vin[mltx_ticket_txin_index].prevout.hash);
+            if (ticket == nullptr)
+                return state.DoS(100, false, REJECT_INVALID, "bad-ticket-reference");
+        }
     }
 
     // TODO: remove obsolete
@@ -575,15 +588,16 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
           }
         }
 
-        // only certain ML transactions can spend a ticket stake output
-        if (check_ml &&
-                tx_type != MLTX_PayForTask && tx_type != MLTX_RevokeTicket &&
-                byt_is_stake_output(coin, prevout.n))
-            return state.DoS(100, false, REJECT_INVALID, "bad-txns-illegal-spend-of-ticket-stake");
+        if (check_ml) {
+            // only certain ML transactions can spend a ticket stake output
+            if (tx_type != MLTX_PayForTask && tx_type != MLTX_RevokeTicket && tx_type != MLTX_JoinTask &&
+                    byt_is_stake_output(coin, prevout.n))
+                return state.DoS(100, false, REJECT_INVALID, "bad-txns-illegal-spend-of-ticket-stake");
 
-        // a revocation refund can only be spend after the maturity period
-        if (check_ml && rvt_is_refund_output(coin, prevout.n) && nSpendHeight - coin.nHeight < consensus.nMlRewardMaturity)
-            return state.DoS(100, false, REJECT_INVALID, "bad-txns-refund-immature");
+            // a revocation refund can only be spend after the maturity period
+            if (rvt_is_refund_output(coin, prevout.n) && nSpendHeight - coin.nHeight < consensus.nMlRewardMaturity)
+                return state.DoS(100, false, REJECT_INVALID, "bad-txns-refund-immature");
+        }
 
         // TODO: remove obsolete
         // Unless the tx is a vote or a revocation, it is forbidden to spend ticket stake
