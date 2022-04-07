@@ -23,6 +23,7 @@
 #include <ml/transactions/ml_tx_helpers.h>
 #include <ml/transactions/ml_tx_type.h>
 #include <ml/transactions/buy_ticket_tx.h>
+#include <ml/transactions/join_task_tx.h>
 #include <ml/transactions/pay_for_task_tx.h>
 #include <ml/transactions/revoke_ticket_tx.h>
 
@@ -299,6 +300,27 @@ void MlTxToUniv(RevokeTicketTx& rtx, UniValue& entry)
     entry.pushKV("refund", refund);
 }
 
+void MlTxToUniv(JoinTaskTx& jtx, UniValue& entry)
+{
+    if (!jtx.valid()) {
+        entry.pushKV("status", "INVALID!");
+        return;
+    }
+
+    entry.pushKV("version", static_cast<uint64_t>(jtx.version()));
+
+    UniValue ticket{UniValue::VOBJ};
+    const auto& ticket_out = jtx.ticket_txin().prevout;
+    ticket.pushKV("tx", ticket_out.hash.GetHex());
+    ticket.pushKV("n", static_cast<uint64_t>(ticket_out.n));
+    entry.pushKV("ticket", ticket);
+
+    UniValue stake{UniValue::VOBJ};
+    stake.pushKV("address", EncodeDestination(jtx.stake_address()));
+    stake.pushKV("amount", ValueFromAmount(jtx.stake_amount()));
+    entry.pushKV("stake", stake);
+}
+
 void MlTxToUniv(const CTransaction& tx, UniValue& entry)
 {
     // quick checks
@@ -324,6 +346,12 @@ void MlTxToUniv(const CTransaction& tx, UniValue& entry)
         PayForTaskTx ptx = PayForTaskTx::from_tx(tx);
         MlTxToUniv(ptx, ml);
         entry.pushKV("type", PayForTaskTx::name());
+        entry.pushKV("ml", ml);
+    } break;
+    case MLTX_JoinTask: {
+        JoinTaskTx jtx = JoinTaskTx::from_tx(tx);
+        MlTxToUniv(jtx, ml);
+        entry.pushKV("type", JoinTaskTx::name());
         entry.pushKV("ml", ml);
     } break;
     case MLTX_Regular: {

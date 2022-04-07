@@ -213,15 +213,18 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "createbuytickettransaction", 2, "locktime"},
     { "createbuytickettransaction", 3, "replaceable"},
     { "createbuytickettransaction", 4, "expiry"},
+    { "createrevoketickettransaction", 1, "version"},
+    { "createrevoketickettransaction", 2, "locktime"},
+    { "createrevoketickettransaction", 3, "expiry"},
     { "createpayfortasktransaction", 0, "inputs"},
     { "createpayfortasktransaction", 1, "task_data"},
     { "createpayfortasktransaction", 2, "locktime"},
     { "createpayfortasktransaction", 3, "replaceable"},
     { "createpayfortasktransaction", 4, "expiry"},
-    { "createrevoketickettransaction", 1, "version"},
-    { "createrevoketickettransaction", 2, "locktime"},
-    { "createrevoketickettransaction", 3, "replaceable"},
-    { "createrevoketickettransaction", 4, "expiry"}
+    { "createjointasktransaction", 0, "data"},
+    { "createjointasktransaction", 1, "version"},
+    { "createjointasktransaction", 2, "locktime"},
+    { "createjointasktransaction", 3, "expiry"}
 };
 
 class CRPCConvertTable
