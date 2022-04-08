@@ -232,7 +232,7 @@ void MlTxToUniv(BuyTicketTx& btx, UniValue& entry)
 
     entry.pushKV("version", static_cast<uint64_t>(btx.version()));
     entry.pushKV("actor", at_to_string(btx.actor()));
-    entry.pushKV("reward address", EncodeDestination(btx.reward_address()));
+    entry.pushKV("reward_address", EncodeDestination(btx.reward_address()));
 
     UniValue stake{UniValue::VOBJ};
     stake.pushKV("address", EncodeDestination(btx.stake_address()));
@@ -319,6 +319,8 @@ void MlTxToUniv(JoinTaskTx& jtx, UniValue& entry)
     stake.pushKV("address", EncodeDestination(jtx.stake_address()));
     stake.pushKV("amount", ValueFromAmount(jtx.stake_amount()));
     entry.pushKV("stake", stake);
+
+    entry.pushKV("task_id", jtx.task_id().GetHex());
 }
 
 void MlTxToUniv(const CTransaction& tx, UniValue& entry)
