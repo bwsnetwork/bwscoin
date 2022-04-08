@@ -14,6 +14,7 @@
 #include <ml/transactions/ml_tx_size.h>
 #include <ml/transactions/ml_tx_type.h>
 #include <policy/feerate.h>
+#include <json/nlohmann/json.hpp>
 
 const unsigned int jnt_current_version = 0;
 
@@ -189,8 +190,9 @@ bool jnt_stake_amount(const CTransaction& ticket, const CFeeRate& fee_rate, CAmo
     unsigned int version;
     ActorType actor;
     CTxDestination reward_address;
+    nlohmann::json payload;
     std::string reason;
-    if (!byt_parse_tx(ticket, stake_txout, change_txout, script, items, version, actor, reward_address, reason))
+    if (!byt_parse_tx(ticket, stake_txout, change_txout, script, items, version, actor, reward_address, payload, reason))
         return false;
 
     stake = stake_txout.nValue - jnt_fee(fee_rate);

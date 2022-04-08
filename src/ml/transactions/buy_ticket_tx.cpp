@@ -15,8 +15,48 @@
 
 const unsigned int byt_current_version = 0;
 
+uint32_t byt_max_payload_size()
+{
+    static uint32_t max_payload_size = 0;
+
+    if (max_payload_size > 0)
+        return max_payload_size;
+
+    // If the structure of the script changes,
+    // this should be updated as well
+    CScript script = sds_create(SDC_PoUW)
+            << MLTX_BuyTicket << byt_current_version
+            << AT_Client << ToByteVector(uint160()) << 1
+            << std::vector<unsigned char>();
+
+    max_payload_size = sds_max_script_size - script.size() - 2;
+
+    return max_payload_size;
+}
+
 bool byt_script(CScript& script,
-                const ActorType& actor, const CTxDestination& reward_address, const unsigned int version)
+                const ActorType& actor, const CTxDestination& reward_address,
+                const nlohmann::json& payload, const unsigned int version)
+{
+    if (!byt_payload_valid(payload))
+        return false;
+
+    std::vector<std::uint8_t> msg_pack = nlohmann::json::to_msgpack(payload);
+
+    return byt_script(script, actor, reward_address, msg_pack, version);
+}
+
+bool byt_script(CScript& script,
+                const ActorType& actor, const CTxDestination& reward_address,
+                const std::string& payload, const unsigned int version)
+{
+    auto j = nlohmann::json::parse(payload);
+    return byt_script(script, actor, reward_address, j, version);
+}
+
+bool byt_script(CScript& script,
+                const ActorType& actor, const CTxDestination& reward_address,
+                const std::vector<unsigned char>& payload, const unsigned int version)
 {
     if (version > byt_current_version)
         return false;
@@ -34,7 +74,10 @@ bool byt_script(CScript& script,
     else if (address_type == 2)
         address = boost::get<const CScriptID>(reward_address);
 
-    script = sds_create(SDC_PoUW) << MLTX_BuyTicket << version << actor << ToByteVector(address) << address_type;
+    if (payload.size() > byt_max_payload_size())
+        return false;
+
+    script = sds_create(SDC_PoUW) << MLTX_BuyTicket << version << actor << ToByteVector(address) << address_type << payload;
 
     return true;
 }
@@ -49,21 +92,22 @@ bool byt_script_valid(const std::vector<std::vector<unsigned char>> items, std::
     unsigned int version;
     ActorType actor;
     CTxDestination reward_address;
-    return byt_parse_script(items, version, actor, reward_address, reason);
+    nlohmann::json payload;
+    return byt_parse_script(items, version, actor, reward_address, payload, reason);
 }
 
 bool byt_parse_script(const CScript& script,
                       unsigned int& version, ActorType& actor, CTxDestination& reward_address,
-                      std::string& reason)
+                      nlohmann::json& payload, std::string& reason)
 {
-    return byt_parse_script(sds_script_items(script), version, actor, reward_address, reason);
+    return byt_parse_script(sds_script_items(script), version, actor, reward_address, payload, reason);
 }
 
 bool byt_parse_script(const std::vector<std::vector<unsigned char>> items,
                       unsigned int& version, ActorType& actor, CTxDestination& reward_address,
-                      std::string& reason)
+                      nlohmann::json& payload, std::string& reason)
 {
-    if (items.size() != 7) {
+    if (items.size() != 8) {
         reason = "invalid-script-size";
         return false;
     }
@@ -114,7 +158,14 @@ bool byt_parse_script(const std::vector<std::vector<unsigned char>> items,
     else
         reward_address = CScriptID(address);
 
-    return true;
+    try {
+        payload = nlohmann::json::from_msgpack(items[7]);
+        return true;
+    }  catch (...) {
+    }
+
+    reason = "invalid-payload";
+    return false;
 }
 
 bool byt_parse_tx(const CTransaction& tx,
@@ -122,7 +173,7 @@ bool byt_parse_tx(const CTransaction& tx,
                   CScript& script,
                   std::vector<std::vector<unsigned char>> items,
                   unsigned int& version, ActorType& actor, CTxDestination& reward_address,
-                  std::string& reason)
+                  nlohmann::json& payload, std::string& reason)
 {
     // non-contextual validations
 
@@ -145,7 +196,7 @@ bool byt_parse_tx(const CTransaction& tx,
         return false;
 
     items = sds_script_items(script);
-    if (!byt_parse_script(items, version, actor, reward_address, reason))
+    if (!byt_parse_script(items, version, actor, reward_address, payload, reason))
         return false;
 
     return true;
@@ -154,12 +205,13 @@ bool byt_parse_tx(const CTransaction& tx,
 bool byt_tx(CMutableTransaction& tx,
             const std::vector<CTxIn> txins,
             const CTxOut& stake_txout, const CTxOut& change_txout,
-            const ActorType& actor, const CTxDestination& reward_address, const unsigned int version)
+            const ActorType& actor, const CTxDestination& reward_address,
+            nlohmann::json& payload, const unsigned int version)
 {
     // script
 
     CScript script;
-    if (!byt_script(script, actor, reward_address, version))
+    if (!byt_script(script, actor, reward_address, payload, version))
         return false;
 
     // tx construction
@@ -189,13 +241,14 @@ bool byt_tx(CMutableTransaction& tx,
             const std::vector<CTxIn> txins,
             const CTxDestination& stake_address, const CAmount& stake,
             const CTxDestination& change_address, const CAmount& change,
-            const ActorType& actor, const CTxDestination& reward_address, const unsigned int version)
+            const ActorType& actor, const CTxDestination& reward_address,
+            nlohmann::json& payload, const unsigned int version)
 {
     return byt_tx(tx,
                   txins,
                   CTxOut(stake, GetScriptForDestination(stake_address)),
                   CTxOut(change, GetScriptForDestination(change_address)),
-                  actor, reward_address, version);
+                  actor, reward_address, payload, version);
 }
 
 CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate)
@@ -224,11 +277,42 @@ bool byt_tx_valid(const CTransaction& tx, std::string& reason)
     unsigned int version;
     ActorType actor;
     CTxDestination reward_address;
+    nlohmann::json payload;
 
-    if (!byt_parse_tx(tx, stake_txout, change_txout, script, items, version, actor, reward_address, reason))
+    if (!byt_parse_tx(tx, stake_txout, change_txout, script, items, version, actor, reward_address, payload, reason))
         return false;
 
     return true;
+}
+
+bool byt_payload_valid(const nlohmann::json& payload)
+{
+    // TODO: add all necessary validations here!
+    return !payload.empty();
+}
+
+bool byt_payload_string(const nlohmann::json& payload, std::string& str, const int indent)
+{
+    if (!byt_payload_valid(payload))
+        return false;
+
+    str = payload.dump(indent);
+
+    return true;
+}
+
+bool byt_payload_json(const std::string& str, nlohmann::json& payload)
+{
+    if (str.size() <= 0)
+        return false;
+
+    try {
+        payload = nlohmann::json::parse(str);
+        return true;
+    }  catch (...) {
+    }
+
+    return false;
 }
 
 bool byt_check_inputs_nc(const CTransaction& tx, CValidationState &state)
@@ -343,8 +427,9 @@ BuyTicketTx BuyTicketTx::from_script(const CScript& script)
     unsigned int version;
     ActorType actor;
     CTxDestination reward_address;
+    nlohmann::json payload;
     std::string reason;
-    if (!byt_parse_script(script, version, actor, reward_address, reason))
+    if (!byt_parse_script(script, version, actor, reward_address, payload, reason))
         return btx;
 
     btx.set_version(version);
@@ -364,9 +449,10 @@ BuyTicketTx BuyTicketTx::from_tx(const CTransaction& tx)
     unsigned int version;
     ActorType actor;
     CTxDestination reward_address;
+    nlohmann::json payload;
     std::string reason;
 
-    if (!byt_parse_tx(tx, stake_txout, change_txout, script, items, version, actor, reward_address, reason))
+    if (!byt_parse_tx(tx, stake_txout, change_txout, script, items, version, actor, reward_address, payload, reason))
         return btx;
 
     btx.set_version(version);
@@ -416,6 +502,20 @@ void BuyTicketTx::set_reward_address(const CTxDestination& address)
 {
     _reward_address = address;
     _dirty = true;
+}
+
+void BuyTicketTx::set_payload(const nlohmann::json& payload)
+{
+    _payload = payload;
+    _dirty = true;
+}
+
+void BuyTicketTx::set_payload(const std::string& payload)
+{
+    nlohmann::json j;
+    if (!byt_payload_json(payload, j))
+        set_payload(nlohmann::json());
+    set_payload(j);
 }
 
 void BuyTicketTx::set_funding_txins(const std::vector<CTxIn>& txins)
@@ -505,7 +605,7 @@ bool BuyTicketTx::regenerate_if_needed()
 
     // script
 
-    if (!byt_script(_script, _actor, _reward_address, _version))
+    if (!byt_script(_script, _actor, _reward_address, _payload, _version))
         return false;
 
     // transaction

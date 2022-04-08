@@ -15,6 +15,25 @@
 
 const unsigned int pft_current_version = 0;
 
+uint32_t pft_max_payload_size()
+{
+    static uint32_t max_payload_size = 0;
+
+    if (max_payload_size > 0)
+        return max_payload_size;
+
+    std::vector<std::uint8_t> msg_pack = nlohmann::json::to_msgpack(nlohmann::json());
+
+    // If the structure of the script changes,
+    // this shouuld be updated as well
+    CScript script = sds_create(SDC_PoUW)
+            << MLTX_PayForTask << pft_current_version << msg_pack;
+
+    max_payload_size = sds_max_script_size - script.size() - 2;
+
+    return max_payload_size;
+}
+
 bool pft_script(CScript& script,
                 const nlohmann::json& task, const unsigned int version)
 {
@@ -25,6 +44,10 @@ bool pft_script(CScript& script,
         return false;
 
     std::vector<std::uint8_t> msg_pack = nlohmann::json::to_msgpack(task);
+
+    if (msg_pack.size() > pft_max_payload_size())
+        return false;
+
     script = sds_create(SDC_PoUW) << MLTX_PayForTask << version << msg_pack;
 
     return true;

@@ -16,6 +16,7 @@
 #include <pubkey.h>
 #include <script/script.h>
 #include <script/standard.h>
+#include <json/nlohmann/json.hpp>
 
 class CCoinsViewCache;
 class CChainParams;
@@ -30,10 +31,20 @@ extern const unsigned int byt_current_version;   // should be monotonic
 // BuyTicketTx class. However, for complete encapsulation of features
 // and data, use the class.
 
+// the maximum size of the payload script
+uint32_t byt_max_payload_size();
+
 // ticket script
 // (use the output script only if function returns true)
 bool byt_script(CScript& script,
-                const ActorType& actor, const CTxDestination& reward_address, const unsigned int version = byt_current_version);
+                const ActorType& actor, const CTxDestination& reward_address,
+                const nlohmann::json& payload, const unsigned int version = byt_current_version);
+bool byt_script(CScript& script,
+                const ActorType& actor, const CTxDestination& reward_address,
+                const std::string& payload, const unsigned int version = byt_current_version);
+bool byt_script(CScript& script,
+                const ActorType& actor, const CTxDestination& reward_address,
+                const std::vector<unsigned char>& payload, const unsigned int version = byt_current_version);
 
 // validate the script
 // (validation is based on parsing)
@@ -44,10 +55,10 @@ bool byt_script_valid(const std::vector<std::vector<unsigned char>> items, std::
 // (use the output values only if the function returns true)
 bool byt_parse_script(const CScript& script,
                       unsigned int& version, ActorType& actor, CTxDestination& reward_address,
-                      std::string& reason);
+                      nlohmann::json& payload, std::string& reason);
 bool byt_parse_script(const std::vector<std::vector<unsigned char>> items,
                       unsigned int& version, ActorType& actor, CTxDestination& reward_address,
-                      std::string& reason);
+                      nlohmann::json& payload, std::string& reason);
 
 // parse and validate the transaction
 // (use the output values only if the function returns true)
@@ -56,19 +67,21 @@ bool byt_parse_tx(const CTransaction& tx,
                   CScript& script,
                   std::vector<std::vector<unsigned char>> items,
                   unsigned int& version, ActorType& actor, CTxDestination& reward_address,
-                  std::string& reason);
+                  nlohmann::json& payload, std::string& reason);
 
 // generate the transaction
 // (use the output tx only if the function returns true)
 bool byt_tx(CMutableTransaction& tx,
             const std::vector<CTxIn> txins,
             const CTxOut& stake_txout, const CTxOut& change_txout,
-            const ActorType& actor, const CTxDestination& reward_address, const unsigned int version = byt_current_version);
+            const ActorType& actor, const CTxDestination& reward_address,
+            nlohmann::json& payload, const unsigned int version = byt_current_version);
 bool byt_tx(CMutableTransaction& tx,
             const std::vector<CTxIn> txins,
             const CTxDestination& stake_address, const CAmount& stake,
             const CTxDestination& change_address, const CAmount& change,
-            const ActorType& actor, const CTxDestination& reward_address, const unsigned int version = byt_current_version);
+            const ActorType& actor, const CTxDestination& reward_address,
+            nlohmann::json& payload, const unsigned int version = byt_current_version);
 
 // estimate the fee for the transaction (assumes that
 // the change output is also present)
@@ -79,6 +92,14 @@ bool byt_is_stake_output(const Coin& coin, const uint32_t txout_index);
 
 // validate the transaction
 bool byt_tx_valid(const CTransaction& tx, std::string& reason);
+
+// validate the payload
+bool byt_payload_valid(const nlohmann::json& payload);
+
+// payload serialization
+// (use the output tx only if the function returns true)
+bool byt_payload_string(const nlohmann::json& payload, std::string& str, const int indent = -1);
+bool byt_payload_json(const std::string& str, nlohmann::json& payload);
 
 // non-contextual input and output tests
 bool byt_check_inputs_nc(const CTransaction& tx, CValidationState &state);
@@ -110,6 +131,10 @@ public:
 
     const CTxDestination reward_address() const { return _reward_address; }
     void set_reward_address(const CTxDestination& address);
+
+    const nlohmann::json payload() const { return _payload; }
+    void set_payload(const nlohmann::json& payload);
+    void set_payload(const std::string& payload);
 
     const std::vector<CTxIn> funding_txins() const { return _tx.vin; }
     void set_funding_txins(const std::vector<CTxIn>& txins);
@@ -144,6 +169,7 @@ private:
     unsigned int _version;
     ActorType _actor;
     CTxDestination _reward_address;
+    nlohmann::json _payload;
 
     CTxDestination _stake_address;
     CAmount _stake_amount;

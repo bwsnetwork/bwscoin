@@ -23,6 +23,9 @@
 // the index of the transaction's output where the script starts
 extern const uint32_t sds_first_output_index;
 
+// the maximum size of the script, including all elements
+extern const uint32_t sds_max_script_size;
+
 // The following functions help manipulating the SDSs.
 // They provide smaller footprint implementations of features
 // supported by the StructuredData class, for point

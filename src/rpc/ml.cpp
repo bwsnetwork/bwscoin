@@ -45,6 +45,7 @@ UniValue createbuytickettransaction(const JSONRPCRequest& request)
             "       \"version\": n,                  (numeric, optional) The version of the ticket\n"
             "       \"actor\": \"type\",             (string, required) The type of actor (client, miner, ...)\n"
             "       \"reward_address\": \"address\"  (string, required) The address where the reward must be paid\n"
+            "       \"payload\": \"payload\",        (string, required) The string representation of the payload details\n"
             "       \"stake_address\": \"address\",  (string, required) The address where the staked funds are sent\n"
             "       \"stake_amount\": n,             (numeric, required) The amount of " + CURRENCY_UNIT + " to stake\n"
             "       \"change_address\": \"address\"  (string, optional) The address where the change for this transaction is sent\n"
@@ -138,37 +139,50 @@ UniValue createbuytickettransaction(const JSONRPCRequest& request)
     ActorType actor = AT_COUNT;
     CTxDestination reward_address = CNoDestination(), stake_address = CNoDestination(), change_address = CNoDestination();
     CAmount stake_amount = -1, change_amount = -1;
+    nlohmann::json payload;
 
     std::vector<std::string> ticket_data_keys = ticket_data.getKeys();
     for (const auto& key : ticket_data_keys) {
+
         if (key == "version") {
             int64_t version_int = ticket_data["version"].get_int64();
             if (version_int < 0 || version_int > std::numeric_limits<unsigned int>::max() || version_int > byt_current_version)
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, ticket version is out of range");
             version = static_cast<unsigned int>(version_int);
+
         } else if (key == "actor") {
             actor = at_from_string(ticket_data["actor"].get_str());
             if (!at_valid(actor))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, actor is not valid");
+
         } else if (key == "reward_address") {
             const auto& reward_address_string = ticket_data["reward_address"].get_str();
             reward_address = DecodeDestination(reward_address_string);
             if (!IsValidDestination(reward_address))
                 throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWS Coin address: ") + reward_address_string);
+
+        } else if (key == "payload") {
+            const auto& payload_string = ticket_data["payload"].get_str();
+            if (!byt_payload_json(payload_string, payload) || !byt_payload_valid(payload))
+                throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, payload is not valid");
+
         } else if (key == "stake_address") {
             const auto& stake_address_string = ticket_data["stake_address"].get_str();
             stake_address = DecodeDestination(stake_address_string);
             if (!IsValidDestination(stake_address))
                 throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWS Coin address: ") + stake_address_string);
+
         } else if (key == "stake_amount") {
             stake_amount = AmountFromValue(ticket_data["stake_amount"]);
             if (stake_amount == 0 || !MoneyRange(stake_amount))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, staked amount is out of range");
+
         } else if (key == "change_address") {
             const auto& change_address_string = ticket_data["change_address"].get_str();
             change_address = DecodeDestination(change_address_string);
             if (!IsValidDestination(change_address))
                 throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWS Coin address: ") + change_address_string);
+
         } else if (key == "change_amount") {
             change_amount = AmountFromValue(ticket_data["change_amount"]);
             if (change_amount == 0 || !MoneyRange(change_amount))
@@ -179,7 +193,7 @@ UniValue createbuytickettransaction(const JSONRPCRequest& request)
     // transaction
 
     CMutableTransaction mtx;
-    if (!byt_tx(mtx, txins, stake_address, stake_amount, change_address, change_amount, actor, reward_address, version))
+    if (!byt_tx(mtx, txins, stake_address, stake_amount, change_address, change_amount, actor, reward_address, payload, version))
         throw JSONRPCError(RPCErrorCode::INTERNAL_ERROR, "Could not create the transaction");
 
     mtx.nLockTime = lock_time;
@@ -419,24 +433,29 @@ UniValue createpayfortasktransaction(const JSONRPCRequest& request)
 
     std::vector<std::string> task_data_keys = task_data.getKeys();
     for (const auto& key : task_data_keys) {
+
         if (key == "version") {
             int64_t version_int = task_data["version"].get_int64();
             if (version_int < 0 || version_int > std::numeric_limits<unsigned int>::max() || version_int > pft_current_version)
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, task version is out of range");
             version = static_cast<unsigned int>(version_int);
+
         } else if (key == "task") {
             const auto& task_string = task_data["task"].get_str();
             if (!pft_task_json(task_string, task) || !pft_task_valid(task))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, task is not valid");
+
         } else if (key == "stake_amount") {
             stake_amount = AmountFromValue(task_data["stake_amount"]);
             if (stake_amount == 0 || !MoneyRange(stake_amount))
                 throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, staked amount is out of range");
+
         } else if (key == "change_address") {
             const auto& change_address_string = task_data["change_address"].get_str();
             change_address = DecodeDestination(change_address_string);
             if (!IsValidDestination(change_address))
                 throw JSONRPCError(RPCErrorCode::INVALID_ADDRESS_OR_KEY, std::string("Invalid BWS Coin address: ") + change_address_string);
+
         } else if (key == "change_amount") {
             change_amount = AmountFromValue(task_data["change_amount"]);
             if (change_amount == 0 || !MoneyRange(change_amount))

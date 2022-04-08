@@ -40,10 +40,10 @@ size_t p2pkh_txout_estimated_size()
     return 8 + 1 + 1 + 1 + 1 + 20 + 1 + 1;
 }
 
-size_t byt_txout_estimated_size()
+size_t byt_txout_estimated_size(const nlohmann::json& payload)
 {
     CScript script;
-    if (!byt_script(script, AT_Client, CKeyID()))
+    if (!byt_script(script, AT_Client, CKeyID(), payload))
         return 0;
 
     CTxOut txout{0, script};
@@ -87,7 +87,8 @@ size_t jnt_txout_estimated_size()
     return GetSerializeSize(txout, SER_NETWORK, PROTOCOL_VERSION);
 }
 
-size_t byt_estimated_size(const unsigned long txin_count, const bool has_change, const bool include_expiry)
+size_t byt_estimated_size(const unsigned long txin_count, const nlohmann::json& payload,
+                          const bool has_change, const bool include_expiry)
 {
     // version + in count + (txin_count) regular inputs + out count (2|3) + buy ticket script output + stake address output + change output (optional) + locktime + expiry (optional)
 
@@ -95,7 +96,7 @@ size_t byt_estimated_size(const unsigned long txin_count, const bool has_change,
             + 1
             + txin_count * p2pkh_txin_estimated_size()
             + 1
-            + byt_txout_estimated_size()
+            + byt_txout_estimated_size(payload)
             + p2pkh_txout_estimated_size()
             + (has_change ? p2pkh_txout_estimated_size() : 0)
             + 4

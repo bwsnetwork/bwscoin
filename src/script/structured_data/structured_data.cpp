@@ -8,6 +8,7 @@
 #include <script/standard.h>
 
 const uint32_t sds_first_output_index = 0;
+const uint32_t sds_max_script_size = 4096;
 
 std::vector<std::vector<unsigned char>> sds_script_items(const CScript& script)
 {

@@ -175,8 +175,9 @@ bool rvt_refund_output(const CTransaction& ticket, const CFeeRate& fee_rate, CTx
     unsigned int version;
     ActorType actor;
     CTxDestination reward_address;
+    nlohmann::json payload;
     std::string reason;
-    if (!byt_parse_tx(ticket, stake_txout, change_txout, script, items, version, actor, reward_address, reason))
+    if (!byt_parse_tx(ticket, stake_txout, change_txout, script, items, version, actor, reward_address, payload, reason))
         return false;
 
     txout.scriptPubKey = GetScriptForDestination(reward_address);
@@ -306,8 +307,9 @@ bool rvt_check_outputs(const CTransaction& tx, const CTransaction& ticket, CVali
     unsigned int version;
     ActorType actor;
     CTxDestination reward_address;
+    nlohmann::json payload;
     std::string reason;
-    if (!byt_parse_tx(ticket, stake_txout, change_txout, script, items, version, actor, reward_address, reason))
+    if (!byt_parse_tx(ticket, stake_txout, change_txout, script, items, version, actor, reward_address, payload, reason))
         return state.DoS(100, false, REJECT_INVALID, reason);
 
     if (refund_destination.which() != reward_address.which())

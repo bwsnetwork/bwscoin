@@ -31,6 +31,9 @@ extern const unsigned int pft_current_version;   // should be monotonic
 // PayForTaskTx class. However, for complete encapsulation of features
 // and data, use the class.
 
+// the maximum size of the payload script
+uint32_t pft_max_payload_size();
+
 // structured script
 // (use the output script only if function returns true)
 bool pft_script(CScript& script,
