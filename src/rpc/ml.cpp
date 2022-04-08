@@ -529,7 +529,7 @@ UniValue createjointasktransaction(const JSONRPCRequest& request)
 
     // stake address
     const auto& stake_address_obj = data["stake_address"];
-    if (stake_address_obj.empty())
+    if (!stake_address_obj.isStr())
         throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, missing stake address");
     const auto& stake_address_string = stake_address_obj.get_str();
     CTxDestination stake_address = DecodeDestination(stake_address_string);
