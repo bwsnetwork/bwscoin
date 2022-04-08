@@ -260,7 +260,7 @@ UniValue getrawtransaction(const JSONRPCRequest& request)
     UniValue result(UniValue::VOBJ);
 
     bool includeStake = (!gArgs.GetBoolArg("-testnet", false)) || IsBlockAfterHybridConsensusFork(hashBlock);
-    bool includeMl = includeStake;
+    bool includeMl = true;
 
     lt_HashToTransactionMap prevOutMap;
     if (includeStake && ETxClass::TX_RevokeTicket == ParseTxClass(*tx)) {
@@ -377,7 +377,7 @@ UniValue searchrawtransactions(const JSONRPCRequest& request)
                 continue;
             UniValue object(UniValue::VOBJ);
             bool includeStake = (!isTestnet) || IsBlockAfterHybridConsensusFork(hashBlock);
-            bool includeMl = includeStake;
+            bool includeMl = true;
             TxToJSON(*tx, hashBlock, object, includeStake, includeMl, &prevOutMap);
             object.push_back(Pair("hex", strHex));
             result.push_back(object);

@@ -210,7 +210,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.push_back(Pair("merkleroot", block.hashMerkleRoot.GetHex()));
 
     bool includeStake = (!gArgs.GetBoolArg("-testnet", false)) || IsHybridConsensusForkEnabled(blockindex, Params().GetConsensus());
-    bool includeMl = includeStake;
+    bool includeMl = true;
 
     UniValue txs{UniValue::VARR};
     for(const auto& tx : block.vtx)

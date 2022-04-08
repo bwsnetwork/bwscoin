@@ -72,6 +72,7 @@ static int AppInitRawTx(int argc, char* argv[])
         strUsage += HelpMessageOpt("-json", _("Select JSON output"));
         strUsage += HelpMessageOpt("-txid", _("Output only the hex-encoded transaction id of the resultant transaction."));
         strUsage += HelpMessageOpt("-stake", _("Output stake information"));
+        strUsage += HelpMessageOpt("-ml", _("Output machine learning transactions information"));
         AppendParamsHelpMessages(strUsage);
 
         fprintf(stdout, "%s", strUsage.c_str());
@@ -741,7 +742,7 @@ static void OutputTx(const CTransaction& tx)
 {
     if (gArgs.GetBoolArg("-json", false)) {
         bool includeStake = gArgs.GetBoolArg("-stake", false);
-        bool includeMl = includeStake;
+        bool includeMl = gArgs.GetBoolArg("-ml", false);
         OutputTxJSON(tx, includeStake, includeMl);
     } else if (gArgs.GetBoolArg("-txid", false))
         OutputTxHash(tx);
