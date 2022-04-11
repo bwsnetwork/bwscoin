@@ -42,6 +42,10 @@ bool jnt_parse_script(const CScript& script,
 bool jnt_parse_script(const std::vector<std::vector<unsigned char>> items,
                       unsigned int& version, uint256& task_id, std::string& reason);
 
+// parse and validate the transaction, and extract the task id
+// (use the output id only if the function returns true)
+bool jnt_parse_tx(const CTransaction& tx, uint256& task_id, std::string& reason);
+
 // parse and validate the transaction
 // (use the output values only if the function returns true)
 bool jnt_parse_tx(const CTransaction& tx,

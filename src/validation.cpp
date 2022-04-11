@@ -1129,13 +1129,27 @@ CTransactionRef GetMlTicket(const uint256 &ticketTxHash)
     CTransactionRef ticketTxPtr;
     uint256 ticketBlockHash;
     if (GetTransaction(ticketTxHash, ticketTxPtr, Params().GetConsensus(), ticketBlockHash, true
-                      ,false /*mempool search not allowed as it may cause deadlock when called  through ProcessNewBlock*/))
+                      ,false /*mempool search not allowed as it may cause deadlock when called  through ProcessNewBlock*/)) {
+        if (mltx_type(*ticketTxPtr) != MLTX_BuyTicket)
+            return nullptr;
         return ticketTxPtr;
-    else
+    } else
         return nullptr;
 }
 
-
+CTransactionRef GetMlTask(const uint256 &taskId)
+{
+    CTransactionRef taskSubmissionTxPtr;
+    uint256 taskSubmissionBlockHash;
+    if (GetTransaction(taskId, taskSubmissionTxPtr, Params().GetConsensus(), taskSubmissionBlockHash, true
+                      ,false /*mempool search not allowed as it may cause deadlock when called  through ProcessNewBlock*/)) {
+        if (mltx_type(*taskSubmissionTxPtr) != MLTX_PayForTask)
+            return nullptr;
+        return taskSubmissionTxPtr;
+    }
+    else
+        return nullptr;
+}
 
 
 //////////////////////////////////////////////////////////////////////////////

@@ -435,6 +435,7 @@ BuyTicketTx BuyTicketTx::from_script(const CScript& script)
     btx.set_version(version);
     btx.set_actor(actor);
     btx.set_reward_address(reward_address);
+    btx.set_payload(payload);
 
     return btx;
 }
@@ -458,6 +459,7 @@ BuyTicketTx BuyTicketTx::from_tx(const CTransaction& tx)
     btx.set_version(version);
     btx.set_actor(actor);
     btx.set_reward_address(reward_address);
+    btx.set_payload(payload);
 
     btx.set_funding_txins(tx.vin);
 

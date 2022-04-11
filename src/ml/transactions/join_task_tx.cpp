@@ -88,6 +88,16 @@ bool jnt_parse_script(const std::vector<std::vector<unsigned char>> items,
     return true;
 }
 
+bool jnt_parse_tx(const CTransaction& tx, uint256& task_id, std::string& reason)
+{
+    CTxIn ticket_txin;
+    CTxOut stake_txout;
+    CScript script;
+    std::vector<std::vector<unsigned char>> items;
+    unsigned int version;
+    return jnt_parse_tx(tx, ticket_txin, stake_txout, script, items, task_id, version, reason);
+}
+
 bool jnt_parse_tx(const CTransaction& tx,
                   CTxIn& ticket_txin,
                   CTxOut& stake_txout,

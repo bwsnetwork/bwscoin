@@ -233,6 +233,11 @@ void MlTxToUniv(BuyTicketTx& btx, UniValue& entry)
     entry.pushKV("version", static_cast<uint64_t>(btx.version()));
     entry.pushKV("actor", at_to_string(btx.actor()));
     entry.pushKV("reward_address", EncodeDestination(btx.reward_address()));
+    std::string payload_str;
+    if (byt_payload_string(btx.payload(), payload_str))
+        entry.pushKV("payload", payload_str);
+    else
+        entry.pushKV("payload", "invalid");
 
     UniValue stake{UniValue::VOBJ};
     stake.pushKV("address", EncodeDestination(btx.stake_address()));

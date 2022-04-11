@@ -541,6 +541,15 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
             const auto ticket = GetMlTicket(tx.vin[mltx_ticket_txin_index].prevout.hash);
             if (ticket == nullptr)
                 return state.DoS(100, false, REJECT_INVALID, "bad-ticket-reference");
+
+            uint256 task_id;
+            std::string reason;
+            if (!jnt_parse_tx(tx, task_id, reason))
+                return state.DoS(100, false, REJECT_INVALID, "jointask-parsing-failed");
+
+            const auto task = GetMlTask(task_id);
+            if (task == nullptr)
+                return state.DoS(100, false, REJECT_INVALID, "bad-task-reference");
         }
     }
 
