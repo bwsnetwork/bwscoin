@@ -192,6 +192,21 @@ bool jnt_tx(CMutableTransaction& tx,
                   task_id, version);
 }
 
+bool jnt_tx_valid(const CTransaction& tx, std::string& reason)
+{
+    CTxIn ticket_txin;
+    CTxOut stake_txout;
+    CScript script;
+    std::vector<std::vector<unsigned char>> items;
+    unsigned int version;
+    uint256 task_id;
+
+    if (!jnt_parse_tx(tx, ticket_txin, stake_txout, script, items, task_id, version, reason))
+        return false;
+
+    return true;
+}
+
 bool jnt_stake_amount(const CTransaction& ticket, const CFeeRate& fee_rate, CAmount& stake)
 {
     CTxOut stake_txout, change_txout;
@@ -210,37 +225,9 @@ bool jnt_stake_amount(const CTransaction& ticket, const CFeeRate& fee_rate, CAmo
     return true;
 }
 
-CAmount jnt_fee(const CFeeRate& fee_rate)
-{
-    const auto& size = jnt_estimated_size(true);
-    if (size <= 0)
-        return 0;
-
-    const auto& fee = fee_rate.GetFee(size);
-    if (fee <= 0)
-        return 0;
-
-    return fee;
-}
-
 bool jnt_is_stake_output(const Coin& coin, const uint32_t txout_index)
 {
     return coin.txType == MLTX_JoinTask && txout_index == mltx_stake_txout_index;
-}
-
-bool jnt_tx_valid(const CTransaction& tx, std::string& reason)
-{
-    CTxIn ticket_txin;
-    CTxOut stake_txout;
-    CScript script;
-    std::vector<std::vector<unsigned char>> items;
-    unsigned int version;
-    uint256 task_id;
-
-    if (!jnt_parse_tx(tx, ticket_txin, stake_txout, script, items, task_id, version, reason))
-        return false;
-
-    return true;
 }
 
 bool jnt_check_inputs_nc(const CTransaction& tx, CValidationState &state)
@@ -307,6 +294,19 @@ bool jnt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CVa
         return state.DoS(100, false, REJECT_INVALID, "ticket-stake-missingorspent");
 
     return true;
+}
+
+CAmount jnt_fee(const CFeeRate& fee_rate)
+{
+    const auto& size = jnt_estimated_size(true);
+    if (size <= 0)
+        return 0;
+
+    const auto& fee = fee_rate.GetFee(size);
+    if (fee <= 0)
+        return 0;
+
+    return fee;
 }
 
 JoinTaskTx JoinTaskTx::from_script(const CScript& script)

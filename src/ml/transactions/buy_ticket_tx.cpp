@@ -15,25 +15,6 @@
 
 const unsigned int byt_current_version = 0;
 
-uint32_t byt_max_payload_size()
-{
-    static uint32_t max_payload_size = 0;
-
-    if (max_payload_size > 0)
-        return max_payload_size;
-
-    // If the structure of the script changes,
-    // this should be updated as well
-    CScript script = sds_create(SDC_PoUW)
-            << MLTX_BuyTicket << byt_current_version
-            << AT_Client << ToByteVector(uint160()) << 1
-            << std::vector<unsigned char>();
-
-    max_payload_size = sds_max_script_size - script.size() - 2;
-
-    return max_payload_size;
-}
-
 bool byt_script(CScript& script,
                 const ActorType& actor, const CTxDestination& reward_address,
                 const nlohmann::json& payload, const unsigned int version)
@@ -168,6 +149,55 @@ bool byt_parse_script(const std::vector<std::vector<unsigned char>> items,
     return false;
 }
 
+uint32_t byt_max_payload_size()
+{
+    static uint32_t max_payload_size = 0;
+
+    if (max_payload_size > 0)
+        return max_payload_size;
+
+    // If the structure of the script changes,
+    // this should be updated as well
+    CScript script = sds_create(SDC_PoUW)
+            << MLTX_BuyTicket << byt_current_version
+            << AT_Client << ToByteVector(uint160()) << 1
+            << std::vector<unsigned char>();
+
+    max_payload_size = sds_max_script_size - script.size() - 2;
+
+    return max_payload_size;
+}
+
+bool byt_payload_valid(const nlohmann::json& payload)
+{
+    // TODO: add all necessary validations here!
+    return !payload.empty();
+}
+
+bool byt_payload_string(const nlohmann::json& payload, std::string& str, const int indent)
+{
+    if (!byt_payload_valid(payload))
+        return false;
+
+    str = payload.dump(indent);
+
+    return true;
+}
+
+bool byt_payload_json(const std::string& str, nlohmann::json& payload)
+{
+    if (str.size() <= 0)
+        return false;
+
+    try {
+        payload = nlohmann::json::parse(str);
+        return true;
+    }  catch (...) {
+    }
+
+    return false;
+}
+
 bool byt_parse_tx(const CTransaction& tx,
                   CTxOut& stake_txout, CTxOut& change_txout,
                   CScript& script,
@@ -251,24 +281,6 @@ bool byt_tx(CMutableTransaction& tx,
                   actor, reward_address, payload, version);
 }
 
-CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate)
-{
-    const auto& size = byt_estimated_size(txin_count, true, true);
-    if (size <= 0)
-        return 0;
-
-    const auto& fee = fee_rate.GetFee(size);
-    if (fee <= 0)
-        return 0;
-
-    return fee;
-}
-
-bool byt_is_stake_output(const Coin& coin, const uint32_t txout_index)
-{
-    return coin.txType == MLTX_BuyTicket && txout_index == mltx_stake_txout_index;
-}
-
 bool byt_tx_valid(const CTransaction& tx, std::string& reason)
 {
     CTxOut stake_txout, change_txout;
@@ -285,34 +297,9 @@ bool byt_tx_valid(const CTransaction& tx, std::string& reason)
     return true;
 }
 
-bool byt_payload_valid(const nlohmann::json& payload)
+bool byt_is_stake_output(const Coin& coin, const uint32_t txout_index)
 {
-    // TODO: add all necessary validations here!
-    return !payload.empty();
-}
-
-bool byt_payload_string(const nlohmann::json& payload, std::string& str, const int indent)
-{
-    if (!byt_payload_valid(payload))
-        return false;
-
-    str = payload.dump(indent);
-
-    return true;
-}
-
-bool byt_payload_json(const std::string& str, nlohmann::json& payload)
-{
-    if (str.size() <= 0)
-        return false;
-
-    try {
-        payload = nlohmann::json::parse(str);
-        return true;
-    }  catch (...) {
-    }
-
-    return false;
+    return coin.txType == MLTX_BuyTicket && txout_index == mltx_stake_txout_index;
 }
 
 bool byt_check_inputs_nc(const CTransaction& tx, CValidationState &state)
@@ -418,6 +405,19 @@ bool byt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CVa
     }
 
     return true;
+}
+
+CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate)
+{
+    const auto& size = byt_estimated_size(txin_count, true, true);
+    if (size <= 0)
+        return 0;
+
+    const auto& fee = fee_rate.GetFee(size);
+    if (fee <= 0)
+        return 0;
+
+    return fee;
 }
 
 BuyTicketTx BuyTicketTx::from_script(const CScript& script)

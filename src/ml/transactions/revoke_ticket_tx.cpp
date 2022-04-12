@@ -167,6 +167,20 @@ bool rvt_tx(CMutableTransaction& tx,
                   version);
 }
 
+bool rvt_tx_valid(const CTransaction& tx, std::string& reason)
+{
+    CTxIn ticket_txin;
+    CTxOut refund_txout;
+    CScript script;
+    std::vector<std::vector<unsigned char>> items;
+    unsigned int version;
+
+    if (!rvt_parse_tx(tx, ticket_txin, refund_txout, script, items, version, reason))
+        return false;
+
+    return true;
+}
+
 bool rvt_refund_output(const CTransaction& ticket, const CFeeRate& fee_rate, CTxOut& txout)
 {
     CTxOut stake_txout, change_txout;
@@ -187,36 +201,9 @@ bool rvt_refund_output(const CTransaction& ticket, const CFeeRate& fee_rate, CTx
     return true;
 }
 
-CAmount rvt_fee(const CFeeRate& fee_rate)
-{
-    const auto& size = rvt_estimated_size(true);
-    if (size <= 0)
-        return 0;
-
-    const auto& fee = fee_rate.GetFee(size);
-    if (fee <= 0)
-        return 0;
-
-    return fee;
-}
-
 bool rvt_is_refund_output(const Coin& coin, const uint32_t txout_index)
 {
     return coin.txType == MLTX_RevokeTicket && txout_index == mltx_refund_txout_index;
-}
-
-bool rvt_tx_valid(const CTransaction& tx, std::string& reason)
-{
-    CTxIn ticket_txin;
-    CTxOut refund_txout;
-    CScript script;
-    std::vector<std::vector<unsigned char>> items;
-    unsigned int version;
-
-    if (!rvt_parse_tx(tx, ticket_txin, refund_txout, script, items, version, reason))
-        return false;
-
-    return true;
 }
 
 bool rvt_check_inputs_nc(const CTransaction& tx, CValidationState &state)
@@ -325,6 +312,19 @@ bool rvt_check_outputs(const CTransaction& tx, const CTransaction& ticket, CVali
         return state.DoS(100, false, REJECT_INVALID, "incorrect-refund-address");
 
     return true;
+}
+
+CAmount rvt_fee(const CFeeRate& fee_rate)
+{
+    const auto& size = rvt_estimated_size(true);
+    if (size <= 0)
+        return 0;
+
+    const auto& fee = fee_rate.GetFee(size);
+    if (fee <= 0)
+        return 0;
+
+    return fee;
 }
 
 RevokeTicketTx RevokeTicketTx::from_script(const CScript& script)

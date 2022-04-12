@@ -31,8 +31,7 @@ extern const unsigned int pft_current_version;   // should be monotonic
 // PayForTaskTx class. However, for complete encapsulation of features
 // and data, use the class.
 
-// the maximum size of the payload script
-uint32_t pft_max_payload_size();
+// Script
 
 // structured script
 // (use the output script only if function returns true)
@@ -54,6 +53,21 @@ bool pft_parse_script(const CScript& script,
 bool pft_parse_script(const std::vector<std::vector<unsigned char>> items,
                       unsigned int& version, nlohmann::json& task,
                       std::string& reason);
+
+// Task
+
+// the maximum size of the task script
+uint32_t pft_max_task_size();
+
+// validate the task
+bool pft_task_valid(const nlohmann::json& task);
+
+// task serialization
+// (use the output tx only if the function returns true)
+bool pft_task_string(const nlohmann::json& task, std::string& str, const int indent = -1);
+bool pft_task_json(const std::string& str, nlohmann::json& task);
+
+// Transaction
 
 // parse and validate the transaction
 // (use the output values only if the function returns true)
@@ -79,23 +93,13 @@ bool pft_tx(CMutableTransaction& tx,
             const CTxDestination& change_address, const CAmount& change,
             const nlohmann::json& task, const unsigned int version = pft_current_version);
 
-// verify if certain elements can belong to PfT transactions
-bool pft_is_stake_output(const Coin& coin, const uint32_t txout_index);
-
 // validate the transaction
 bool pft_tx_valid(const CTransaction& tx, std::string& reason);
 
-// validate the task
-bool pft_task_valid(const nlohmann::json& task);
+// Inputs and outputs
 
-// task serialization
-// (use the output tx only if the function returns true)
-bool pft_task_string(const nlohmann::json& task, std::string& str, const int indent = -1);
-bool pft_task_json(const std::string& str, nlohmann::json& task);
-
-// calculate the fee for the transaction (assumes that
-// the change output is also present)
-CAmount pft_fee(const unsigned int extra_funding_count, const nlohmann::json& task, const CFeeRate& fee_rate);
+// verify if certain elements can belong to PfT transactions
+bool pft_is_stake_output(const Coin& coin, const uint32_t txout_index);
 
 // non-contextual input and output tests
 bool pft_check_inputs_nc(const CTransaction& tx, CValidationState &state);
@@ -105,6 +109,12 @@ bool pft_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &s
 
 // contextual input tests
 bool pft_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, const CChainParams& chain_params, const int spend_height, CValidationState &state);
+
+// Other
+
+// calculate the fee for the transaction (assumes that
+// the change output is also present)
+CAmount pft_fee(const unsigned int extra_funding_count, const nlohmann::json& task, const CFeeRate& fee_rate);
 
 // Wrapper class for Pay for Task transactions
 

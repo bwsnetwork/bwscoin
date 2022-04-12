@@ -15,25 +15,6 @@
 
 const unsigned int pft_current_version = 0;
 
-uint32_t pft_max_payload_size()
-{
-    static uint32_t max_payload_size = 0;
-
-    if (max_payload_size > 0)
-        return max_payload_size;
-
-    std::vector<std::uint8_t> msg_pack = nlohmann::json::to_msgpack(nlohmann::json());
-
-    // If the structure of the script changes,
-    // this shouuld be updated as well
-    CScript script = sds_create(SDC_PoUW)
-            << MLTX_PayForTask << pft_current_version << msg_pack;
-
-    max_payload_size = sds_max_script_size - script.size() - 2;
-
-    return max_payload_size;
-}
-
 bool pft_script(CScript& script,
                 const nlohmann::json& task, const unsigned int version)
 {
@@ -45,7 +26,7 @@ bool pft_script(CScript& script,
 
     std::vector<std::uint8_t> msg_pack = nlohmann::json::to_msgpack(task);
 
-    if (msg_pack.size() > pft_max_payload_size())
+    if (msg_pack.size() > pft_max_task_size())
         return false;
 
     script = sds_create(SDC_PoUW) << MLTX_PayForTask << version << msg_pack;
@@ -117,6 +98,55 @@ bool pft_parse_script(const std::vector<std::vector<unsigned char>> items,
     }
 
     reason = "invalid-task";
+    return false;
+}
+
+uint32_t pft_max_task_size()
+{
+    static uint32_t max_task_size = 0;
+
+    if (max_task_size > 0)
+        return max_task_size;
+
+    std::vector<std::uint8_t> msg_pack = nlohmann::json::to_msgpack(nlohmann::json());
+
+    // If the structure of the script changes,
+    // this shouuld be updated as well
+    CScript script = sds_create(SDC_PoUW)
+            << MLTX_PayForTask << pft_current_version << msg_pack;
+
+    max_task_size = sds_max_script_size - script.size() - 2;
+
+    return max_task_size;
+}
+
+bool pft_task_valid(const nlohmann::json& task)
+{
+    // TODO: add all necessary validations here!
+    return !task.empty();
+}
+
+bool pft_task_string(const nlohmann::json& task, std::string& str, const int indent)
+{
+    if (!pft_task_valid(task))
+        return false;
+
+    str = task.dump(indent);
+
+    return true;
+}
+
+bool pft_task_json(const std::string& str, nlohmann::json& task)
+{
+    if (str.size() <= 0)
+        return false;
+
+    try {
+        task = nlohmann::json::parse(str);
+        return true;
+    }  catch (...) {
+    }
+
     return false;
 }
 
@@ -218,11 +248,6 @@ bool pft_tx(CMutableTransaction& tx,
                   task, version);
 }
 
-bool pft_is_stake_output(const Coin& coin, const uint32_t txout_index)
-{
-    return coin.txType == MLTX_PayForTask && txout_index == mltx_stake_txout_index;
-}
-
 bool pft_tx_valid(const CTransaction& tx, std::string& reason)
 {
     CTxIn ticket_txin;
@@ -240,47 +265,9 @@ bool pft_tx_valid(const CTransaction& tx, std::string& reason)
     return true;
 }
 
-bool pft_task_valid(const nlohmann::json& task)
+bool pft_is_stake_output(const Coin& coin, const uint32_t txout_index)
 {
-    // TODO: add all necessary validations here!
-    return !task.empty();
-}
-
-bool pft_task_string(const nlohmann::json& task, std::string& str, const int indent)
-{
-    if (!pft_task_valid(task))
-        return false;
-
-    str = task.dump(indent);
-
-    return true;
-}
-
-bool pft_task_json(const std::string& str, nlohmann::json& task)
-{
-    if (str.size() <= 0)
-        return false;
-
-    try {
-        task = nlohmann::json::parse(str);
-        return true;
-    }  catch (...) {
-    }
-
-    return false;
-}
-
-CAmount pft_fee(const unsigned int extra_funding_count, const nlohmann::json& task, const CFeeRate& fee_rate)
-{
-    const auto size = pft_estimated_size(extra_funding_count, task, true, true);
-    if (size <= 0)
-        return 0;
-
-    const auto fee = fee_rate.GetFee(size);
-    if (fee <= 0)
-        return 0;
-
-    return fee;
+    return coin.txType == MLTX_PayForTask && txout_index == mltx_stake_txout_index;
 }
 
 bool pft_check_inputs_nc(const CTransaction& tx, CValidationState &state)
@@ -406,6 +393,19 @@ bool pft_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, con
     }
 
     return true;
+}
+
+CAmount pft_fee(const unsigned int extra_funding_count, const nlohmann::json& task, const CFeeRate& fee_rate)
+{
+    const auto size = pft_estimated_size(extra_funding_count, task, true, true);
+    if (size <= 0)
+        return 0;
+
+    const auto fee = fee_rate.GetFee(size);
+    if (fee <= 0)
+        return 0;
+
+    return fee;
 }
 
 PayForTaskTx PayForTaskTx::from_script(const CScript& script)

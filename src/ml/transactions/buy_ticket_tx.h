@@ -31,8 +31,7 @@ extern const unsigned int byt_current_version;   // should be monotonic
 // BuyTicketTx class. However, for complete encapsulation of features
 // and data, use the class.
 
-// the maximum size of the payload script
-uint32_t byt_max_payload_size();
+// Script
 
 // ticket script
 // (use the output script only if function returns true)
@@ -60,6 +59,21 @@ bool byt_parse_script(const std::vector<std::vector<unsigned char>> items,
                       unsigned int& version, ActorType& actor, CTxDestination& reward_address,
                       nlohmann::json& payload, std::string& reason);
 
+// Payload
+
+// the maximum size of the payload script
+uint32_t byt_max_payload_size();
+
+// validate the payload
+bool byt_payload_valid(const nlohmann::json& payload);
+
+// payload serialization
+// (use the output tx only if the function returns true)
+bool byt_payload_string(const nlohmann::json& payload, std::string& str, const int indent = -1);
+bool byt_payload_json(const std::string& str, nlohmann::json& payload);
+
+// Transaction
+
 // parse and validate the transaction
 // (use the output values only if the function returns true)
 bool byt_parse_tx(const CTransaction& tx,
@@ -83,23 +97,13 @@ bool byt_tx(CMutableTransaction& tx,
             const ActorType& actor, const CTxDestination& reward_address,
             nlohmann::json& payload, const unsigned int version = byt_current_version);
 
-// estimate the fee for the transaction (assumes that
-// the change output is also present)
-CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate);
-
-// verify if certain elements can belong to ByT transactions
-bool byt_is_stake_output(const Coin& coin, const uint32_t txout_index);
-
 // validate the transaction
 bool byt_tx_valid(const CTransaction& tx, std::string& reason);
 
-// validate the payload
-bool byt_payload_valid(const nlohmann::json& payload);
+// Inputs and outputs
 
-// payload serialization
-// (use the output tx only if the function returns true)
-bool byt_payload_string(const nlohmann::json& payload, std::string& str, const int indent = -1);
-bool byt_payload_json(const std::string& str, nlohmann::json& payload);
+// verify if certain elements can belong to ByT transactions
+bool byt_is_stake_output(const Coin& coin, const uint32_t txout_index);
 
 // non-contextual input and output tests
 bool byt_check_inputs_nc(const CTransaction& tx, CValidationState &state);
@@ -109,6 +113,13 @@ bool byt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &s
 
 // contextual input and output tests
 bool byt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CValidationState &state);
+
+// Other
+
+// estimate the fee for the transaction (assumes that
+// the change output is also present)
+CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate);
+
 
 // Wrapper class for Buy Ticket transactions
 

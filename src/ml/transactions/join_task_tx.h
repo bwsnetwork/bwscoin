@@ -26,6 +26,8 @@ extern const unsigned int jnt_current_version;   // should be monotonic
 // JoinTaskTx class. However, for complete encapsulation of features
 // and data, use the class.
 
+// Script
+
 // structured script
 // (use the output script only if function returns true)
 bool jnt_script(CScript& script, const uint256& task_id, const unsigned int version = jnt_current_version);
@@ -41,6 +43,8 @@ bool jnt_parse_script(const CScript& script,
                       unsigned int& version, uint256& task_id, std::string& reason);
 bool jnt_parse_script(const std::vector<std::vector<unsigned char>> items,
                       unsigned int& version, uint256& task_id, std::string& reason);
+
+// Transaction
 
 // parse and validate the transaction, and extract the task id
 // (use the output id only if the function returns true)
@@ -71,19 +75,18 @@ bool jnt_tx(CMutableTransaction& tx,
             const CTxDestination& stake_address, const CAmount& stake,
             const uint256& task_id, const unsigned int version = jnt_current_version);
 
+// validate the transaction
+bool jnt_tx_valid(const CTransaction& tx, std::string& reason);
+
+// Inputs and outputs
+
 // generate the required stake amount
 // (parses ticket internally)
 // (use the output only if the function returns true)
 bool jnt_stake_amount(const CTransaction& ticket, const CFeeRate& fee_rate, CAmount& stake);
 
-// estimate the fee for the transaction
-CAmount jnt_fee(const CFeeRate& fee_rate);
-
 // verify if certain elements can belong to JnT transactions
 bool jnt_is_stake_output(const Coin& coin, const uint32_t txout_index);
-
-// validate the transaction
-bool jnt_tx_valid(const CTransaction& tx, std::string& reason);
 
 // non-contextual input and output tests
 bool jnt_check_inputs_nc(const CTransaction& tx, CValidationState &state);
@@ -93,6 +96,11 @@ bool jnt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &s
 
 // contextual input tests
 bool jnt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CValidationState &state);
+
+// Other
+
+// estimate the fee for the transaction
+CAmount jnt_fee(const CFeeRate& fee_rate);
 
 //// Wrapper class for Join Task transactions
 
