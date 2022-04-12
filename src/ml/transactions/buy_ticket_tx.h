@@ -112,6 +112,7 @@ bool byt_check_outputs_nc(const CTransaction& tx, CValidationState &state);
 bool byt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &state);
 
 // contextual input and output tests
+// (these also perform the non-contextual verifications)
 bool byt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CValidationState &state);
 
 // Other
@@ -119,7 +120,6 @@ bool byt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CVa
 // estimate the fee for the transaction (assumes that
 // the change output is also present)
 CAmount byt_fee(const unsigned int txin_count, const CFeeRate& fee_rate);
-
 
 // Wrapper class for Buy Ticket transactions
 

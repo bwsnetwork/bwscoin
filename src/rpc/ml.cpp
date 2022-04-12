@@ -559,6 +559,9 @@ UniValue createjointasktransaction(const JSONRPCRequest& request)
     uint256 task_id = ParseHashO(data, "task_id");
     if (task_id.IsNull())
         throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, null task id");
+    const auto& task = GetMlTask(task_id);
+    if (task == nullptr)
+        throw JSONRPCError(RPCErrorCode::INVALID_PARAMETER, "Invalid parameter, task not found");
 
     // fee
     FeeCalculation fee_calculation;

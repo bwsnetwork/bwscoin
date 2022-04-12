@@ -88,13 +88,14 @@ bool jnt_stake_amount(const CTransaction& ticket, const CFeeRate& fee_rate, CAmo
 // verify if certain elements can belong to JnT transactions
 bool jnt_is_stake_output(const Coin& coin, const uint32_t txout_index);
 
-// non-contextual input and output tests
+// non-contextual input and output verifications
 bool jnt_check_inputs_nc(const CTransaction& tx, CValidationState &state);
 bool jnt_check_inputs_nc(const std::vector<CTxIn>& txins, CValidationState &state);
 bool jnt_check_outputs_nc(const CTransaction& tx, CValidationState &state);
 bool jnt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &state);
 
 // contextual input tests
+// (these also perform the non-contextual verifications)
 bool jnt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, CValidationState &state);
 
 // Other

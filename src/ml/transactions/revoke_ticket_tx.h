@@ -91,6 +91,7 @@ bool rvt_check_outputs_nc(const CTransaction& tx, CValidationState &state);
 bool rvt_check_outputs_nc(const std::vector<CTxOut>& txouts, CValidationState &state);
 
 // contextual input tests
+// (these also perform the non-contextual verifications)
 bool rvt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, const CChainParams& chain_params, const int spend_height, CValidationState &state);
 bool rvt_check_outputs(const CTransaction& tx, const CTransaction& ticket, CValidationState &state);
 

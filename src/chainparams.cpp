@@ -296,6 +296,7 @@ public:
         consensus.nMlTicketMaturity = 100;
         consensus.nMlTicketExpiry = 1000;
         consensus.nMlRewardMaturity = 100;
+        consensus.nMlTaskMaturity = 6;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -506,6 +507,7 @@ public:
         consensus.nMlTicketMaturity = 100;
         consensus.nMlTicketExpiry = 1000;
         consensus.nMlRewardMaturity = 100;
+        consensus.nMlTaskMaturity = 6;
 
         pchMessageStart[0] = 0xd8;
         pchMessageStart[1] = 0xf0;
@@ -709,6 +711,7 @@ public:
         consensus.nMlTicketMaturity = 100;
         consensus.nMlTicketExpiry = 1000;
         consensus.nMlRewardMaturity = 100;
+        consensus.nMlTaskMaturity = 6;
 
         pchMessageStart[0] = 0xfe;
         pchMessageStart[1] = 0xf0;

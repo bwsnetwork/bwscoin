@@ -190,6 +190,8 @@ struct Params {
     uint16_t nMlTicketExpiry;
     // Number of blocks required before a reward or refund can be spent.
     uint16_t nMlRewardMaturity;
+    // Number of blocks required before a task can be joined.
+    uint16_t nMlTaskMaturity;
 };
 } // namespace Consensus
 

@@ -278,9 +278,6 @@ bool rvt_check_inputs(const CTransaction& tx, const CCoinsViewCache& inputs, con
 
 bool rvt_check_outputs(const CTransaction& tx, const CTransaction& ticket, CValidationState &state)
 {
-    if (!rvt_check_inputs_nc(tx, state))
-        return false;
-
     if (!rvt_check_outputs_nc(tx, state))
         return false;
 

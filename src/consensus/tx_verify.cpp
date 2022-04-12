@@ -506,6 +506,8 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
                          strprintf("%s: inputs missing/spent", __func__));
     }
 
+    const auto& consensus = chainparams.GetConsensus();
+
     // TODO: remove obsolete
     // do not check test transactions on the testnet chain that are before the hybrid consensus fork
     //bool fCheckStake = false; //(!gArgs.GetBoolArg("-testnet", false)) || IsHybridConsensusForkEnabled(nSpendHeight, chainparams.GetConsensus());
@@ -550,6 +552,14 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
             const auto task = GetMlTask(task_id);
             if (task == nullptr)
                 return state.DoS(100, false, REJECT_INVALID, "bad-task-reference");
+
+            // a task can only be joined after being mature
+            const COutPoint fake_task_out(task_id, mltx_stake_txout_index);
+            const auto& coin = inputs.AccessCoin(fake_task_out);
+            if (coin.IsSpent() || !pft_is_stake_output(coin, mltx_stake_txout_index))
+                return state.DoS(100, false, REJECT_INVALID, "bad-task-coin-reference");
+            if (nSpendHeight - coin.nHeight < consensus.nMlTaskMaturity)
+                return state.DoS(100, false, REJECT_INVALID, "bad-txns-task-immature");
         }
     }
 
@@ -567,8 +577,6 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
     //    return false;
     //if (fCheckStake && txClass == TX_RevokeTicket && !checkVoteOrRevokeTicketInputs(tx, false, state, inputs, nSpendHeight, chainparams))
     //    return false;
-
-    const auto& consensus = chainparams.GetConsensus();
 
     // general inputs check and summation of input amounts
     CAmount nValueIn = 0;
