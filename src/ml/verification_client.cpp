@@ -27,7 +27,7 @@ bool VerificationClient::Verify(const CBlockHeader& block)
     body.pushKV("block_header", blockHeaderHex);
 
     LogPrintf("%s -- Verifying block with hash: %s and message history ID: %s and message ID: %s and nonce: %d",
-              __func__, std::string(block.powMsgHistoryId), std::string(block.powMsgId, block.nNonce));
+              __func__, block.powMsgHistoryId, block.powMsgId, block.nNonce);
 
     HttpClient client(verificationServerAddress);
     auto response = client.post("/verify", body);
