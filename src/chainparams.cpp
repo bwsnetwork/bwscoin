@@ -281,7 +281,7 @@ public:
         consensus.nStakeVersionInterval             = 144 * 2 * 7; // ~2 weeks
         consensus.nMaxFreshStakePerBlock            = 4 * consensus.nTicketsPerBlock;
         consensus.nStakeEnabledHeight               = consensus.nHybridConsensusHeight + 2 * consensus.nTicketMaturity;
-        consensus.nStakeValidationHeight            = consensus.nStakeEnabledHeight + 2 * consensus.nTicketMaturity;
+        consensus.nStakeValidationHeight            = 2147483647;
         consensus.stakeBaseSigScript                = CScript() << 0x00 << 0x00;
         consensus.nStakeMajorityMultiplier          = 3;
         consensus.nStakeMajorityDivisor             = 4;
@@ -486,7 +486,7 @@ public:
         consensus.nStakeVersionInterval             = 144 * 2 * 7; // ~2 weeks
         consensus.nMaxFreshStakePerBlock            = 4 * consensus.nTicketsPerBlock;
         consensus.nStakeEnabledHeight               = consensus.nHybridConsensusHeight + consensus.nTicketMaturity + 1;
-        consensus.nStakeValidationHeight            = consensus.nStakeEnabledHeight + 100;
+        consensus.nStakeValidationHeight            = 2147483647;
         consensus.stakeBaseSigScript                = CScript() << 0x00 << 0x00;
         consensus.nStakeMajorityMultiplier          = 3;
         consensus.nStakeMajorityDivisor             = 4;
@@ -684,7 +684,7 @@ public:
         consensus.nStakeVersionInterval           = 6 * 24; // ~1 day
         consensus.nMaxFreshStakePerBlock          = 4 * consensus.nTicketsPerBlock;
         consensus.nStakeEnabledHeight             = 2000;//must be above nHybridConsensusHeight
-        consensus.nStakeValidationHeight          = 2100;//must be above nStakeEnabledHeight
+        consensus.nStakeValidationHeight          = 2147483647;
         consensus.stakeBaseSigScript              = CScript() << 0x73 << 0x57;
         consensus.nStakeMajorityMultiplier        = 3;
         consensus.nStakeMajorityDivisor           = 4;
