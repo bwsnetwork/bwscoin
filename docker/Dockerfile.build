@@ -19,10 +19,10 @@ RUN curl -L http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz -o /tmp/d
     make install
 RUN echo "Access token: $GITHUB_ACCESS_TOKEN"
 
-CMD curl -L -H "Authorization: token $GITHUB_ACCESS_TOKEN" https://github.com/valdi-labs/bwscoin/tarball/$BRANCH -o /tmp/bwscoin.tgz && \
+CMD curl -L https://github.com/bwsnetwork/bwscoin/tarball/$BRANCH -o /tmp/bwscoin.tgz && \
     mkdir /bwscoin-$VERSION && tar xfz /tmp/bwscoin.tgz --strip 1 -C /bwscoin-$VERSION && cd /bwscoin-$VERSION && \
     ./autogen.sh && ./configure --disable-bench --disable-tests --disable-gui-tests --disable-hardening --with-gui=no --prefix=/usr/local && \
     make -j $(lscpu | grep -E '^CPU\(s)' | awk '{print $2}') && \
     checkinstall -y --maintainer valdi.ai --install=no --nodoc --strip --pkgname bwscoin --provides bwscoin \
       --exclude /usr/local/bin/test_bwscoin,/usr/local/lib,/usr/local/include \
-      --pkgversion $VERSION --pkgrelease 1 --pkgsource https://github.com/valdi-labs/bwscoin --pakdir /bwscoin
+      --pkgversion $VERSION --pkgrelease 1 --pkgsource https://github.com/bwsnetwork/bwscoin --pakdir /bwscoin
