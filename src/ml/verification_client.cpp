@@ -30,7 +30,9 @@ bool VerificationClient::Verify(const CBlockHeader& block)
               __func__, std::string(block.powMsgHistoryId), std::string(block.powMsgId, block.nNonce));
 
     HttpClient client(verificationServerAddress);
-    auto response = client.post("/verify", body);
+    auto response = client.post("/verify/", body);
+
+    LogPrintf("Verifier response: %d - %s\n", response.http_code, response.message);
 
     return response.status == HttpResponse::Ok;
 }
